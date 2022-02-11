@@ -17,7 +17,7 @@ const Sidebar = (props) => {
               </li>
 
               <li className={pathname.includes('clients') ?"active" :""}> 
-                <Link to = "/app/employees/clients"><i className="la la-money-bill" /> <span>Expenses</span></Link>
+                <Link to = "/app/employees/expenses"><i className="la la-money-bill" /> <span>Expenses</span></Link>
               </li>
 
               <li className="submenu">
@@ -29,23 +29,19 @@ const Sidebar = (props) => {
                   <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/employees/requests">Requests</Link></li>
                   <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/employees/document_type">Document Type</Link></li>
                   
-                  {/* <li><Link className={pathname.includes('apps/calendar') ?"active" :""} to="/app/apps/calendar">Expenses</Link></li> */}
-                  {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} className={pathname.includes('contacts') ?"active" :""} to="/app/apps/contacts">Contacts</Link></li> */}
-                  {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} className={pathname.includes('contacts') ?"active" :""} to="/app/employees/document_type">Document Type</Link></li> */}
-                
                   <li className="submenu">
                     <a href="#"><span> Code Configuration</span> <span className="menu-arrow" /></a>
                     <ul style={{display: 'none'}}>
                       {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/voice-call">Voice Call</Link></li> */}
-                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/voice-call">Region</Link></li>
+                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/employees/regions">Regions</Link></li>
                       {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/video-call">Video Call</Link></li> */}
-                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/video-call">Branch</Link></li>
+                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/employees/branches">Branches</Link></li>
                       {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/outgoing-call">Outgoing Call</Link></li> */}
-                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/outgoing-call">Department</Link></li>
+                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/employees/departments">Departments</Link></li>
                       {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/incoming-call">Incoming Call</Link></li> */}
-                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/incoming-call">Unit</Link></li>
+                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/employees/units">Units</Link></li>
                       {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/incoming-call">Incoming Call</Link></li> */}
-                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/incoming-call">Staff</Link></li>
+                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/employees/staff">Staff</Link></li>
                     </ul>
                   </li>
 

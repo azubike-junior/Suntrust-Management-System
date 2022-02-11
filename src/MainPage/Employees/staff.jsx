@@ -9,11 +9,11 @@ import 'antd/dist/antd.css';
 import { itemRender, onShowSizeChange } from "../paginationfunction"
 import "../antdstyle.css"
 
-const Documents = () => {
+const Staff = () => {
 
     const [data, setData] = useState([
         {
-            id: 1, doc_name: "Invoice", doc_id: "DOC-0021", contactperson: "Barry Cuda"
+            id: 1, unit_name: "App Development", staff_code: "STB-0021"
         }
     ]);
     useEffect(() => {
@@ -29,33 +29,24 @@ const Documents = () => {
     const columns = [
 
         {
-            title: 'Document Name',
-            dataIndex: 'doc_name',
+            title: 'Unit Name',
+            dataIndex: 'unit_name',
             render: (text, record) => (
                 <h2 className="table-avatar">{text}</h2>
             ),
             sorter: (a, b) => a.name.length - b.name.length,
         },
         {
-            title: 'Document ID',
-            dataIndex: 'doc_id',
+            title: 'Staff Code',
+            dataIndex: 'staff_code',
             sorter: (a, b) => a.employee_id.length - b.employee_id.length,
         },
         {
             title: 'Action',
             render: (text, record) => (
-                // <div className="dropdown dropdown-action text-right">
-                //     <a href="#" className="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
-                //     <div className="dropdown-menu dropdown-menu-right">
-                //         <a className="dropdown-item" href="#" data-toggle="modal" data-target="#edit_client"><i className="fa fa-pencil m-r-5" /> Edit</a>
-                //         <a className="dropdown-item" href="#" data-toggle="modal" data-target="#delete_client"><i className="fa fa-trash-o m-r-5" /> Delete</a>
-                //     </div>
-                // </div>
-
                 <div className="">
-                        <a className="btn btn-sm btn-outline-secondary m-r-10" href="#" data-toggle="modal" data-target="#edit_client"><i className="fa fa-pencil m-r-5" /> Edit</a>
-                        <a className="btn btn-sm btn-outline-danger m-r-10" href="#" data-toggle="modal" data-target="#delete_client"><i className="fa fa-trash-o m-r-5" /> Delete</a>
-                    
+                    <a className="btn btn-sm btn-outline-secondary m-r-10" href="#" data-toggle="modal" data-target="#edit_client"><i className="fa fa-pencil m-r-5" /> Edit</a>
+                    <a className="btn btn-sm btn-outline-danger m-r-10" href="#" data-toggle="modal" data-target="#delete_client"><i className="fa fa-trash-o m-r-5" /> Delete</a>
                 </div>
             ),
         },
@@ -65,7 +56,7 @@ const Documents = () => {
     return (
         <div className="page-wrapper">
             <Helmet>
-                <title>Expense Management | Document Type</title>
+                <title>Expense Management | Staff</title>
                 <meta name="description" content="Login page" />
             </Helmet>
             {/* Page Content */}
@@ -75,14 +66,10 @@ const Documents = () => {
                 <div className="page-header">
                     <div className="row align-items-center">
                         <div className="col">
-                            <h3 className="page-title">Document Types</h3>
-                            {/* <ul className="breadcrumb">
-                                <li className="breadcrumb-item"><Link to="/app/main/dashboard">Configurations</Link></li>
-                                <li className="breadcrumb-item active">Documents</li>
-                            </ul> */}
+                            <h3 className="page-title">Staff</h3>
                         </div>
                         <div className="col-auto float-right ml-auto">
-                            <a href="#" className="btn add-btn" data-toggle="modal" data-target="#add_client"><i className="fa fa-plus" /> Add Document Type</a>
+                            <a href="#" className="btn add-btn" data-toggle="modal" data-target="#add_client"><i className="fa fa-plus" /> Add New Staff</a>
                         </div>
                     </div>
                 </div>
@@ -94,7 +81,7 @@ const Documents = () => {
                     <div className="col-sm-10 col-md-10">
                         <div className="form-group form-focus">
                             <input type="text" className="form-control floating" />
-                            <label className="focus-label">Search for a Document (e.g. Document Name, Document ID)</label>
+                            <label className="focus-label">Search for a Staff (e.g. Staff Name)</label>
                         </div>
                     </div>
 
@@ -128,12 +115,12 @@ const Documents = () => {
             {/* /Page Content */}
 
 
-            {/* Add Document Modal */}
+            {/* Add Unit Modal */}
             <div id="add_client" className="modal custom-modal fade" role="dialog">
                 <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">Add New Document</h5>
+                            <h5 className="modal-title">Add New Staff</h5>
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
@@ -142,7 +129,16 @@ const Documents = () => {
                             <form>
                                 <div class="d-flex align-items-center justify-content-center">
                                     <div className="col-lg-6">
-                                        <label className="col-form-label">Document Name<span className="text-danger">*</span></label>
+                                        <label className="col-form-label">Unit Name<span className="text-danger">*</span></label>
+                                        <select className="select">
+                                            <option>Choose a Unit</option>
+                                            <option value={1}>App Development</option>
+                                            <option value={2}>Core Banking</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="col-lg-6">
+                                        <label className="col-form-label">Staff Code<span className="text-danger">*</span></label>
                                         <input className="form-control" type="text" />
                                     </div>
                                 </div>
@@ -155,47 +151,56 @@ const Documents = () => {
                     </div>
                 </div>
             </div>
-            {/* /Add Document Modal */}
+            {/* /Add Unit Modal */}
 
 
-            {/* Edit Document Modal */}
+            {/* Edit Unit Modal */}
             <div id="edit_client" className="modal custom-modal fade" role="dialog">
                 <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">Edit Documents</h5>
+                            <h5 className="modal-title">Edit Unit</h5>
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
                         </div>
 
                         <div className="modal-body">
-                            <form>
+                        <form>
                                 <div class="d-flex align-items-center justify-content-center">
                                     <div className="col-lg-6">
-                                        <label className="col-form-label">Document Name<span className="text-danger">*</span></label>
-                                        <input className="form-control" type="text" value="Hello" />
+                                        <label className="col-form-label">Unit Name<span className="text-danger">*</span></label>
+                                        <select className="select">
+                                            <option>Choose a Unit</option>
+                                            <option value={1}>App Development</option>
+                                            <option value={2}>Core Banking</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="col-lg-6">
+                                        <label className="col-form-label">Staff Code<span className="text-danger">*</span></label>
+                                        <input className="form-control" type="text" />
                                     </div>
                                 </div>
 
                                 <div className="submit-section">
-                                    <button className="btn btn-primary submit-btn">Save</button>
+                                    <button className="btn btn-primary submit-btn">Submit</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-            {/* /Edit Document Modal */}
+            {/* /Edit Unit Modal */}
 
 
-            {/* Delete Document Modal */}
+            {/* Delete Unit Modal */}
             <div className="modal custom-modal fade" id="delete_client" role="dialog">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-body">
                             <div className="form-header">
-                                <h3>Delete Document</h3>
+                                <h3>Delete Unit</h3>
                                 <p>Are you sure want to delete?</p>
                             </div>
                             <div className="modal-btn delete-action">
@@ -212,10 +217,10 @@ const Documents = () => {
                     </div>
                 </div>
             </div>
-            {/* /Delete Document Modal */}
+            {/* /Delete Unit Modal */}
 
         </div>
     );
 }
 
-export default Documents;
+export default Staff;

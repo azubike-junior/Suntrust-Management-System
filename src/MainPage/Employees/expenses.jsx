@@ -13,8 +13,8 @@ const Expense = () => {
 
     const [data, setData] = useState([
         {
-            id: 1, image: Avatar_07, name: "John Doe", client_id: "CLT-0001", contactperson: "Barry Cuda",
-            email: "barrycuda@example.com", mobile: "9876543210", status: "Active"
+            id: 1, doc_type: "BRD", staff_id: "N/A", vendor_id: "Samsung Group",
+            desc_id: "Software Development"
         }
     ]);
     useEffect(() => {
@@ -30,37 +30,34 @@ const Expense = () => {
     const columns = [
 
         {
-            title: 'Description',
-            dataIndex: 'name',
+            title: 'Document Type',
+            dataIndex: 'doc_type',
+            sorter: (a, b) => a.mobile.length - b.mobile.length,
+        },
+        {
+            title: 'Staff ID',
+            dataIndex: 'staff_id',
             render: (text, record) => (
-                <h2 className="table-avatar">
-                    {/* <Link to="/app/profile/employee-profile" className="avatar"><img alt="" src={record.image} /></Link> */}
-                    {/* <Link to="/app/profile/employee-profile">{text}</Link> */}
-                    <Link to="/app/profile/expense-profile">{text}</Link>
-                </h2>
+                <h2 className="table-avatar">{text}</h2>
             ),
             sorter: (a, b) => a.name.length - b.name.length,
         },
         {
-            title: 'Request Type',
-            dataIndex: 'client_id',
+            title: 'Vendor',
+            dataIndex: 'vendor_id',
             sorter: (a, b) => a.employee_id.length - b.employee_id.length,
         },
         {
-            title: 'Ledger',
-            dataIndex: 'mobile',
-            sorter: (a, b) => a.mobile.length - b.mobile.length,
+            title: 'Description',
+            dataIndex: 'desc_id',
+            sorter: (a, b) => a.employee_id.length - b.employee_id.length,
         },
         {
             title: 'Action',
             render: (text, record) => (
-                <div className="dropdown dropdown-action text-right">
-                    <a href="#" className="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i className="material-icons">more_vert</i></a>
-                    <div className="dropdown-menu dropdown-menu-right">
-                        <a className="dropdown-item" href="/app/profile/expense-profile"><i className="fa fa-eye m-r-5" />View</a>
-                        <a className="dropdown-item" href="#" data-toggle="modal" data-target="#edit_client"><i className="fa fa-pencil m-r-5" /> Edit</a>
-                        <a className="dropdown-item" href="#" data-toggle="modal" data-target="#delete_client"><i className="fa fa-trash-o m-r-5" /> Delete</a>
-                    </div>
+                <div className="">
+                    <a className="btn btn-sm btn-outline-secondary m-r-10" href="#" data-toggle="modal" data-target="#edit_expense"><i className="fa fa-pencil m-r-5" /> Edit</a>
+                    <a className="btn btn-sm btn-outline-danger m-r-10" href="#" data-toggle="modal" data-target="#delete_expense"><i className="fa fa-trash-o m-r-5" /> Delete</a>
                 </div>
             ),
         },
@@ -70,7 +67,7 @@ const Expense = () => {
     return (
         <div className="page-wrapper">
             <Helmet>
-                <title>Expense Management | Vendors</title>
+                <title>Expense Management | Expenses</title>
                 <meta name="description" content="Login page" />
             </Helmet>
             {/* Page Content */}
@@ -80,18 +77,10 @@ const Expense = () => {
                 <div className="page-header">
                     <div className="row align-items-center">
                         <div className="col">
-                            <h3 className="page-title">Requests</h3>
-                            {/* <ul className="breadcrumb">
-                <li className="breadcrumb-item"><Link to="/app/main/dashboard">Configurations</Link></li>
-                <li className="breadcrumb-item active">Expense</li>
-              </ul> */}
+                            <h3 className="page-title">Expenses</h3>
                         </div>
                         <div className="col-auto float-right ml-auto">
-                            <a href="#" className="btn add-btn" data-toggle="modal" data-target="#add_client"><i className="fa fa-plus" /> Add Request</a>
-                            {/* <div className="view-icons">
-                <Link to="/app/employees/clients" className="grid-view btn btn-link"><i className="fa fa-th" /></Link>
-                <Link to="/app/employees/clients-list" className="list-view btn btn-link active"><i className="fa fa-bars" /></Link>
-              </div> */}
+                            <a href="#" className="btn add-btn" data-toggle="modal" data-target="#add_client"><i className="fa fa-plus" /> Add Expense</a>
                         </div>
                     </div>
                 </div>
@@ -103,7 +92,7 @@ const Expense = () => {
                     <div className="col-sm-10 col-md-10">
                         <div className="form-group form-focus">
                             <input type="text" className="form-control floating" />
-                            <label className="focus-label">Search for a Vendor (e.g. Request Description)</label>
+                            <label className="focus-label">Search for an Expense (e.g. Expense Description)</label>
                         </div>
                     </div>
 
@@ -137,12 +126,12 @@ const Expense = () => {
             {/* /Page Content */}
 
 
-            {/* Add Vendor Modal */}
+            {/* Add Expense Modal */}
             <div id="add_client" className="modal custom-modal fade" role="dialog">
                 <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">Add New Request</h5>
+                            <h5 className="modal-title">Add New Expense</h5>
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
@@ -151,7 +140,7 @@ const Expense = () => {
                             <form>
                                 <div className="row">
 
-                                    <div className="col-md-6">
+                                    <div className="col-md-4">
                                         <div className="form-group">
                                             <label className="col-form-label">Request Type<span className="text-danger">*</span></label>
                                             <select className="select">
@@ -162,33 +151,62 @@ const Expense = () => {
                                         </div>
                                     </div>
 
-                                    <div className="col-lg-6">
+                                    <div className="col-md-4">
                                         <div className="form-group">
-                                            <label className="col-form-label">Request Description<span className="text-danger">*</span></label>
+                                            <label className="col-form-label">Request By<span className="text-danger">*</span></label>
+                                            <select className="select">
+                                                <option>Select an Option</option>
+                                                <option value={1}>Expense</option>
+                                                <option value={2}>Purchase of Asset</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-lg-4">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Staff ID / Name</label>
                                             <input className="form-control" type="text" />
                                         </div>
                                     </div>
 
-                                    <div className="col-md-12 m-t-20 d-flex">
-                                        <div className="form-group m-r-10">
-                                            <label className="col-form-label">Branch Code <span className="text-danger">*</span></label>
-                                            <input className="form-control" type="text" />
+                                    <div className="col-lg-12">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Narration<span className="text-danger">*</span></label>
+                                            <textarea className="form-control m-b-10" rows="2" />
                                         </div>
-                                        <div className="form-group m-r-10">
-                                            <label className="col-form-label">Customer Number <span className="text-danger">*</span></label>
-                                            <input className="form-control" type="text" />
+                                    </div>
+
+                                    <div className="col-md-6">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Document Type<span className="text-danger">*</span></label>
+                                            <select className="select">
+                                                <option>Choose a Document Type</option>
+                                                <option value={1}>Document 1</option>
+                                                <option value={2}>Document 2</option>
+                                            </select>
                                         </div>
-                                        <div className="form-group m-r-10">
-                                            <label className="col-form-label">Currency code <span className="text-danger">*</span></label>
-                                            <input className="form-control" type="text" />
+                                    </div>
+
+                                    <div className="col-md-6 m-b-10">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Vendor</label>
+                                            <select className="select">
+                                                <option>Select a Vendor</option>
+                                                <option value={1}>Vendor 1</option>
+                                                <option value={2}>Vendor 2</option>
+                                            </select>
                                         </div>
-                                        <div className="form-group m-r-10">
-                                            <label className="col-form-label">Ledger_code <span className="text-danger">*</span></label>
-                                            <input className="form-control" type="text" />
-                                        </div>
-                                        <div className="form-group m-r-10">
-                                            <label className="col-form-label">Sub Account code <span className="text-danger">*</span></label>
-                                            <input className="form-control" type="text" />
+                                    </div>
+
+                                    <div className="form-group col-lg-6 font-weight-700">
+                                        <label className="text-center">Upload Document</label>
+                                        <input type="file" name="file-1[]" id="file-1" className="custom-input-file" data-multiple-caption="{count} files selected" multiple />
+                                    </div>
+
+                                    <div className="col-lg-12">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Description<span className="text-danger">*</span></label>
+                                            <textarea className="form-control" rows="2" />
                                         </div>
                                     </div>
 
@@ -202,24 +220,24 @@ const Expense = () => {
                     </div>
                 </div>
             </div>
-            {/* /Add Vendor Modal */}
+            {/* /Add Expense Modal */}
 
 
-            {/* Edit Vendor Modal */}
-            <div id="edit_client" className="modal custom-modal fade" role="dialog">
+            {/* Edit Expense Modal */}
+            <div id="edit_expense" className="modal custom-modal fade" role="dialog">
                 <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">Edit Vendor</h5>
+                            <h5 className="modal-title">Edit Expense</h5>
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
                         </div>
                         <div className="modal-body">
-                            <form>
+                        <form>
                                 <div className="row">
 
-                                    <div className="col-md-6">
+                                    <div className="col-md-4">
                                         <div className="form-group">
                                             <label className="col-form-label">Request Type<span className="text-danger">*</span></label>
                                             <select className="select">
@@ -230,56 +248,85 @@ const Expense = () => {
                                         </div>
                                     </div>
 
-                                    <div className="col-lg-6">
+                                    <div className="col-md-4">
                                         <div className="form-group">
-                                            <label className="col-form-label">Request Description<span className="text-danger">*</span></label>
+                                            <label className="col-form-label">Request By<span className="text-danger">*</span></label>
+                                            <select className="select">
+                                                <option>Select an Option</option>
+                                                <option value={1}>Expense</option>
+                                                <option value={2}>Purchase of Asset</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-lg-4">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Staff ID / Name</label>
                                             <input className="form-control" type="text" />
                                         </div>
                                     </div>
 
-                                    <div className="col-md-12 m-t-20 d-flex">
-                                        <div className="form-group m-r-10">
-                                            <label className="col-form-label">Branch Code <span className="text-danger">*</span></label>
-                                            <input className="form-control" type="text" />
+                                    <div className="col-lg-12">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Narration<span className="text-danger">*</span></label>
+                                            <textarea className="form-control m-b-10" rows="2" />
                                         </div>
-                                        <div className="form-group m-r-10">
-                                            <label className="col-form-label">Customer Number <span className="text-danger">*</span></label>
-                                            <input className="form-control" type="text" />
+                                    </div>
+
+                                    <div className="col-md-6">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Document Type<span className="text-danger">*</span></label>
+                                            <select className="select">
+                                                <option>Choose a Document Type</option>
+                                                <option value={1}>Document 1</option>
+                                                <option value={2}>Document 2</option>
+                                            </select>
                                         </div>
-                                        <div className="form-group m-r-10">
-                                            <label className="col-form-label">Currency code <span className="text-danger">*</span></label>
-                                            <input className="form-control" type="text" />
+                                    </div>
+
+                                    <div className="col-md-6 m-b-10">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Vendor</label>
+                                            <select className="select">
+                                                <option>Select a Vendor</option>
+                                                <option value={1}>Vendor 1</option>
+                                                <option value={2}>Vendor 2</option>
+                                            </select>
                                         </div>
-                                        <div className="form-group m-r-10">
-                                            <label className="col-form-label">Ledger_code <span className="text-danger">*</span></label>
-                                            <input className="form-control" type="text" />
-                                        </div>
-                                        <div className="form-group m-r-10">
-                                            <label className="col-form-label">Sub Account code <span className="text-danger">*</span></label>
-                                            <input className="form-control" type="text" />
+                                    </div>
+
+                                    <div className="form-group col-lg-6 font-weight-700">
+                                        <label className="text-center">Upload Document</label>
+                                        <input type="file" name="file-1[]" id="file-1" className="custom-input-file" data-multiple-caption="{count} files selected" multiple />
+                                    </div>
+
+                                    <div className="col-lg-12">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Description<span className="text-danger">*</span></label>
+                                            <textarea className="form-control" rows="2" />
                                         </div>
                                     </div>
 
                                 </div>
 
                                 <div className="submit-section">
-                                    <button className="btn btn-primary submit-btn">Save</button>
+                                    <button className="btn btn-primary submit-btn">Submit</button>
                                 </div>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-            {/* /Edit Vendor Modal */}
+            {/* /Edit Expense Modal */}
 
 
-            {/* Delete Vendor Modal */}
-            <div className="modal custom-modal fade" id="delete_client" role="dialog">
+            {/* Delete Expense Modal */}
+            <div className="modal custom-modal fade" id="delete_expense" role="dialog">
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-body">
                             <div className="form-header">
-                                <h3>Delete Vendor</h3>
+                                <h3>Delete Expense</h3>
                                 <p>Are you sure want to delete?</p>
                             </div>
                             <div className="modal-btn delete-action">
@@ -296,7 +343,7 @@ const Expense = () => {
                     </div>
                 </div>
             </div>
-            {/* /Delete Vendor Modal */}
+            {/* /Delete Expense Modal */}
 
         </div>
     );
