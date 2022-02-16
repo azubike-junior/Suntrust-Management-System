@@ -17,11 +17,13 @@ const Sidebar = (props) => {
               </li>
 
               <li className={pathname.includes('clients') ?"active" :""}> 
-                <Link to = "/app/employees/expenses"><i className="la la-money-bill" /> <span>Expenses</span></Link>
+                <Link to = "/app/employees/expenses"><i className="la la-money-bill"/> <span>Expenses</span></Link>
+                <Link to = "/app/employees/myrequests"><i className="la la-hand-holding-usd"/> <span>My Requests</span></Link>
+                <Link to = "/app/employees/personnelconfig"><i className="la la-users-cog"/> <span>Personnel Configuration</span></Link>
               </li>
 
               <li className="submenu">
-                <a href="#"><i className="la la-cube" /> <span> Configurations</span> <span className="menu-arrow" /></a>
+                <a href="#"><i className="la la-cube"/> <span> Configurations</span> <span className="menu-arrow" /></a>
                 <ul style={{display: 'none'}}>
                   {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/conversation/chat">Chat</Link></li> */}
                   <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/employees/vendors-list">Vendors</Link></li>
