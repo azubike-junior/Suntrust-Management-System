@@ -161,6 +161,40 @@ const Request = () => {
                                         </div>
                                     </div>
 
+                                    <div className="col-md-6">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Direct Credit<span className="text-danger">*</span></label>
+                                            <select className="select">
+                                                <option value={1}>Yes</option>
+                                                <option value={2}>No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-lg-6">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Payment Terms<span className="text-danger">*</span></label>
+                                            <select className="select">
+                                                <option>0%</option>
+                                                <option>30%</option>
+                                                <option>35%</option>
+                                                <option>40%</option>
+                                                <option>45%</option>
+                                                <option>50%</option>
+                                                <option>55%</option>
+                                                <option>60%</option>
+                                                <option>65%</option>
+                                                <option>70%</option>
+                                                <option>75%</option>
+                                                <option>80%</option>
+                                                <option>85%</option>
+                                                <option>90%</option>
+                                                <option>95%</option>
+                                                <option>100%</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
                                     <div className="col-md-12 m-t-20 d-flex">
                                         <div className="form-group m-r-10">
                                             <label className="col-form-label">Branch Code <span className="text-danger">*</span></label>
@@ -229,6 +263,41 @@ const Request = () => {
                                         </div>
                                     </div>
 
+
+                                    <div className="col-md-6">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Direct Credit<span className="text-danger">*</span></label>
+                                            <select className="select">
+                                                <option value={1}>Yes</option>
+                                                <option value={2}>No</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-lg-6">
+                                        <div className="form-group">
+                                            <label className="col-form-label">Payment Terms<span className="text-danger">*</span></label>
+                                            <select className="select">
+                                                <option>0%</option>
+                                                <option>30%</option>
+                                                <option>35%</option>
+                                                <option>40%</option>
+                                                <option>45%</option>
+                                                <option>50%</option>
+                                                <option>55%</option>
+                                                <option>60%</option>
+                                                <option>65%</option>
+                                                <option>70%</option>
+                                                <option>75%</option>
+                                                <option>80%</option>
+                                                <option>85%</option>
+                                                <option>90%</option>
+                                                <option>95%</option>
+                                                <option>100%</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
                                     <div className="col-md-12 m-t-20 d-flex">
                                         <div className="form-group m-r-10">
                                             <label className="col-form-label">Branch Code <span className="text-danger">*</span></label>
