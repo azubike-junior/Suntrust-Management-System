@@ -14,3 +14,7 @@ export default date.yyyymmdd();
 
 
 export const configUrl = `http://10.11.200.97/ExpenseManagement/Configuration`
+
+// export const resetFields = (resetField) => {
+
+// }

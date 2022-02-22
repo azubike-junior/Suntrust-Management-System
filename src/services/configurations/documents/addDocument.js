@@ -17,13 +17,13 @@ const initialState = {
 export const addDocument = createAsyncThunk(
   "addDocument",
   async (data, { rejectWithValue }) => {
-    const { docData, dispatch } = data;
+    const { documentName, dispatch } = data;
     console.log(">>>>>data", data, dispatch);
     try {
-      const response = await axios.post(
-        `${configUrl}/AddDocument`,
-        requestData
-      );
+      const response = await axios.post(`${configUrl}/AddDocument`, {
+        documentName,
+      });
+      console.log(">>>>>>response", response);
       if (response.status === 200) {
         Swal.fire("New Document has been added", "Successful!", "success").then(
           (result) => {

@@ -18,10 +18,10 @@ export default function EditRequestModal({ requestDetail }) {
 
   const ledger = requestDetail?.ledger?.split("/");
 
-//   console.log("====================================");
-//   console.log(requestDetail);
-//   console.log(ledger);
-//   console.log("====================================");
+  //   console.log("====================================");
+  //   console.log(requestDetail);
+  //   console.log(ledger);
+  //   console.log("====================================");
 
   const { data: requestTypes } = useGetRequestTypesQuery();
 
@@ -32,13 +32,13 @@ export default function EditRequestModal({ requestDetail }) {
   const {
     register,
     handleSubmit,
-    reset,
+    resetField,
     setValue,
     formState: { errors },
   } = useForm({
     mode: "onTouched",
     defaultValues: {
-      description: hello,
+      // description: hello,
     },
   });
 
@@ -73,8 +73,17 @@ export default function EditRequestModal({ requestDetail }) {
     }
   };
 
+  const resetFields = () => {
+    resetField("description");
+    resetField("branchCode");
+    resetField("customerNumber");
+    resetField("ledgerCode");
+    resetField("subAccount");
+    resetField("currencyCode");
+  };
+
   return (
-    <Modal show={openEditRequest} backdrop="static" keyboard={false}>
+    <Modal show={openEditRequest} centered backdrop="static" keyboard={false}>
       <div className="modal-90w modal-dialog-centered modal-lg" role="document">
         <div className="modal-content">
           <div className="modal-header">
@@ -83,8 +92,8 @@ export default function EditRequestModal({ requestDetail }) {
               type="button"
               className="close"
               onClick={() => {
+                resetFields();
                 dispatch(toggleEditRequestModal());
-                reset();
               }}
             >
               <span aria-hidden="true">×</span>

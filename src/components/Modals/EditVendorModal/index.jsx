@@ -11,17 +11,18 @@ export default function EditVendorModal({ editData }) {
   const { openUpdateVendor } = useSelector((state) => state.modalReducer);
   const dispatch = useDispatch();
 
-  /**
-   * todo: change hard coded parameters in newData
-   */
   const {
     register,
     handleSubmit,
+    resetField,
     formState: { errors },
   } = useForm({
     mode: "onTouched",
   });
 
+  /**
+   * todo: change hard coded parameters in newData
+   */
   const editVendorHandler = (data) => {
     console.log(editData);
     const { registeredBy, ...rest } = data;
@@ -35,8 +36,19 @@ export default function EditVendorModal({ editData }) {
     }
   };
 
+  const resetFields = () => {
+    resetField("companyName");
+    resetField("contactName");
+    resetField("email");
+    resetField("phone");
+    resetField("address");
+    resetField("accountNumber");
+    resetField("tin");
+    resetField("rcNumber");
+  };
+
   return (
-    <Modal show={openUpdateVendor} backdrop="static" keyboard={false}>
+    <Modal show={openUpdateVendor} centered backdrop="static" keyboard={false}>
       <div className="modal-90w modal-dialog-centered modal-lg" role="document">
         <div className="modal-content">
           <div className="modal-header">
@@ -44,7 +56,10 @@ export default function EditVendorModal({ editData }) {
             <button
               type="button"
               className="close"
-              onClick={() => dispatch(toggleUpdateVendorModal())}
+              onClick={() => {
+                resetFields();
+                dispatch(toggleUpdateVendorModal());
+              }}
             >
               <span aria-hidden="true">×</span>
             </button>
@@ -141,7 +156,6 @@ export default function EditVendorModal({ editData }) {
           </div>
         </div>
       </div>
-      
     </Modal>
   );
 }

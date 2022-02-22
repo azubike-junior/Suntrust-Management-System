@@ -57,13 +57,13 @@ export default function AddRequestModal() {
           "/" +
           subAccount,
       };
-      const newData = { requestData, dispatch };
+      const newData = { requestData, dispatch, reset };
       dispatch(addRequest(newData));
     }
   };
 
   return (
-    <Modal show={openRequest} backdrop="static" keyboard={false}>
+    <Modal show={openRequest} centered backdrop="static" keyboard={false}>
       <div className="modal-90w modal-dialog-centered modal-lg" role="document">
         <div className="modal-content">
           <div className="modal-header">

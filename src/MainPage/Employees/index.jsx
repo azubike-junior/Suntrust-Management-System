@@ -13,6 +13,15 @@ import Leades from './leades';
 import Tickets from './tickets';
 import TicketView from './ticketview';
 import Documents from './document_type';
+import Regions from './regions';
+import Branches from './branches';
+import Departments from './departments';
+import Units from './units';
+import Staff from './staff';
+import MyRequests from './myrequests';
+import ExpenseRequest from './expenseRequests';
+import PersonnelConfiguration from './personnelconfig';
+import PersonnelSetup from './personnelSetup';
 
 const EmployeeRoute = ({ match }) => (
    <Switch>
@@ -21,10 +30,19 @@ const EmployeeRoute = ({ match }) => (
       <Route path={`${match.url}/expenses`} component={Expense} />
       <Route path={`${match.url}/requests`} component={Request} />
       <Route path={`${match.url}/vendors-list`} component={Vendors_List} />
-      <Route path={`${match.url}/document_type`} component={Documents} />
       <Route path={`${match.url}/leads`} component={Leades} />
       <Route path={`${match.url}/tickets`} component={Tickets} />
       <Route path={`${match.url}/ticket-view`} component={TicketView} />
+      <Route path={`${match.url}/document_type`} component={Documents} />
+      <Route path={`${match.url}/regions`} component={Regions} />
+      <Route path={`${match.url}/branches`} component={Branches} />
+      <Route path={`${match.url}/departments`} component={Departments} />
+      <Route path={`${match.url}/units`} component={Units} />
+      <Route path={`${match.url}/staff`} component={Staff} />
+      <Route path={`${match.url}/myrequests`} component={MyRequests} />
+      <Route path={`${match.url}/expenseRequests`} component={ExpenseRequest} />
+      <Route path={`${match.url}/personnelconfig`} component={PersonnelConfiguration} />
+      <Route path={`${match.url}/personnelSetup`} component={PersonnelSetup} />
    </Switch>
 );
 

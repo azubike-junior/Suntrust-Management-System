@@ -3,7 +3,10 @@ import { useForm } from "react-hook-form";
 import InputField from "../../../MainPage/UIinterface/Forms/InputField/Index";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { closeVendorModal, toggleUpdateVendorModal } from "../../../services/modals/modals";
+import {
+  closeVendorModal,
+  toggleUpdateVendorModal,
+} from "../../../services/modals/modals";
 import date from "../../../utils/helper";
 import { addVendor } from "../../../services/configurations/vendors/addVendor";
 import Loader from "../../../MainPage/UIinterface/Loader";
@@ -27,21 +30,19 @@ export default function AddVendorModal() {
     defaultValues: {},
   });
 
-
   const AddVendorHandler = (data, e) => {
     const vendorData = {
       data,
       dispatch,
+      reset,
     };
     if (data) {
       dispatch(addVendor(vendorData));
-      reset(data);
     }
-    e.target.reset();
   };
 
   return (
-    <Modal show={openVendor} backdrop="static" keyboard={false}>
+    <Modal show={openVendor} centered backdrop="static" keyboard={false}>
       <div className="modal-90w modal-dialog-centered modal-lg" role="document">
         <div className="modal-content">
           <div className="modal-header">

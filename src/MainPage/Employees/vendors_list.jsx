@@ -13,9 +13,6 @@ import {
   toggleUpdateVendorModal,
 } from "../../services/modals/modals";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm } from "react-hook-form";
-import InputField from "../UIinterface/Forms/InputField/Index";
-import { addVendor } from "../../services/configurations/vendors/addVendor";
 import Loader from "../UIinterface/Loader";
 import { classNames } from "../../utils/classNames";
 import Modal from "react-bootstrap/Modal";
@@ -30,9 +27,6 @@ const Vendors_List = () => {
     (state) => state.modalReducer
   );
   const [vendorId, setVendorId] = useState("");
-  const { loading: addVendorLoader, data: response } = useSelector(
-    (state) => state.addVendorReducer
-  );
   const { loading: getVendorLoader, data: vendorsData } = useSelector(
     (state) => state.getVendorsReducer
   );
@@ -49,18 +43,6 @@ const Vendors_List = () => {
   useEffect(() => {
     dispatch(getVendors());
   }, []);
-
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    watch,
-    reset,
-    formState: { errors },
-  } = useForm({
-    mode: "onTouched",
-    defaultValues: {},
-  });
 
   const columns = [
     {
@@ -108,8 +90,6 @@ const Vendors_List = () => {
           <a
             className="btn btn-sm btn-outline-secondary m-r-10"
             href="#"
-            // data-toggle="modal"
-            // data-target="#edit_vendor"
             onClick={() => {
               setEditData(text);
               dispatch(toggleUpdateVendorModal());
@@ -120,8 +100,6 @@ const Vendors_List = () => {
           <a
             className="btn btn-sm btn-outline-danger m-r-10"
             href="#"
-            // data-toggle="modal"
-            // data-target="#delete_vendor"
             onClick={() => {
               setVendorId(text.id);
               dispatch(toggleDeleteVendorModal());
@@ -133,18 +111,6 @@ const Vendors_List = () => {
       ),
     },
   ];
-
-  const AddVendorHandler = (data, e) => {
-    const vendorData = {
-      data,
-      dispatch,
-    };
-    if (data) {
-      dispatch(addVendor(vendorData));
-      reset(data);
-    }
-    e.target.reset();
-  };
 
   return (
     <div className="page-wrapper">
@@ -238,8 +204,7 @@ const Vendors_List = () => {
       {/* Delete Vendor Modal */}
       <Modal
         show={openDeleteVendor}
-        // className="modal"
-        // onHide={() => dispatch(closeVendorModal())}
+        centered
         backdrop="static"
         keyboard={false}
       >

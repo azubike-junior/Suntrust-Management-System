@@ -8,9 +8,9 @@ import addRequestReducer from "../configurations/requests/addRequest";
 import getRequestsReducer from "../configurations/requests/getRequests";
 import getDocumentsReducer from "../configurations/documents/getDocuments";
 import addDocumentReducer from "../configurations/documents/addDocument";
-
 import modalReducer from "../modals/modals";
 import { getRequestTypes } from "../configurations/requests/getRequestTypes";
+import getRegionsReducer from "../configurations/codeConfig/regions/getRegions";
 
 export const store = configureStore({
   reducer: {
@@ -24,6 +24,7 @@ export const store = configureStore({
     getRequestsReducer,
     getDocumentsReducer,
     addDocumentReducer,
+    getRegionsReducer
   },
   // middleware: (gdm) => gdm().concat(openAccountApi.middleware),
   devTools: true,

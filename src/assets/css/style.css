@@ -363,6 +363,12 @@ table.dataTable thead > tr > td.sorting {
 .m-r-10 {
 	margin-right: 10px !important;
 }
+.m-r-20 {
+	margin-right: 20px !important;
+}
+.m-r-30 {
+	margin-right: 30px !important;
+}
 .m-l-5 {
 	margin-left: 5px !important;
 }

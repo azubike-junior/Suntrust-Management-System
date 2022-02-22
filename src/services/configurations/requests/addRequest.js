@@ -17,8 +17,7 @@ const initialState = {
 export const addRequest = createAsyncThunk(
   "addRequest",
   async (data, { rejectWithValue }) => {
-    const { requestData, dispatch } = data;
-    console.log(">>>>>data", data, dispatch);
+    const { requestData, dispatch, reset } = data;
     try {
       const response = await axios.post(
         `${configUrl}/AddExpenseRequest`,
@@ -30,6 +29,7 @@ export const addRequest = createAsyncThunk(
             if (result.isConfirmed) {
               dispatch(toggleRequestModal());
               dispatch(getRequests());
+              reset();
             }
           }
         );

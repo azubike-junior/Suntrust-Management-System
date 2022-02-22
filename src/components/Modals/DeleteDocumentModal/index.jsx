@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleDeleteRequestModal } from "../../../services/modals/modals";
 import { useGetRequestTypesQuery } from "../../../services/configurations/requests/getRequestTypes";
 
-export default function DeleteRequestModal() {
+export default function DeleteDocumentModal() {
   const { openDeleteRequest } = useSelector((state) => state.modalReducer);
   const { loading: addRequestLoader } = useSelector(
     (state) => state.addRequestReducer
@@ -16,9 +16,9 @@ export default function DeleteRequestModal() {
 
   const dispatch = useDispatch();
 
-    /**
-     * todo: delete function
-     */
+  /**
+   * todo: delete function
+   */
   const deleteRequestHandler = (data, e) => {};
 
   return (

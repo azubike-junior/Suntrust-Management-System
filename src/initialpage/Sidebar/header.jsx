@@ -49,27 +49,7 @@ class Header extends Component {
             </div>
           </li>
           {/* /Search */}
-          {/* Flag */}
-          <li className="nav-item dropdown has-arrow flag-nav">
-            <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
-              <img src={lnEnglish} alt="" height={20} /> <span>English</span>
-            </a>
-            <div className="dropdown-menu dropdown-menu-right">
-            <a href="" className="dropdown-item">
-                    <img src={lnEnglish} alt="" height={16} /> English
-                  </a>
-                  <a href="" className="dropdown-item">
-                    <img src={lnFrench} alt="" height={16} /> French
-                  </a>
-                  <a href="" className="dropdown-item">
-                    <img src={lnSpanish} alt="" height={16} /> Spanish
-                  </a>
-                  <a href="" className="dropdown-item">
-                    <img src={lnGerman} alt="" height={16} /> German
-                  </a>
-            </div>
-          </li>
-          {/* /Flag */}
+          
           {/* Notifications */}
           <li className="nav-item dropdown">
             <a href="#" className="dropdown-toggle nav-link" data-toggle="dropdown">
