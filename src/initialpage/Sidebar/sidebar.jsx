@@ -19,7 +19,7 @@ const Sidebar = (props) => {
               <li className={pathname.includes('clients') ?"active" :""}> 
                 <Link to = "/app/employees/expenses"><i className="la la-money-bill"/> <span>Expenses</span></Link>
                 <Link to = "/app/employees/myrequests"><i className="la la-hand-holding-usd"/> <span>My Requests</span></Link>
-                <Link to = "/app/employees/approversPage_Snr"><i className="la la-hand-holding-usd"/> <span>Approvers Page - Snr</span></Link>
+                <Link to = "/app/employees/approversPage_Snr"><i className="la la-hand-holding-usd"/> <span>Expense Reports</span></Link>
                 <Link to = "/app/employees/approversPage_Init"><i className="la la-hand-holding-usd"/> <span>Approvers Page - Init</span></Link>
                 <Link to = "/app/employees/personnelconfig"><i className="la la-users-cog"/> <span>Personnel Configuration</span></Link>
               </li>
