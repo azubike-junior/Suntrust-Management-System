@@ -17,8 +17,8 @@ import Loader from "../UIinterface/Loader";
 import { classNames } from "../../utils/classNames";
 import Modal from "react-bootstrap/Modal";
 import { deleteVendor } from "../../services/configurations/vendors/deleteVendor.js";
-import EditVendorModal from "../../components/Modals/EditVendorModal";
-import AddVendorModal from "../../components/Modals/AddVendoreModal";
+import EditVendorModal from "../../components/Modals/configurations/vendorModals/EditVendorModal";
+import AddVendorModal from "../../components/Modals/configurations/vendorModals/AddVendoreModal";
 
 const Vendors_List = () => {
   const dispatch = useDispatch();

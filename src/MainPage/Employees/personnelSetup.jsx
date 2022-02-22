@@ -15,7 +15,7 @@ const PersonnelSetup = () => {
 
     const [data, setData] = useState([
         {
-            id: 1, personnel_id: "0019", req_date: "23/02/2022", staff_name: ["open", "closed", "resolved", "acknowldged", "suppressed"],
+            id: 1, personnel_id: "0019", req_date: "23/02/2022",
         }
     ]);
 

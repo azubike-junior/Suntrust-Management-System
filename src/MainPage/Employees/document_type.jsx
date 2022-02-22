@@ -7,7 +7,7 @@ import { itemRender, onShowSizeChange } from "../paginationfunction";
 import "../antdstyle.css";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleAddDocumentModal } from "../../services/modals/modals";
-import AddDocumentModal from "../../components/Modals/AddDocument";
+import AddDocumentModal from "../../components/Modals/configurations/documentModals/AddDocument";
 import { getDocuments } from "../../services/configurations/documents/getDocuments";
 import Loader from "../UIinterface/Loader";
 

@@ -1,15 +1,15 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import InputField from "../../../MainPage/UIinterface/Forms/InputField/Index";
+import InputField from "../../../../../MainPage/UIinterface/Forms/InputField/Index";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   closeVendorModal,
   toggleUpdateVendorModal,
-} from "../../../services/modals/modals";
-import date from "../../../utils/helper";
-import { addVendor } from "../../../services/configurations/vendors/addVendor";
-import Loader from "../../../MainPage/UIinterface/Loader";
+} from "../../../../../services/modals/modals";
+import date from "../../../../../utils/helper";
+import { addVendor } from "../../../../../services/configurations/vendors/addVendor";
+import Loader from "../../../../../MainPage/UIinterface/Loader";
 
 export default function AddVendorModal() {
   const { openVendor } = useSelector((state) => state.modalReducer);

@@ -2,14 +2,14 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import InputField, {
   SelectField,
-} from "../../../MainPage/UIinterface/Forms/InputField/Index";
+} from "../../../../../MainPage/UIinterface/Forms/InputField/Index";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleRequestModal } from "../../../services/modals/modals";
-import date from "../../../utils/helper";
-import Loader from "../../../MainPage/UIinterface/Loader";
-import { useGetRequestTypesQuery } from "../../../services/configurations/requests/getRequestTypes";
-import { addRequest } from "../../../services/configurations/requests/addRequest";
+import { toggleRequestModal } from "../../../../../services/modals/modals";
+import date from "../../../../../utils/helper";
+import Loader from "../../../../../MainPage/UIinterface/Loader";
+import { useGetRequestTypesQuery } from "../../../../../services/configurations/requests/getRequestTypes";
+import { addRequest } from "../../../../../services/configurations/requests/addRequest";
 
 export default function AddRequestModal() {
   const { openRequest } = useSelector((state) => state.modalReducer);

@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField, {
   SelectField,
-} from "../../../MainPage/UIinterface/Forms/InputField/Index";
+} from "../../../../../MainPage/UIinterface/Forms/InputField/Index";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleEditRequestModal } from "../../../services/modals/modals";
-import date from "../../../utils/helper";
-import Loader from "../../../MainPage/UIinterface/Loader";
-import { useGetRequestTypesQuery } from "../../../services/configurations/requests/getRequestTypes";
+import { toggleEditRequestModal } from "../../../../../services/modals/modals";
+import date from "../../../../../utils/helper";
+import Loader from "../../../../../MainPage/UIinterface/Loader";
+import { useGetRequestTypesQuery } from "../../../../../services/configurations/requests/getRequestTypes";
 
 export default function EditRequestModal({ requestDetail }) {
   const { openEditRequest } = useSelector((state) => state.modalReducer);

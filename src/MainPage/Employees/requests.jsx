@@ -6,7 +6,7 @@ import { Table, Select, Option } from "antd";
 import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../paginationfunction";
 import "../antdstyle.css";
-import AddRequestModal from "../../components/Modals/AddRequestModal";
+import AddRequestModal from "../../components/Modals/configurations/requestModals/AddRequestModal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   toggleRequestModal,
@@ -15,9 +15,9 @@ import {
 } from "../../services/modals/modals";
 import { getRequests } from "./../../services/configurations/requests/getRequests";
 import Loader from "../UIinterface/Loader";
-import EditRequestModal from "../../components/Modals/EditRequestmodal";
+import EditRequestModal from "../../components/Modals/configurations/requestModals/EditRequestmodal";
 import { useForm } from "react-hook-form";
-import DeleteRequestModal from "../../components/Modals/DeleteRequestModal";
+import DeleteRequestModal from "../../components/Modals/configurations/requestModals/DeleteRequestModal";
 
 const Request = () => {
   const [requestDetail, setRequestDetail] = useState({});

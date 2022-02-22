@@ -1,13 +1,13 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import InputField from "../../../MainPage/UIinterface/Forms/InputField";
-import { toggleAddDocumentModal } from "../../../services/modals/modals";
+import InputField from "../../../../../MainPage/UIinterface/Forms/InputField";
+import { toggleAddDocumentModal } from "../../../../../services/modals/modals";
 import Modal from "react-bootstrap/Modal";
-import { addDocument } from "../../../services/configurations/documents/addDocument";
-import Loader from "./../../../MainPage/UIinterface/Loader/index";
+import { addDocument } from "../../../../../services/configurations/documents/addDocument";
+import Loader from "../../../../../MainPage/UIinterface/Loader/index";
 
-export default function AddDocumentModal() {
+export default function EditDocumentModal() {
   const { openAddDocument } = useSelector((state) => state.modalReducer);
   const { loading: addDocumentLoader } = useSelector(
     (state) => state.addDocumentReducer
@@ -24,16 +24,16 @@ export default function AddDocumentModal() {
     defaultValues: {},
   });
 
-  const addDocumentHandler = (data) => {
-    if (data) {
-      const { documentName } = data;
-      const newData = {
-        documentName,
-        dispatch,
-      };
-      dispatch(addDocument(newData));
-    }
-  };
+//   const addDocumentHandler = (data) => {
+//     if (data) {
+//       const { documentName } = data;
+//       const newData = {
+//         documentName,
+//         dispatch,
+//       };
+//       dispatch(addDocument(newData));
+//     }
+//   };
 
   return (
     <Modal show={openAddDocument} centered backdrop="static" keyboard={false}>
@@ -44,7 +44,7 @@ export default function AddDocumentModal() {
             <button
               type="button"
               className="close"
-              onClick={() => dispatch(toggleAddDocumentModal())}
+              onClick={() => dispatch(toggleEditDocumentModal())}
             >
               <span aria-hidden="true">×</span>
             </button>
