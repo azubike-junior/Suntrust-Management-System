@@ -26,6 +26,12 @@ import ApproversPage from './approversPage_Snr';
 import ApprovedExpenseRequest from './approved_expense_requests';
 import ApproversPageInit from './approversPage_Init';
 import ApprovedInitExpenseRequest from './approved_init_expense_requests';
+import Appraisal from './appraisal';
+import Category_Type from './category_type';
+import Organizational_Goal from './organizational_goal';
+import Department_Goal from './department_goal';
+import Unit_KPI from './unit_kpi';
+import Staff_Appraisal from './staff_Appraisal';
 
 const EmployeeRoute = ({ match }) => (
    <Switch>
@@ -51,6 +57,12 @@ const EmployeeRoute = ({ match }) => (
       <Route path={`${match.url}/approved_expense_requests`} component={ApprovedExpenseRequest} />
       <Route path={`${match.url}/approversPage_Init`} component={ApproversPageInit} />
       <Route path={`${match.url}/approved_init_expense_requests`} component={ApprovedInitExpenseRequest} />
+      <Route path={`${match.url}/appraisal`} component={Appraisal} />
+      <Route path={`${match.url}/category_type`} component={Category_Type} />
+      <Route path={`${match.url}/organizational_goal`} component={Organizational_Goal} />
+      <Route path={`${match.url}/department_goal`} component={Department_Goal} />
+      <Route path={`${match.url}/unit_kpi`} component={Unit_KPI} />
+      <Route path={`${match.url}/staff_Appraisal`} component={Staff_Appraisal} />
    </Switch>
 );
 

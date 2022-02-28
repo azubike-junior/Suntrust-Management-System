@@ -77,10 +77,6 @@ const Request = () => {
                     <div className="row align-items-center">
                         <div className="col">
                             <h3 className="page-title">Requests</h3>
-                            {/* <ul className="breadcrumb">
-                                <li className="breadcrumb-item"><Link to="/app/main/dashboard">Configurations</Link></li>
-                                <li className="breadcrumb-item active">Requests</li>
-                            </ul> */}
                         </div>
                         <div className="col-auto float-right ml-auto">
                             <a href="#" className="btn add-btn" data-toggle="modal" data-target="#add_client"><i className="fa fa-plus" /> Add Request</a>
