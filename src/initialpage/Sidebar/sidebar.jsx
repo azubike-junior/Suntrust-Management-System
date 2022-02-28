@@ -16,36 +16,36 @@ const Sidebar = (props) => {
                 <span>EXPENSE MANAGEMENT</span>
               </li>
 
-              <li className={pathname.includes('clients') ?"active" :""}> 
-                <Link to = "/app/employees/expenses"><i className="la la-money-bill"/><span>Expenses</span></Link>
-                <Link to = "/app/employees/myrequests"><i className="la la-hand-holding-usd"/> <span>My Requests</span></Link>
-                <Link to = "/app/employees/approversPage_Snr"><i className="la la-hand-holding-usd"/> <span>Approvers Page - Snr</span></Link>
-                <Link to = "/app/employees/approversPage_Init"><i className="la la-hand-holding-usd"/> <span>Process Payments - init</span></Link>
-                <Link to = "/app/employees/personnelconfig"><i className="la la-users-cog"/> <span>Personnel Configuration</span></Link>
+              <li className={pathname.includes('clients') ? "active" :""}> 
+                <Link to = "/app/expenseManagement/expenses"><i className="la la-money-bill"/><span>Expenses</span></Link>
+                {/* <Link to = "/app/employees/myrequests"><i className="la la-hand-holding-usd"/> <span>My Requests</span></Link> */}
+                <Link to = "/app/expenseManagement/expenseReports"><i className="la la-hand-holding-usd"/> <span>Expense Reports</span></Link>
+                <Link to = "/app/employees/approversPage_Init"><i className="la la-hand-holding-usd"/> <span>Approvers Page - Init</span></Link>
+                <Link to = "/app/expenseManagement/personnelconfig"><i className="la la-users-cog"/> <span>Personnel Configuration</span></Link>
               </li>
 
               <li className="submenu">
                 <a href="#"><i className="la la-cube"/> <span> Configurations</span> <span className="menu-arrow" /></a>
                 <ul style={{display: 'none'}}>
                   {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/conversation/chat">Chat</Link></li> */}
-                  <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/employees/vendors-list">Vendors</Link></li>
+                  <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/expenseManagement/config/vendors">Vendors</Link></li>
                   {/* <li><Link className={pathname.includes('apps/calendar') ?"active" :""} to="/app/apps/calendar">Calendar</Link></li> */}
-                  <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/employees/requests">Requests</Link></li>
-                  <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/employees/document_type">Document Type</Link></li>
+                  <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/expenseManagement/config/requests">Requests</Link></li>
+                  <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/expenseManagement/config/document_type">Document Type</Link></li>
                   
                   <li className="submenu">
                     <a href="#"><span> Code Configuration</span> <span className="menu-arrow" /></a>
                     <ul style={{display: 'none'}}>
                       {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/voice-call">Voice Call</Link></li> */}
-                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/employees/regions">Regions</Link></li>
+                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/expenseManagement/config/regions">Regions</Link></li>
                       {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/video-call">Video Call</Link></li> */}
-                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/employees/branches">Branches</Link></li>
+                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/expenseManagement/config/branches">Branches</Link></li>
                       {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/outgoing-call">Outgoing Call</Link></li> */}
-                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/employees/departments">Departments</Link></li>
+                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/expenseManagement/config/departments">Departments</Link></li>
                       {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/incoming-call">Incoming Call</Link></li> */}
-                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/employees/units">Units</Link></li>
+                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/expenseManagement/config/units">Units</Link></li>
                       {/* <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/conversation/incoming-call">Incoming Call</Link></li> */}
-                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/employees/staff">Staff</Link></li>
+                      <li><Link onClick={()=>localStorage.setItem("minheight","true")} to = "/app/expenseManagement/config/staffs">Staff</Link></li>
                     </ul>
                   </li>
 

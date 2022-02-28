@@ -3,7 +3,7 @@
  */
 import React, { Component, useState, useEffect } from 'react';
 import { Helmet } from "react-helmet";
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Avatar_01, Avatar_02, Avatar_05, Avatar_09, Avatar_10, Avatar_11, Avatar_12, Avatar_13, Avatar_16, Avatar_19 } from '../../Entryfile/imagepath'
 
 import { Table } from 'antd';
@@ -12,6 +12,8 @@ import { itemRender, onShowSizeChange } from "../paginationfunction"
 import "../antdstyle.css"
 
 const ApprovedInitExpenseRequest = () => {
+
+  
 
     const [data, setData] = useState([
         {

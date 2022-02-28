@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+// import { Avatar_07 } from "../../Entryfile/imagepath";
+
 import { Table } from "antd";
 import "antd/dist/antd.css";
-import { itemRender, onShowSizeChange } from "../paginationfunction";
-import "../antdstyle.css";
-import { useDispatch, useSelector } from "react-redux";
-import { toggleAddDocumentModal } from "../../services/modals/modals";
-import AddDocumentModal from "../../components/Modals/configurations/documentModals/AddDocument";
-import { getDocuments } from "../../services/configurations/documents/getDocuments";
-import Loader from "../UIinterface/Loader";
+import { itemRender, onShowSizeChange } from "../../../paginationfunction";
+import "../../../antdstyle.css";
 
-const Documents = () => {
-  const dispatch = useDispatch();
-  const { loading: getDocumentsLoader, data: documents } = useSelector(
-    (state) => state.getDocumentsReducer
-  );
-
+const Branches = () => {
+  const [data, setData] = useState([
+    {
+      id: 1,
+      reg_name: "Region 1",
+      bra_name: "Lagos Office",
+      bra_code: "BRA-0021",
+    },
+  ]);
   useEffect(() => {
     if ($(".select").length > 0) {
       $(".select").select2({
@@ -26,26 +26,34 @@ const Documents = () => {
     }
   });
 
-  useEffect(() => {
-    dispatch(getDocuments());
-  }, []);
-
   const columns = [
     {
-      title: "Document ID",
-      dataIndex: "id",
+      title: "Region Name",
+      dataIndex: "reg_name",
+      render: (text, record) => <h2 className="table-avatar">{text}</h2>,
       sorter: (a, b) => a.name.length - b.name.length,
     },
     {
-      title: "Document Name",
-      dataIndex: "documentName",
+      title: "Branch Name",
+      dataIndex: "bra_name",
+      render: (text, record) => <h2 className="table-avatar">{text}</h2>,
+      sorter: (a, b) => a.name.length - b.name.length,
+    },
+    {
+      title: "Branch Code",
+      dataIndex: "bra_code",
       sorter: (a, b) => a.employee_id.length - b.employee_id.length,
     },
     {
       title: "Action",
       render: (text, record) => (
         <div className="">
-          <a className="btn btn-sm btn-outline-secondary m-r-10" href="#">
+          <a
+            className="btn btn-sm btn-outline-secondary m-r-10"
+            href="#"
+            data-toggle="modal"
+            data-target="#edit_client"
+          >
             <i className="fa fa-pencil m-r-5" /> Edit
           </a>
           <a
@@ -64,7 +72,7 @@ const Documents = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>Expense Management | Document Type</title>
+        <title>Expense Management | Branches</title>
         <meta name="description" content="Login page" />
       </Helmet>
       {/* Page Content */}
@@ -74,15 +82,16 @@ const Documents = () => {
         <div className="page-header">
           <div className="row align-items-center">
             <div className="col">
-              <h3 className="page-title">Document Types</h3>
+              <h3 className="page-title">Branches</h3>
             </div>
             <div className="col-auto float-right ml-auto">
               <a
                 href="#"
                 className="btn add-btn"
-                onClick={() => dispatch(toggleAddDocumentModal())}
+                data-toggle="modal"
+                data-target="#add_client"
               >
-                <i className="fa fa-plus" /> Add Document Type
+                <i className="fa fa-plus" /> Add New Branch
               </a>
             </div>
           </div>
@@ -95,7 +104,7 @@ const Documents = () => {
             <div className="form-group form-focus">
               <input type="text" className="form-control floating" />
               <label className="focus-label">
-                Search for a Document (e.g. Document Title)
+                Search for a Branch (e.g. Branch Name)
               </label>
             </div>
           </div>
@@ -115,20 +124,19 @@ const Documents = () => {
               <Table
                 className="table-striped"
                 pagination={{
-                  total: documents,
+                  total: data.length,
                   showTotal: (total, range) =>
                     `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                   showSizeChanger: true,
                   onShowSizeChange: onShowSizeChange,
                   itemRender: itemRender,
                 }}
-                loading={{ indicator: <Loader />, spinning: getDocumentsLoader }}
                 style={{ overflowX: "auto" }}
                 columns={columns}
                 // bordered
-                dataSource={documents}
+                dataSource={data}
                 rowKey={(record) => record.id}
-                // onChange={console.log("change")}
+                onChange={console.log("change")}
               />
             </div>
           </div>
@@ -136,11 +144,64 @@ const Documents = () => {
       </div>
       {/* /Page Content */}
 
-      {/* Add Document Modal */}
-      <AddDocumentModal />
-      {/* /Add Document Modal */}
+      {/* Add Branch Modal */}
+      <div id="add_client" className="modal custom-modal fade" role="dialog">
+        <div
+          className="modal-dialog modal-dialog-centered modal-lg"
+          role="document"
+        >
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Add New Branch</h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <form>
+                <div class="d-flex align-items-center justify-content-center">
+                  <div className="col-lg-4">
+                    <label className="col-form-label">
+                      Region Name<span className="text-danger">*</span>
+                    </label>
+                    <select className="select">
+                      <option>Choose a Region</option>
+                      <option value={1}>Region 1</option>
+                      <option value={2}>Region 2</option>
+                    </select>
+                  </div>
 
-      {/* Edit Document Modal */}
+                  <div className="col-lg-4">
+                    <label className="col-form-label">
+                      Branch Name<span className="text-danger">*</span>
+                    </label>
+                    <input className="form-control" type="text" />
+                  </div>
+
+                  <div className="col-lg-4">
+                    <label className="col-form-label">
+                      Branch Code<span className="text-danger">*</span>
+                    </label>
+                    <input className="form-control" type="text" />
+                  </div>
+                </div>
+
+                <div className="submit-section">
+                  <button className="btn btn-primary submit-btn">Submit</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* /Add Branch Modal */}
+
+      {/* Edit Branch Modal */}
       <div id="edit_client" className="modal custom-modal fade" role="dialog">
         <div
           className="modal-dialog modal-dialog-centered modal-lg"
@@ -148,7 +209,7 @@ const Documents = () => {
         >
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Edit Documents</h5>
+              <h5 className="modal-title">Edit Branch</h5>
               <button
                 type="button"
                 className="close"
@@ -162,11 +223,29 @@ const Documents = () => {
             <div className="modal-body">
               <form>
                 <div class="d-flex align-items-center justify-content-center">
-                  <div className="col-lg-6">
+                  <div className="col-lg-4">
                     <label className="col-form-label">
-                      Document Name<span className="text-danger">*</span>
+                      Region Name<span className="text-danger">*</span>
                     </label>
-                    <input className="form-control" type="text" value="Hello" />
+                    <select className="select">
+                      <option>Choose a Region</option>
+                      <option value={1}>Region 1</option>
+                      <option value={2}>Region 2</option>
+                    </select>
+                  </div>
+
+                  <div className="col-lg-4">
+                    <label className="col-form-label">
+                      Branch Name<span className="text-danger">*</span>
+                    </label>
+                    <input className="form-control" type="text" />
+                  </div>
+
+                  <div className="col-lg-4">
+                    <label className="col-form-label">
+                      Branch Code<span className="text-danger">*</span>
+                    </label>
+                    <input className="form-control" type="text" />
                   </div>
                 </div>
 
@@ -178,15 +257,15 @@ const Documents = () => {
           </div>
         </div>
       </div>
-      {/* /Edit Document Modal */}
+      {/* /Edit Branch Modal */}
 
-      {/* Delete Document Modal */}
+      {/* Delete Branch Modal */}
       <div className="modal custom-modal fade" id="delete_client" role="dialog">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-body">
               <div className="form-header">
-                <h3>Delete Document</h3>
+                <h3>Delete Branch</h3>
                 <p>Are you sure want to delete?</p>
               </div>
               <div className="modal-btn delete-action">
@@ -211,9 +290,9 @@ const Documents = () => {
           </div>
         </div>
       </div>
-      {/* /Delete Document Modal */}
+      {/* /Delete Branch Modal */}
     </div>
   );
 };
 
-export default Documents;
+export default Branches;

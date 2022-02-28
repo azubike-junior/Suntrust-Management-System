@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { Avatar_07 } from "../../Entryfile/imagepath";
 import { Table, Select, Option } from "antd";
 import "antd/dist/antd.css";
-import { itemRender, onShowSizeChange } from "../paginationfunction";
-import "../antdstyle.css";
-import AddRequestModal from "../../components/Modals/configurations/requestModals/AddRequestModal";
+// import { itemRender, onShowSizeChange } from "../paginationfunction";
+import { itemRender, onShowSizeChange } from "../../paginationfunction";
+import "../../antdstyle.css";
+import AddRequestModal from "../../../components/Modals/configurations/requestModals/AddRequestModal";
 import { useDispatch, useSelector } from "react-redux";
 import {
   toggleRequestModal,
   toggleEditRequestModal,
   toggleDeleteRequestModal,
-} from "../../services/modals/modals";
-import { getRequests } from "./../../services/configurations/requests/getRequests";
-import Loader from "../UIinterface/Loader";
-import EditRequestModal from "../../components/Modals/configurations/requestModals/EditRequestmodal";
+} from "../../../services/modals/modals";
+import { getRequests } from "../../../services/configurations/requests/getRequests";
+import Loader from "../../UIinterface/Loader";
+import EditRequestModal from "../../../components/Modals/configurations/requestModals/EditRequestmodal";
 import { useForm } from "react-hook-form";
-import DeleteRequestModal from "../../components/Modals/configurations/requestModals/DeleteRequestModal";
+import DeleteRequestModal from "../../../components/Modals/configurations/requestModals/DeleteRequestModal";
 
-const Request = () => {
+const Requests = () => {
   const [requestDetail, setRequestDetail] = useState({});
   const dispatch = useDispatch();
   const { openRequest } = useSelector((state) => state.modalReducer);
@@ -191,4 +191,4 @@ const Request = () => {
   );
 };
 
-export default Request;
+export default Requests;

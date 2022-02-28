@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { Avatar_07 } from "../../Entryfile/imagepath";
 
 import { Table } from "antd";
 import "antd/dist/antd.css";
-import { itemRender, onShowSizeChange } from "../paginationfunction";
-import "../antdstyle.css";
+import { itemRender, onShowSizeChange } from "../../paginationfunction";
+import "../../antdstyle.css";
 
 const ApproversPage = () => {
   const [status, setStatus] = useState("pending");
@@ -78,7 +77,7 @@ const ApproversPage = () => {
       title: "",
       render: (text, record) => (
         <Link
-          to="/app/employees/approved_expense_requests/398339"
+          to="/app/expenseManagement/expenseDetails/844048"
           className="btn btn-sm btn-outline-primary m-r-10"
         >
           <i className="fa fa-eye m-r-5" />

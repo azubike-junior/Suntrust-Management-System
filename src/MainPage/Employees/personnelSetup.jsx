@@ -31,7 +31,6 @@ const PersonnelSetup = () => {
 
     // Table displayed on Expense Page
     const columns = [
-
         {
             title: 'Personnel',
             dataIndex: 'personnel_id',
@@ -50,7 +49,6 @@ const PersonnelSetup = () => {
             dataIndex: 'staff_name',
             sorter: (a, b) => a.employee_id.length - b.employee_id.length,
         },
-
     ]
 
 

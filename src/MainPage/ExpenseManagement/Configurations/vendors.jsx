@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import { getVendors } from "../../services/configurations/vendors/getVendors";
+import { getVendors } from "../../../services/configurations/vendors/getVendors";
 import { Table } from "antd";
 import "antd/dist/antd.css";
-import { itemRender, onShowSizeChange } from "../paginationfunction";
-import "../antdstyle.css";
+import { itemRender, onShowSizeChange } from "../../paginationfunction";
+import "../../antdstyle.css";
 import {
   closeVendorModal,
   openVendorModal,
   toggleDeleteVendorModal,
   toggleUpdateVendorModal,
-} from "../../services/modals/modals";
+} from "../../../services/modals/modals";
 import { useDispatch, useSelector } from "react-redux";
-import Loader from "../UIinterface/Loader";
-import { classNames } from "../../utils/classNames";
+import Loader from "../../UIinterface/Loader";
 import Modal from "react-bootstrap/Modal";
-import { deleteVendor } from "../../services/configurations/vendors/deleteVendor.js";
-import EditVendorModal from "../../components/Modals/configurations/vendorModals/EditVendorModal";
-import AddVendorModal from "../../components/Modals/configurations/vendorModals/AddVendoreModal";
+import { deleteVendor } from "../../../services/configurations/vendors/deleteVendor.js";
+import EditVendorModal from "../../../components/Modals/configurations/vendorModals/EditVendorModal";
+import AddVendorModal from "../../../components/Modals/configurations/vendorModals/AddVendoreModal";
 
 const Vendors_List = () => {
   const dispatch = useDispatch();
