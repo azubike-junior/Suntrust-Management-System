@@ -6,16 +6,18 @@ import { Table } from "antd";
 import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../../paginationfunction";
 import "../../../antdstyle.css";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleAddUnitModal } from "../../../../services/modals/modals";
+import AddUnitModal from "../../../../components/Modals/configurations/unitModals/addUnitModals";
+import { useGetUnitsQuery } from "../../../../services/configurations/codeConfig/getCodesQueries";
+import Loader from "../../../UIinterface/Loader";
+import { getUnits } from "../../../../services/configurations/codeConfig/units/getUnits";
 
 const Units = () => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      dept_name: "Information Technology",
-      unit_name: "App Development",
-      unit_code: "UNI-0021",
-    },
-  ]);
+  const dispatch = useDispatch();
+  const { data: units, loading: unitsLoading } = useSelector(
+    (state) => state.getUnitsReducer
+  );
   useEffect(() => {
     if ($(".select").length > 0) {
       $(".select").select2({
@@ -25,36 +27,42 @@ const Units = () => {
     }
   });
 
+  useEffect(() => {
+    dispatch(getUnits());
+  }, []);
+
   const columns = [
     {
-      title: "Department Name",
-      dataIndex: "dept_name",
+      title: "Unit Code",
+      dataIndex: "unitCode",
       render: (text, record) => <h2 className="table-avatar">{text}</h2>,
       sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Unit Name",
-      dataIndex: "unit_name",
+      dataIndex: "unitName",
       render: (text, record) => <h2 className="table-avatar">{text}</h2>,
       sorter: (a, b) => a.name.length - b.name.length,
     },
     {
-      title: "Unit Code",
-      dataIndex: "unit_code",
+      title: "Description",
+      dataIndex: "unitDescription",
+      render: (text, record) => (
+        <h2 className="table-avatar">
+          {text ? text : "No description provided"}
+        </h2>
+      ),
+      sorter: (a, b) => a.employee_id.length - b.employee_id.length,
+    },
+    {
+      title: "Department Code",
+      dataIndex: "departmentCode",
       sorter: (a, b) => a.employee_id.length - b.employee_id.length,
     },
     {
       title: "Action",
       render: (text, record) => (
         <div className="">
-          <a
-            className="btn btn-sm btn-outline-secondary m-r-10"
-            href="#"
-            data-toggle="modal"
-            data-target="#edit_unit"
-          >
-            <i className="fa fa-pencil m-r-5" /> Edit
-          </a>
           <a
             className="btn btn-sm btn-outline-danger m-r-10"
             href="#"
@@ -87,8 +95,7 @@ const Units = () => {
               <a
                 href="#"
                 className="btn add-btn"
-                data-toggle="modal"
-                data-target="#add_client"
+                onClick={() => dispatch(toggleAddUnitModal())}
               >
                 <i className="fa fa-plus" /> Add New Unit
               </a>
@@ -123,17 +130,18 @@ const Units = () => {
               <Table
                 className="table-striped"
                 pagination={{
-                  total: data.length,
+                  total: units?.length,
                   showTotal: (total, range) =>
                     `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                   showSizeChanger: true,
                   onShowSizeChange: onShowSizeChange,
                   itemRender: itemRender,
                 }}
+                loading={{ indicator: <Loader />, spinning: unitsLoading }}
                 style={{ overflowX: "auto" }}
                 columns={columns}
                 // bordered
-                dataSource={data}
+                dataSource={units}
                 rowKey={(record) => record.id}
                 onChange={console.log("change")}
               />
@@ -143,62 +151,7 @@ const Units = () => {
       </div>
       {/* /Page Content */}
 
-      {/* Add Unit Modal */}
-      <div id="add_client" className="modal custom-modal fade" role="dialog">
-        <div
-          className="modal-dialog modal-dialog-centered modal-lg"
-          role="document"
-        >
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Add New Unit</h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <form>
-                <div class="d-flex align-items-center justify-content-center">
-                  <div className="col-lg-4">
-                    <label className="col-form-label">
-                      Department Name<span className="text-danger">*</span>
-                    </label>
-                    <select className="select">
-                      <option>Choose a Department</option>
-                      <option value={1}>Information Technology</option>
-                      <option value={2}>Brands and Comms</option>
-                    </select>
-                  </div>
-
-                  <div className="col-lg-4">
-                    <label className="col-form-label">
-                      Unit Name<span className="text-danger">*</span>
-                    </label>
-                    <input className="form-control" type="text" />
-                  </div>
-
-                  <div className="col-lg-4">
-                    <label className="col-form-label">
-                      Unit Code<span className="text-danger">*</span>
-                    </label>
-                    <input className="form-control" type="text" />
-                  </div>
-                </div>
-
-                <div className="submit-section">
-                  <button className="btn btn-primary submit-btn">Submit</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* /Add Unit Modal */}
+      <AddUnitModal />
 
       {/* Edit Unit Modal */}
       <div id="edit_unit" className="modal custom-modal fade" role="dialog">

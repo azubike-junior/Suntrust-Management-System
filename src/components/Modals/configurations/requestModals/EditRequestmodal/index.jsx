@@ -25,8 +25,6 @@ export default function EditRequestModal({ requestDetail }) {
 
   const { data: requestTypes } = useGetRequestTypesQuery();
 
-  const hello = requestDetail.description;
-
   const dispatch = useDispatch();
 
   const {

@@ -32,7 +32,6 @@ export const updateVendor = createAsyncThunk(
             }
           }
         );
-
         return response.data;
       }
       return response.data;

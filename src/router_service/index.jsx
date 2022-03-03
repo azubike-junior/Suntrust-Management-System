@@ -27,11 +27,16 @@ import Employee from "../MainPage/Employees/Employees";
 
 //ExpenseManagement
 import ExpenseManagement from "../MainPage/ExpenseManagement/index";
+import PerformanceManagement from "../MainPage/PerformanceManagement";
 
 export default [
   {
     path: "expenseManagement",
     component: ExpenseManagement,
+  },
+  {
+    path: "performanceManagement",
+    component: PerformanceManagement,
   },
   {
     path: "main",

@@ -11,7 +11,13 @@ const initialState = {
   openDeleteRequest: false,
   openDeleteDocument: false,
   openAddDocument: false,
-  openEditDocument: false
+  openEditDocument: false,
+  openAddDivision: false,
+  openAddBranch: false,
+  openAddDepartment: false,
+  openAddUnit: false,
+  openAddStaff: false,
+  openEditBranch: false,
 };
 
 const modalSlice = createSlice({
@@ -48,6 +54,24 @@ const modalSlice = createSlice({
     toggleEditDocumentModal: (state) => {
       state.openEditDocument = !state.openEditDocument;
     },
+    toggleAddDivisionModal: (state) => {
+      state.openAddDivision = !state.openAddDivision;
+    },
+    toggleAddBranchModal: (state) => {
+      state.openAddBranch = !state.openAddBranch;
+    },
+    toggleAddDepartmentModal: (state) => {
+      state.openAddDepartment = !state.openAddDepartment;
+    },
+    toggleAddUnitModal: (state) => {
+      state.openAddUnit = !state.openAddUnit;
+    },
+    toggleAddStaffModal: (state) => {
+      state.openAddStaff = !state.openAddStaff;
+    },
+    toggleEditBranchModal: (state) => {
+      state.openEditBranch = !state.openEditBranch;
+    },
   },
 });
 
@@ -61,6 +85,12 @@ export const {
   toggleEditRequestModal,
   toggleAddDocumentModal,
   toggleEditDocumentModal,
-  toggleDeleteDocumentModal
+  toggleDeleteDocumentModal,
+  toggleAddBranchModal,
+  toggleAddDivisionModal,
+  toggleAddUnitModal,
+  toggleAddDepartmentModal,
+  toggleAddStaffModal,
+  toggleEditBranchModal
 } = modalSlice.actions;
 export default modalSlice.reducer;

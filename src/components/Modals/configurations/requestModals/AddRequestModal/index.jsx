@@ -86,6 +86,7 @@ export default function AddRequestModal() {
                   className="col-md-6"
                   selectArray={requestTypes}
                   required
+                  request
                   type="text"
                   errors={errors?.requestType}
                 />

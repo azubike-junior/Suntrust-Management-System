@@ -171,7 +171,7 @@ const Vendors_List = () => {
               <Table
                 className="table-striped"
                 pagination={{
-                  total: vendorsData,
+                  total: vendorsData === 0 ? [] : vendorsData,
                   showTotal: (total, range) =>
                     `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                   showSizeChanger: true,

@@ -7,6 +7,7 @@ export default function InputField({
   type,
   label,
   value,
+  disabled,
   className,
   errors,
   register,
@@ -22,6 +23,7 @@ export default function InputField({
           {required && <span className="text-danger">*</span>}
         </label>
         <input
+          disabled={disabled}
           {...register(name, {
             required,
             pattern,
@@ -55,6 +57,8 @@ export function SelectField({
   selectArray,
   minLength,
   maxLength,
+  request,
+  region,
 }) {
   return (
     <div className={className}>
@@ -79,13 +83,23 @@ export function SelectField({
           defaultValue={value}
           type={type}
         >
-          {selectArray?.map((_item) => {
-            return (
-              <option key={_item?.requestId} value={_item?.requestId}>
-                {_item?.requestName}
-              </option>
-            );
-          })}
+          {request &&
+            selectArray?.map((_item) => {
+              return (
+                <option key={_item?.requestId} value={_item?.requestId}>
+                  {_item?.requestName}
+                </option>
+              );
+            })}
+
+          {region &&
+            selectArray?.map((_item) => {
+              return (
+                <option key={_item?.requestId} value={_item?.requestId}>
+                  {_item?.requestName}
+                </option>
+              );
+            })}
         </select>
       </div>
     </div>

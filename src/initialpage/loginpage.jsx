@@ -10,8 +10,6 @@ import {Applogo} from '../Entryfile/imagepath.jsx'
 const Loginpage = () => {
      
       return (
-         
-         
          <>
            <Helmet>
                <title>Login - HRMS Admin Template</title>

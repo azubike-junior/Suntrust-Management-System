@@ -24,7 +24,7 @@ import Requests from "./Configurations/requests";
 import Documents from "./Configurations/documentType";
 import Branches from "./Configurations/CodeConfig/branches";
 import Departments from "./Configurations/CodeConfig/departments";
-import Regions from "./Configurations/CodeConfig/regions";
+import Divisions from "./Configurations/CodeConfig/divisions";
 import Staffs from "./Configurations/CodeConfig/staffs";
 import Units from "./Configurations/CodeConfig/units";
 
@@ -41,7 +41,7 @@ const ExpenseManagementRoute = ({ match }) => (
     <Route path={`${match.url}/config/document_type`} component={Documents} />
     <Route path={`${match.url}/config/branches`} component={Branches} />
     <Route path={`${match.url}/config/departments`} component={Departments} />
-    <Route path={`${match.url}/config/regions`} component={Regions} />
+    <Route path={`${match.url}/config/divisions`} component={Divisions} />
     <Route path={`${match.url}/config/staffs`} component={Staffs} />
     <Route path={`${match.url}/config/units`} component={Units} />
 

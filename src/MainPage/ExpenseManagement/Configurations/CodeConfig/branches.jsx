@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-// import { Avatar_07 } from "../../Entryfile/imagepath";
-
 import { Table } from "antd";
 import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../../paginationfunction";
 import "../../../antdstyle.css";
+import AddBranchModal from "../../../../components/Modals/configurations/branchModals/addBranchModal";
+import {
+  toggleAddBranchModal,
+  toggleEditBranchModal,
+} from "../../../../services/modals/modals";
+import { useDispatch, useSelector } from "react-redux";
+import { useGetBranchesQuery } from "../../../../services/configurations/codeConfig/getCodesQueries";
+import Loader from "../../../UIinterface/Loader";
+import { getBranches } from "../../../../services/configurations/codeConfig/branches/getBranches";
+import EditBranchModal from "../../../../components/Modals/configurations/branchModals/editBranchModal";
 
 const Branches = () => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      reg_name: "Region 1",
-      bra_name: "Lagos Office",
-      bra_code: "BRA-0021",
-    },
-  ]);
+  const dispatch = useDispatch();
+  const [branchDetail, setBranchDetail] = useState({});
+  const { data: branches, loading: branchLoading } = useSelector(
+    (state) => state.getBranchesReducer
+  );
+
   useEffect(() => {
     if ($(".select").length > 0) {
       $(".select").select2({
@@ -26,22 +32,26 @@ const Branches = () => {
     }
   });
 
+  useEffect(() => {
+    dispatch(getBranches());
+  }, []);
+
   const columns = [
     {
-      title: "Region Name",
-      dataIndex: "reg_name",
+      title: "Branch Code",
+      dataIndex: "branchCode",
       render: (text, record) => <h2 className="table-avatar">{text}</h2>,
       sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Branch Name",
-      dataIndex: "bra_name",
+      dataIndex: "branchName",
       render: (text, record) => <h2 className="table-avatar">{text}</h2>,
       sorter: (a, b) => a.name.length - b.name.length,
     },
     {
-      title: "Branch Code",
-      dataIndex: "bra_code",
+      title: "Branch Address",
+      dataIndex: "branchAddress",
       sorter: (a, b) => a.employee_id.length - b.employee_id.length,
     },
     {
@@ -50,9 +60,12 @@ const Branches = () => {
         <div className="">
           <a
             className="btn btn-sm btn-outline-secondary m-r-10"
-            href="#"
-            data-toggle="modal"
-            data-target="#edit_client"
+            onClick={() => {
+              console.log(">>>>>>>text", record);
+
+              setBranchDetail(text);
+              dispatch(toggleEditBranchModal());
+            }}
           >
             <i className="fa fa-pencil m-r-5" /> Edit
           </a>
@@ -88,8 +101,7 @@ const Branches = () => {
               <a
                 href="#"
                 className="btn add-btn"
-                data-toggle="modal"
-                data-target="#add_client"
+                onClick={() => dispatch(toggleAddBranchModal())}
               >
                 <i className="fa fa-plus" /> Add New Branch
               </a>
@@ -124,17 +136,18 @@ const Branches = () => {
               <Table
                 className="table-striped"
                 pagination={{
-                  total: data.length,
+                  total: branches?.length,
                   showTotal: (total, range) =>
                     `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                   showSizeChanger: true,
                   onShowSizeChange: onShowSizeChange,
                   itemRender: itemRender,
                 }}
+                loading={{ indicator: <Loader />, spinning: branchLoading }}
                 style={{ overflowX: "auto" }}
                 columns={columns}
                 // bordered
-                dataSource={data}
+                dataSource={branches}
                 rowKey={(record) => record.id}
                 onChange={console.log("change")}
               />
@@ -144,120 +157,9 @@ const Branches = () => {
       </div>
       {/* /Page Content */}
 
-      {/* Add Branch Modal */}
-      <div id="add_client" className="modal custom-modal fade" role="dialog">
-        <div
-          className="modal-dialog modal-dialog-centered modal-lg"
-          role="document"
-        >
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Add New Branch</h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <form>
-                <div class="d-flex align-items-center justify-content-center">
-                  <div className="col-lg-4">
-                    <label className="col-form-label">
-                      Region Name<span className="text-danger">*</span>
-                    </label>
-                    <select className="select">
-                      <option>Choose a Region</option>
-                      <option value={1}>Region 1</option>
-                      <option value={2}>Region 2</option>
-                    </select>
-                  </div>
+      <AddBranchModal />
 
-                  <div className="col-lg-4">
-                    <label className="col-form-label">
-                      Branch Name<span className="text-danger">*</span>
-                    </label>
-                    <input className="form-control" type="text" />
-                  </div>
-
-                  <div className="col-lg-4">
-                    <label className="col-form-label">
-                      Branch Code<span className="text-danger">*</span>
-                    </label>
-                    <input className="form-control" type="text" />
-                  </div>
-                </div>
-
-                <div className="submit-section">
-                  <button className="btn btn-primary submit-btn">Submit</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* /Add Branch Modal */}
-
-      {/* Edit Branch Modal */}
-      <div id="edit_client" className="modal custom-modal fade" role="dialog">
-        <div
-          className="modal-dialog modal-dialog-centered modal-lg"
-          role="document"
-        >
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Edit Branch</h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-
-            <div className="modal-body">
-              <form>
-                <div class="d-flex align-items-center justify-content-center">
-                  <div className="col-lg-4">
-                    <label className="col-form-label">
-                      Region Name<span className="text-danger">*</span>
-                    </label>
-                    <select className="select">
-                      <option>Choose a Region</option>
-                      <option value={1}>Region 1</option>
-                      <option value={2}>Region 2</option>
-                    </select>
-                  </div>
-
-                  <div className="col-lg-4">
-                    <label className="col-form-label">
-                      Branch Name<span className="text-danger">*</span>
-                    </label>
-                    <input className="form-control" type="text" />
-                  </div>
-
-                  <div className="col-lg-4">
-                    <label className="col-form-label">
-                      Branch Code<span className="text-danger">*</span>
-                    </label>
-                    <input className="form-control" type="text" />
-                  </div>
-                </div>
-
-                <div className="submit-section">
-                  <button className="btn btn-primary submit-btn">Submit</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* /Edit Branch Modal */}
+      <EditBranchModal branchDetail={branchDetail} />
 
       {/* Delete Branch Modal */}
       <div className="modal custom-modal fade" id="delete_client" role="dialog">

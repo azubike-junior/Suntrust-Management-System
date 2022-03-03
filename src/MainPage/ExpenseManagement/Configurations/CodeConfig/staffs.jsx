@@ -7,8 +7,12 @@ import { Table } from "antd";
 import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../../paginationfunction";
 import "../../../antdstyle.css";
+import AddStaffModal from "../../../../components/Modals/configurations/staffModals/addStaffModal";
+import { useDispatch } from 'react-redux';
+import { toggleAddStaffModal } from "../../../../services/modals/modals";
 
 const Staff = () => {
+  const dispatch = useDispatch()
   const [data, setData] = useState([
     {
       id: 1,
@@ -81,8 +85,7 @@ const Staff = () => {
               <a
                 href="#"
                 className="btn add-btn"
-                data-toggle="modal"
-                data-target="#add_client"
+                onClick={() => dispatch(toggleAddStaffModal())}
               >
                 <i className="fa fa-plus" /> Add New Staff
               </a>
@@ -137,8 +140,10 @@ const Staff = () => {
       </div>
       {/* /Page Content */}
 
+      <AddStaffModal/>
+
       {/* Add Unit Modal */}
-      <div id="add_client" className="modal custom-modal fade" role="dialog">
+      {/* <div id="add_client" className="modal custom-modal fade" role="dialog">
         <div
           className="modal-dialog modal-dialog-centered modal-lg"
           role="document"
@@ -158,17 +163,61 @@ const Staff = () => {
             <div className="modal-body">
               <form>
                 <div class="d-flex align-items-center justify-content-center">
-                  <div className="col-lg-6">
+                  <div className="col-lg-4">
                     <label className="col-form-label">
-                      Unit Name<span className="text-danger">*</span>
+                      Region<span className="text-danger">*</span>
                     </label>
                     <select className="select">
-                      <option>Choose a Unit</option>
-                      <option value={1}>App Development</option>
-                      <option value={2}>Core Banking</option>
+                      <option>Choose a Department</option>
+                      <option value={1}>Information Technology</option>
+                      <option value={2}>Brands and Comms</option>
                     </select>
                   </div>
 
+                  <div className="col-lg-4">
+                    <label className="col-form-label">
+                      Branch<span className="text-danger">*</span>
+                    </label>
+                    <select className="select">
+                      <option>Choose a Department</option>
+                      <option value={1}>Information Technology</option>
+                      <option value={2}>Brands and Comms</option>
+                    </select>
+                  </div>
+
+                  <div className="col-lg-4">
+                    <label className="col-form-label">
+                      Department<span className="text-danger">*</span>
+                    </label>
+                    <select className="select">
+                      <option>Choose a Department</option>
+                      <option value={1}>Information Technology</option>
+                      <option value={2}>Brands and Comms</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-center">
+                  <div className="col-lg-4">
+                    <label className="col-form-label">
+                      Unit<span className="text-danger">*</span>
+                    </label>
+                    <input className="form-control" type="text" />
+                  </div>
+
+                  <div className="col-lg-4">
+                    <label className="col-form-label">
+                      Staff ID<span className="text-danger">*</span>
+                    </label>
+                    <input className="form-control" type="text" />
+                  </div>
+                  <div className="col-lg-4">
+                    <label className="col-form-label">
+                      Staff Name<span className="text-danger">*</span>
+                    </label>
+                    <input className="form-control" type="text" />
+                  </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-center">
                   <div className="col-lg-6">
                     <label className="col-form-label">
                       Staff Code<span className="text-danger">*</span>
@@ -184,7 +233,7 @@ const Staff = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
       {/* /Add Unit Modal */}
 
       {/* Edit Unit Modal */}

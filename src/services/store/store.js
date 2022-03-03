@@ -10,11 +10,26 @@ import getDocumentsReducer from "../configurations/documents/getDocuments";
 import addDocumentReducer from "../configurations/documents/addDocument";
 import modalReducer from "../modals/modals";
 import { getRequestTypes } from "../configurations/requests/getRequestTypes";
-import getRegionsReducer from "../configurations/codeConfig/regions/getRegions";
+import addDivisionsReducer from "../configurations/codeConfig/divisions/addDivisions";
+import getDivisionsReducer from "../configurations/codeConfig/divisions/getDivisions";
+import getBranchesReducer from "./../configurations/codeConfig/branches/getBranches";
+import addBranchReducer from "./../configurations/codeConfig/branches/addBranch";
+import getDepartmentsReducer from "./../configurations/codeConfig/depts/getDepartments";
+import addDepartmentReducer from "./../configurations/codeConfig/depts/addDepartment";
+import getUnitsReducer from "./../configurations/codeConfig/units/getUnits";
+import addUnitReducer from "./../configurations/codeConfig/units/addUnit";
+import editBranchReducer from "./../configurations/codeConfig/branches/editBranch";
+
+import {
+  getCodeConfigQuery,
+  getCodesQueries,
+} from "../configurations/codeConfig/getCodesQueries";
 
 export const store = configureStore({
   reducer: {
     [getRequestTypes.reducerPath]: getRequestTypes.reducer,
+    [getCodesQueries.reducerPath]: getCodesQueries.reducer,
+    [getCodeConfigQuery.reducerPath]: getCodeConfigQuery.reducer,
     getVendorsReducer,
     addVendorReducer,
     modalReducer,
@@ -24,9 +39,20 @@ export const store = configureStore({
     getRequestsReducer,
     getDocumentsReducer,
     addDocumentReducer,
-    getRegionsReducer
+    addDivisionsReducer,
+    getDivisionsReducer,
+    getBranchesReducer,
+    addBranchReducer,
+    getDepartmentsReducer,
+    addDepartmentReducer,
+    getUnitsReducer,
+    addUnitReducer,
+    editBranchReducer,
   },
-  // middleware: (gdm) => gdm().concat(openAccountApi.middleware),
+  middleware: (gdm) =>
+    gdm({
+      serializableCheck: false,
+    }),
   devTools: true,
 });
 
