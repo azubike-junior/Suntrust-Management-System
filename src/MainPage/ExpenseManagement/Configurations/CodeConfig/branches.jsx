@@ -8,13 +8,13 @@ import "../../../antdstyle.css";
 import AddBranchModal from "../../../../components/Modals/configurations/branchModals/addBranchModal";
 import {
   toggleAddBranchModal,
-  toggleEditBranchModal,
+  toggleUpdateBranchModal,
 } from "../../../../services/modals/modals";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetBranchesQuery } from "../../../../services/configurations/codeConfig/getCodesQueries";
 import Loader from "../../../UIinterface/Loader";
 import { getBranches } from "../../../../services/configurations/codeConfig/branches/getBranches";
-import EditBranchModal from "../../../../components/Modals/configurations/branchModals/editBranchModal";
+import EditBranchModal from "../../../../components/Modals/configurations/branchModals/updateBranchModal";
 
 const Branches = () => {
   const dispatch = useDispatch();
@@ -61,22 +61,20 @@ const Branches = () => {
           <a
             className="btn btn-sm btn-outline-secondary m-r-10"
             onClick={() => {
-              console.log(">>>>>>>text", record);
-
               setBranchDetail(text);
-              dispatch(toggleEditBranchModal());
+              dispatch(toggleUpdateBranchModal());
             }}
           >
             <i className="fa fa-pencil m-r-5" /> Edit
           </a>
-          <a
+          {/* <a
             className="btn btn-sm btn-outline-danger m-r-10"
             href="#"
             data-toggle="modal"
             data-target="#delete_client"
           >
             <i className="fa fa-trash-o m-r-5" /> Delete
-          </a>
+          </a> */}
         </div>
       ),
     },

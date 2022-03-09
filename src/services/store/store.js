@@ -18,7 +18,9 @@ import getDepartmentsReducer from "./../configurations/codeConfig/depts/getDepar
 import addDepartmentReducer from "./../configurations/codeConfig/depts/addDepartment";
 import getUnitsReducer from "./../configurations/codeConfig/units/getUnits";
 import addUnitReducer from "./../configurations/codeConfig/units/addUnit";
-import editBranchReducer from "./../configurations/codeConfig/branches/editBranch";
+import updateBranchReducer from "../configurations/codeConfig/branches/updateBranch";
+import updateUnitReducer from "./../configurations/codeConfig/units/updateUnit";
+import updateDivisionReducer from "./../configurations/codeConfig/divisions/updateDivision";
 
 import {
   getCodeConfigQuery,
@@ -47,7 +49,9 @@ export const store = configureStore({
     addDepartmentReducer,
     getUnitsReducer,
     addUnitReducer,
-    editBranchReducer,
+    updateBranchReducer,
+    updateUnitReducer,
+    updateDivisionReducer,
   },
   middleware: (gdm) =>
     gdm({

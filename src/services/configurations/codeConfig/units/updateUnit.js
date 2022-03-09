@@ -3,8 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { codeConfigUrl, configUrl } from "../../../../utils/helper";
-import { toggleAddDepartmentModal } from "../../../modals/modals";
-import { getDepartments } from "./getDepartments";
+import { toggleUpdateUnitModal } from "../../../modals/modals";
+import { getUnits } from "./getUnits";
 
 const initialState = {
   error: "",
@@ -14,33 +14,35 @@ const initialState = {
   isSuccessful: false,
 };
 
-export const addDepartment = createAsyncThunk(
-  "addDepartment",
-  async ({ data, dispatch, reset }, { rejectWithValue }) => {
+export const updateUnit = createAsyncThunk(
+  "editUnit",
+  async ({ id, editData, dispatch, reset }, { rejectWithValue }) => {
+    console.log(id, editData);
+
     try {
-      const response = await axios.post(
-        `${codeConfigUrl}/CreateNewDepartment`,
-        data
+      const response = await axios.patch(
+        `${codeConfigUrl}/UpdateUnit/${id}`,
+        editData
       );
       if (response.data.responseCode === "96") {
         Swal.fire({
           icon: "error",
           title: "Something went wrong",
-          text: "Department already Exists",
-          allowOutsideClick: false
+          text: "Unit already Exists",
+          allowOutsideClick: false,
         });
       }
       if (response.data.responseCode === "00") {
         Swal.fire({
-          title: "Department has been added",
+          title: "Unit has been Updated",
           text: "Successful!",
           icon: "success",
           allowOutsideClick: false,
         }).then((result) => {
           if (result.isConfirmed) {
-            dispatch(toggleAddDepartmentModal());
-            dispatch(getDepartments());
-            reset();
+            dispatch(getUnits());
+            dispatch(toggleUpdateUnitModal());
+            reset()
           }
         });
         return response.data;
@@ -52,25 +54,25 @@ export const addDepartment = createAsyncThunk(
   }
 );
 
-const addDepartmentSlice = createSlice({
-  name: "Department",
+const updateUnitSlice = createSlice({
+  name: "Units",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(addDepartment.rejected, (state, action) => {
+    builder.addCase(updateUnit.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(addDepartment.fulfilled, (state, action) => {
+    builder.addCase(updateUnit.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(addDepartment.pending, (state, action) => {
+    builder.addCase(updateUnit.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -78,4 +80,4 @@ const addDepartmentSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default addDepartmentSlice.reducer;
+export default updateUnitSlice.reducer;

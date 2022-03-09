@@ -8,11 +8,16 @@ import "../../../antdstyle.css";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../../../UIinterface/Loader";
 import AddDivisionModal from "../../../../components/Modals/configurations/divisionModals/AddDivisionModal";
-import { toggleAddDivisionModal } from "../../../../services/modals/modals";
+import {
+  toggleAddDivisionModal,
+  toggleUpdateDivisionModal,
+} from "../../../../services/modals/modals";
 import { getDivision } from "../../../../services/configurations/codeConfig/divisions/getDivisions";
+import UpdateDivisionModal from "../../../../components/Modals/configurations/divisionModals/UpdateDivisionModal";
 
 const Divisions = () => {
   const dispatch = useDispatch();
+  const [divisionDetail, setDivisionDetail] = useState({});
 
   const { data: divisions, loading: divisionsLoading } = useSelector(
     (state) => state.getDivisionsReducer
@@ -48,12 +53,14 @@ const Divisions = () => {
       render: (text, record) => (
         <div className="">
           <a
-            className="btn btn-sm btn-outline-danger m-r-10"
+            className="btn btn-sm btn-outline-secondary m-r-10"
             href="#"
-            data-toggle="modal"
-            data-target="#delete_client"
+            onClick={() => {
+              setDivisionDetail(text);
+              dispatch(toggleUpdateDivisionModal());
+            }}
           >
-            <i className="fa fa-trash-o m-r-5" /> Delete
+            <i className="fa fa-pencil m-r-5" /> Edit
           </a>
         </div>
       ),
@@ -135,6 +142,8 @@ const Divisions = () => {
       {/* /Page Content */}
 
       <AddDivisionModal />
+
+      <UpdateDivisionModal divisionDetail={divisionDetail}/>
 
       {/* Delete Region Modal */}
       <div className="modal custom-modal fade" id="delete_client" role="dialog">

@@ -12,6 +12,7 @@ import {
 } from "../../../../../services/configurations/codeConfig/getCodesQueries";
 import { addUnit } from "../../../../../services/configurations/codeConfig/units/addUnit";
 import { toggleAddUnitModal } from "../../../../../services/modals/modals";
+import { classNames } from "../../../../../utils/classNames";
 import { getValues } from "../../../../../utils/helper";
 import Loader from "./../../../../../MainPage/UIinterface/Loader/index";
 import { getDepartments } from "./../../../../../services/configurations/codeConfig/depts/getDepartments";
@@ -19,7 +20,7 @@ import { getDepartments } from "./../../../../../services/configurations/codeCon
 export default function AddUnitModal() {
   const dispatch = useDispatch();
   const { openAddUnit } = useSelector((state) => state.modalReducer);
-  const [departmentCode, setDepartmentCode] = useState("");
+  // const [departmentCode, setDepartmentCode] = useState("");
 
   const { data: departments } = useSelector(
     (state) => state.getDepartmentsReducer
@@ -109,17 +110,20 @@ export default function AddUnitModal() {
                     <select
                       name="departmentCode"
                       {...register("departmentCode", { required: true })}
-                      onChange={(e) => setDepartmentCode(e.target.value)}
-                      className="form-control"
+                      // onChange={(e) => setDepartmentCode(e.target.value)}
+                       className={classNames(
+                        errors?.departmentCode ? "error-class" : "",
+                        "form-control"
+                      )}
                     >
-                      {getValues(departments, { departmentCode: "" })?.map(
+                      {getValues(departments, { departmentCode: "", departmentName:"Choose a Department" })?.map(
                         (department) => {
                           return (
                             <option
                               key={department.departmentId}
                               value={department.departmentCode}
                             >
-                              {department.departmentCode}
+                              {department.departmentName}
                             </option>
                           );
                         }

@@ -3,8 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { codeConfigUrl, configUrl } from "../../../../utils/helper";
-import { toggleAddBranchModal } from "../../../modals/modals";
-import { getBranches } from "./getBranches";
+import { toggleUpdateDepartmentModal } from "../../../modals/modals";
+import { getDepartments } from './getDepartments';
 
 const initialState = {
   error: "",
@@ -14,32 +14,36 @@ const initialState = {
   isSuccessful: false,
 };
 
-export const editBranch = createAsyncThunk(
-  "editBranch",
-  async ({id, editData, dispatch, reset }, { rejectWithValue }) => {
+export const updateDepartment = createAsyncThunk(
+  "editDepartment",
+  async ({ id, editData, dispatch, reset }, { rejectWithValue }) => {
     console.log(id, editData);
+
     try {
-      const response = await axios.post(
-        `${codeConfigUrl}/UpdateBranch/${id}`,
+      const response = await axios.patch(
+        `${codeConfigUrl}/UpdateDepartment/${id}`,
         editData
       );
       if (response.data.responseCode === "96") {
         Swal.fire({
           icon: "error",
           title: "Something went wrong",
-          text: "Branch already Exists",
+          text: "Department already Exists",
+          allowOutsideClick: false,
         });
       }
       if (response.data.responseCode === "00") {
-        Swal.fire("Branch has been Updated", "Successful!", "success").then(
-          (result) => {
-            if (result.isConfirmed) {
-              dispatch(toggleAddBranchModal());
-              dispatch(getBranches());
-              reset();
-            }
+        Swal.fire({
+          title: "Department has been Updated",
+          text: "Successful!",
+          icon: "success",
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            dispatch(getDepartments());
+            dispatch(toggleUpdateDepartmentModal());
           }
-        );
+        });
         return response.data;
       }
       return response.data;
@@ -49,25 +53,25 @@ export const editBranch = createAsyncThunk(
   }
 );
 
-const editBranchSlice = createSlice({
-  name: "Branches",
+const updateDepartmentSlice = createSlice({
+  name: "Departments",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(editBranch.rejected, (state, action) => {
+    builder.addCase(updateDepartment.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(editBranch.fulfilled, (state, action) => {
+    builder.addCase(updateDepartment.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(editBranch.pending, (state, action) => {
+    builder.addCase(updateDepartment.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -75,4 +79,4 @@ const editBranchSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default editBranchSlice.reducer;
+export default updateDepartmentSlice.reducer;

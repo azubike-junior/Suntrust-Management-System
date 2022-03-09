@@ -17,7 +17,10 @@ const initialState = {
   openAddDepartment: false,
   openAddUnit: false,
   openAddStaff: false,
-  openEditBranch: false,
+  openUpdateBranch: false,
+  openUpdateDepartment: false,
+  openUpdateUnit: false,
+  openUpdateDivision: false,
 };
 
 const modalSlice = createSlice({
@@ -69,8 +72,17 @@ const modalSlice = createSlice({
     toggleAddStaffModal: (state) => {
       state.openAddStaff = !state.openAddStaff;
     },
-    toggleEditBranchModal: (state) => {
-      state.openEditBranch = !state.openEditBranch;
+    toggleUpdateBranchModal: (state) => {
+      state.openUpdateBranch = !state.openUpdateBranch;
+    },
+    toggleUpdateDepartmentModal: (state) => {
+      state.openUpdateDepartment = !state.openUpdateDepartment;
+    },
+    toggleUpdateUnitModal: (state) => {
+      state.openUpdateUnit = !state.openUpdateUnit;
+    },
+    toggleUpdateDivisionModal: (state) => {
+      state.openUpdateDivision = !state.openUpdateDivision;
     },
   },
 });
@@ -91,6 +103,9 @@ export const {
   toggleAddUnitModal,
   toggleAddDepartmentModal,
   toggleAddStaffModal,
-  toggleEditBranchModal
+  toggleUpdateBranchModal,
+  toggleUpdateDepartmentModal,
+  toggleUpdateUnitModal,
+  toggleUpdateDivisionModal,
 } = modalSlice.actions;
 export default modalSlice.reducer;

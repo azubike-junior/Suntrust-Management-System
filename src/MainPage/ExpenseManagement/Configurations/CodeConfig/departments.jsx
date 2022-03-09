@@ -9,13 +9,15 @@ import { itemRender, onShowSizeChange } from "../../../paginationfunction";
 import "../../../antdstyle.css";
 import AddDepartmentModal from "../../../../components/Modals/configurations/departmentModals/addDepartmentModal";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleAddDepartmentModal } from "../../../../services/modals/modals";
-import { useGetDepartmentsQuery } from "../../../../services/configurations/codeConfig/getCodesQueries";
+import { toggleAddDepartmentModal, toggleUpdateDepartmentModal } from "../../../../services/modals/modals";
 import Loader from "../../../UIinterface/Loader";
 import { getDepartments } from './../../../../services/configurations/codeConfig/depts/getDepartments';
+import UpdateDepartmentModal from "../../../../components/Modals/configurations/departmentModals/updateDepartmentModal";
 
 const Departments = () => {
   const dispatch = useDispatch();
+  const [departmentDetail, setDepartmentDetail] = useState({});
+
 
   const { data: departments, loading: departmentsLoading } = useSelector(
     (state) => state.getDepartmentsReducer
@@ -51,22 +53,24 @@ const Departments = () => {
       title: "Action",
       render: (text, record) => (
         <div className="">
-          {/* <a
+          <a
             className="btn btn-sm btn-outline-secondary m-r-10"
             href="#"
-            data-toggle="modal"
-            data-target="#edit_client"
+            onClick={() => {
+              setDepartmentDetail(text)
+              dispatch(toggleUpdateDepartmentModal())
+            }}
           >
             <i className="fa fa-pencil m-r-5" /> Edit
-          </a> */}
-          <a
+          </a>
+          {/* <a
             className="btn btn-sm btn-outline-danger m-r-10"
             href="#"
             data-toggle="modal"
             data-target="#delete_client"
           >
             <i className="fa fa-trash-o m-r-5" /> Delete
-          </a>
+          </a> */}
         </div>
       ),
     },
@@ -148,6 +152,8 @@ const Departments = () => {
       {/* /Page Content */}
 
       <AddDepartmentModal />
+
+      <UpdateDepartmentModal departmentDetail={departmentDetail}/>
 
       {/* Edit Department Modal */}
       <div id="edit_client" className="modal custom-modal fade" role="dialog">
