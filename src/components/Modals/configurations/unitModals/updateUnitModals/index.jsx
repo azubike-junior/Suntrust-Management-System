@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import InputField from "../../../../../MainPage/UIinterface/Forms/InputField/Index";
 import { toggleUpdateUnitModal } from "../../../../../services/modals/modals";
-import { getValues } from "../../../../../utils/helper";
+import { addSelect } from "../../../../../utils/helper";
 import { updateUnit } from "./../../../../../services/configurations/codeConfig/units/updateUnit";
 import { classNames } from "./../../../../../utils/classNames";
 
@@ -122,7 +122,7 @@ export default function UpdateUnitModal({ unitDetail }) {
                         "form-control"
                       )}
                     >
-                      {getValues(departments, {
+                      {addSelect(departments, {
                         departmentCode: "",
                         departmentName: "Choose a Department",
                       })?.map((department) => {

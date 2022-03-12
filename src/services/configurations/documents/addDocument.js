@@ -4,7 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { configUrl } from "../../../utils/helper";
 import { toggleAddDocumentModal } from "../../modals/modals";
-import getDocuments from "./getDocuments";
+import { getDocuments } from "./getDocuments";
 
 const initialState = {
   error: "",
@@ -28,8 +28,8 @@ export const addDocument = createAsyncThunk(
         Swal.fire("New Document has been added", "Successful!", "success").then(
           (result) => {
             if (result.isConfirmed) {
-              dispatch(toggleAddDocumentModal());
               dispatch(getDocuments());
+              dispatch(toggleAddDocumentModal());
             }
           }
         );

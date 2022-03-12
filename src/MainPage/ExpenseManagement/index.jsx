@@ -10,12 +10,12 @@ import Expenses from "./Expenses";
 // import Tickets from "./tickets";
 // import TicketView from "./ticketview";
 // import MyRequests from "./myrequests";
-import ExpenseReports from "./ExportReports";
+import ApproveExpense from "./ApproveExpense";
 import PersonnelConfiguration from "./PersonnelConfig";
 import PersonnelSetup from "./personnelSetup";
 // import ApproversPage from "./approversPage_Snr";
 import ExpenseDetails from "./ExpenseDetail";
-import InitiatorPage from "./InitiatorPage";
+// import InitiatorPage from "./InitiatorPage";
 // import ApprovedInitExpenseRequest from "./approved_init_expense_requests";
 // import ExpenseDetails from "./ExpenseDetail/index";
 // import ExpenseConfigRoute from "./Configurations";
@@ -27,6 +27,7 @@ import Departments from "./Configurations/CodeConfig/departments";
 import Divisions from "./Configurations/CodeConfig/divisions";
 import Staffs from "./Configurations/CodeConfig/staffs";
 import Units from "./Configurations/CodeConfig/units";
+import CompleteJobOrder from "./CompleteJobOrder/index";
 
 const ExpenseManagementRoute = ({ match }) => (
   <Switch>
@@ -50,7 +51,7 @@ const ExpenseManagementRoute = ({ match }) => (
     <Route path={`${match.url}/tickets`} component={Tickets} />
     <Route path={`${match.url}/ticket-view`} component={TicketView} />
     <Route path={`${match.url}/myrequests`} component={MyRequests} /> */}
-    <Route path={`${match.url}/expenseReports`} component={ExpenseReports} />
+    <Route path={`${match.url}/approveExpense`} component={ApproveExpense} />
     <Route
       path={`${match.url}/personnelconfig`}
       component={PersonnelConfiguration}
@@ -58,13 +59,17 @@ const ExpenseManagementRoute = ({ match }) => (
     <Route path={`${match.url}/personnelSetup`} component={PersonnelSetup} />
     {/* <Route path={`${match.url}/approversPage_Snr`} component={ApproversPage} /> */}
     <Route
-      path={`${match.url}/expenseDetails/:id`}
+      path={`${match.url}/expenseDetails/:referenceId`}
       component={ExpenseDetails}
     />
     <Route
+      path={`${match.url}/completeJobOrder`}
+      component={CompleteJobOrder}
+    />
+    {/* <Route
       path={`${match.url}/expenseDetails/initiator`}
       component={InitiatorPage}
-    />
+    /> */}
     {/* <Route
       path={`${match.url}/approved_init_expense_requests`}
       component={ApprovedInitExpenseRequest}

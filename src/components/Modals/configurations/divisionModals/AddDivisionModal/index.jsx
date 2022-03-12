@@ -11,7 +11,7 @@ import {
   useGetRegionsQuery,
 } from "../../../../../services/configurations/codeConfig/getCodesQueries";
 import { toggleAddDivisionModal } from "../../../../../services/modals/modals";
-import { getValues } from "../../../../../utils/helper";
+import { addSelect } from "../../../../../utils/helper";
 import Loader from "./../../../../../MainPage/UIinterface/Loader/index";
 import { addDivision } from './../../../../../services/configurations/codeConfig/divisions/addDivisions';
 

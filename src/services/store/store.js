@@ -21,6 +21,13 @@ import addUnitReducer from "./../configurations/codeConfig/units/addUnit";
 import updateBranchReducer from "../configurations/codeConfig/branches/updateBranch";
 import updateUnitReducer from "./../configurations/codeConfig/units/updateUnit";
 import updateDivisionReducer from "./../configurations/codeConfig/divisions/updateDivision";
+import deleteRequestReducer from "./../configurations/requests/deleteRequest";
+import editRequestReducer from "./../configurations/requests/editRequest";
+import getAllExpenseByStaffReducer from "./../Expense/getAllExpenseByStaffId";
+import submitExpenseReducer from "./../Expense/submitExpense";
+import getAllExpenseByApproverReducer from "./../Expense/getAllExpenseByApprover";
+import deleteExpenseReducer from "./../Expense/deleteExpenseByReference";
+import getExpenseByReferenceReducer from "./../Expense/getExpenseByReferenceId";
 
 import {
   getCodeConfigQuery,
@@ -29,6 +36,7 @@ import {
 
 export const store = configureStore({
   reducer: {
+    getAllExpenseByStaffReducer,
     [getRequestTypes.reducerPath]: getRequestTypes.reducer,
     [getCodesQueries.reducerPath]: getCodesQueries.reducer,
     [getCodeConfigQuery.reducerPath]: getCodeConfigQuery.reducer,
@@ -39,6 +47,7 @@ export const store = configureStore({
     updateVendorReducer,
     addRequestReducer,
     getRequestsReducer,
+    editRequestReducer,
     getDocumentsReducer,
     addDocumentReducer,
     addDivisionsReducer,
@@ -52,6 +61,11 @@ export const store = configureStore({
     updateBranchReducer,
     updateUnitReducer,
     updateDivisionReducer,
+    deleteRequestReducer,
+    submitExpenseReducer,
+    getAllExpenseByApproverReducer,
+    deleteExpenseReducer,
+    getExpenseByReferenceReducer
   },
   middleware: (gdm) =>
     gdm({

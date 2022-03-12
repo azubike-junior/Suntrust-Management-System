@@ -7,6 +7,15 @@ export const getCodesQueries = createApi({
     baseUrl: `${configUrl}/`,
   }),
   endpoints: (build) => ({
+    getVendors: build.query({
+      query: () => `GetAllVendors`,
+    }),
+    getDocumentTypes: build.query({
+      query: () => `GetDocumentTypes`,
+    }),
+    getExpenseRequest: build.query({
+      query: () => `GetAllExpenseRequest`,
+    }),
     getRegions: build.query({
       query: () => `GetAllRegions`,
     }),
@@ -55,6 +64,9 @@ export const getCodeConfigQuery = createApi({
     getDivisions: build.query({
       query: () => `GetAllDivision`,
     }),
+    getStaffs: build.query({
+      query: () => `GetAllStaff`,
+    }),
   }),
 });
 
@@ -65,6 +77,9 @@ export const {
   useGetStaffByBranchQuery,
   useGetStaffByStaffIdQuery,
   useGetUnitByDepartmentIdQuery,
+  useGetDocumentTypesQuery,
+  useGetExpenseRequestQuery,
+  useGetVendorsQuery,
 } = getCodesQueries;
 
 export const {
@@ -72,4 +87,5 @@ export const {
   useGetDepartmentsQuery,
   useGetUnitsQuery,
   useGetDivisionsQuery,
+  useGetStaffsQuery,
 } = getCodeConfigQuery;

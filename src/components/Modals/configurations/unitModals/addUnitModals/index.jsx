@@ -13,7 +13,7 @@ import {
 import { addUnit } from "../../../../../services/configurations/codeConfig/units/addUnit";
 import { toggleAddUnitModal } from "../../../../../services/modals/modals";
 import { classNames } from "../../../../../utils/classNames";
-import { getValues } from "../../../../../utils/helper";
+import { addSelect } from "../../../../../utils/helper";
 import Loader from "./../../../../../MainPage/UIinterface/Loader/index";
 import { getDepartments } from "./../../../../../services/configurations/codeConfig/depts/getDepartments";
 
@@ -110,13 +110,12 @@ export default function AddUnitModal() {
                     <select
                       name="departmentCode"
                       {...register("departmentCode", { required: true })}
-                      // onChange={(e) => setDepartmentCode(e.target.value)}
                        className={classNames(
                         errors?.departmentCode ? "error-class" : "",
                         "form-control"
                       )}
                     >
-                      {getValues(departments, { departmentCode: "", departmentName:"Choose a Department" })?.map(
+                      {addSelect(departments, { departmentCode: "", departmentName:"Choose a Department" })?.map(
                         (department) => {
                           return (
                             <option

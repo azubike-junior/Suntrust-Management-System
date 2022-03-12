@@ -1,32 +1,24 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import InputField, {
-  SelectField,
-} from "../../../../../MainPage/UIinterface/Forms/InputField/Index";
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleDeleteRequestModal } from "../../../../../services/modals/modals";
-import { useGetRequestTypesQuery } from "../../../../../services/configurations/requests/getRequestTypes";
-import { deleteRequest } from "../../../../../services/configurations/requests/deleteRequest";
+import { toggleDeleteExpenseModal } from "../../../../services/modals/modals";
+import { deleteExpenseByReference } from "../../../../services/Expense/deleteExpenseByReference";
 
-export default function DeleteRequestModal({ requestDetail }) {
-  const { openDeleteRequest } = useSelector((state) => state.modalReducer);
-  const { loading: addRequestLoader } = useSelector(
-    (state) => state.addRequestReducer
-  );
-
+export default function DeleteExpenseModal({ referenceId }) {
+  const { openDeleteExpense } = useSelector((state) => state.modalReducer);
   const dispatch = useDispatch();
 
-  const requestId = requestDetail.expenseRequestId;
+  console.log(">>>>>", referenceId);
 
   return (
-    <Modal show={openDeleteRequest} centered backdrop="static" keyboard={false}>
+    <Modal show={openDeleteExpense} centered backdrop="static" keyboard={false}>
       <div className="modal-90w  modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-body">
             <div className="form-header">
-              <h3>Delete Request</h3>
-              <p>Are you sure want to delete?</p>
+              <h3>Delete Expense</h3>
+              <p>Are you sure want to Delete this Expense?</p>
             </div>
             <div className="modal-btn delete-action">
               <div className="row">
@@ -34,7 +26,9 @@ export default function DeleteRequestModal({ requestDetail }) {
                   <a
                     className="btn btn-primary continue-btn"
                     onClick={() => {
-                      dispatch(deleteRequest({ requestId, dispatch }));
+                      dispatch(
+                        deleteExpenseByReference({ referenceId, dispatch })
+                      );
                     }}
                   >
                     Delete
@@ -42,7 +36,7 @@ export default function DeleteRequestModal({ requestDetail }) {
                 </div>
                 <div className="col-6">
                   <a
-                    onClick={() => dispatch(toggleDeleteRequestModal())}
+                    onClick={() => dispatch(toggleDeleteExpenseModal())}
                     className="btn btn-primary cancel-btn"
                   >
                     Cancel

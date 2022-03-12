@@ -1,10 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
-import Swal from "sweetalert2";
-import { configUrl } from "../../../utils/helper";
-import { toggleDeleteRequestModal } from "../../modals/modals";
-import { getRequests } from "./getRequests";
+import { expenseUrl } from "../../utils/helper";
+import { toggleDeleteExpenseModal } from "../modals/modals";
+import { getAllExpenseByStaff } from "./getAllExpenseByStaffId";
 
 const initialState = {
   error: "",
@@ -14,18 +13,20 @@ const initialState = {
   isSuccessful: false,
 };
 
-export const deleteRequest = createAsyncThunk(
-  "deleteRequest",
+export const deleteExpenseByReference = createAsyncThunk(
+  "expense/deleteExpense",
   async (data, { rejectWithValue }) => {
-    console.log(">>>>>>>>Data", data);
-    const { requestId, dispatch } = data;
+    const { referenceId, dispatch } = data;
+    console.log(">>>>>>>>>>dleteeede", referenceId, dispatch);
+
     try {
       const response = await axios.delete(
-        `${configUrl}/DeleteExpenseRequest/id?Id=${requestId}`
+        `${expenseUrl}/DeleteExpenseByReference/id?reference=7eGZVPIEQtJIwrCs`
       );
+      console.log(">>>>>>response", response);
       if (response.data.responseCode === "00") {
-        dispatch(getRequests());
-        dispatch(toggleDeleteRequestModal());
+        dispatch(getAllExpenseByStaff({ id: 330 }));
+        dispatch(toggleDeleteExpenseModal());
         return response.data;
       }
       return response.data;
@@ -35,26 +36,25 @@ export const deleteRequest = createAsyncThunk(
   }
 );
 
-const deleteRequestSlice = createSlice({
-  name: "deleteRequest",
+const deleteExpenseSlice = createSlice({
+  name: "expense/deleteExpense",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(deleteRequest.rejected, (state, action) => {
+    builder.addCase(deleteExpenseByReference.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(deleteRequest.fulfilled, (state, action) => {
-      // dispatch(getVendors());
+    builder.addCase(deleteExpenseByReference.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(deleteRequest.pending, (state, action) => {
+    builder.addCase(deleteExpenseByReference.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -62,4 +62,4 @@ const deleteRequestSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default deleteRequestSlice.reducer;
+export default deleteExpenseSlice.reducer;

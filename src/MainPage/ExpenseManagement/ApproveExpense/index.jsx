@@ -6,14 +6,25 @@ import { Table } from "antd";
 import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../paginationfunction";
 import "../../antdstyle.css";
+import { getAllExpenseByApprover } from "./../../../services/Expense/getAllExpenseByApprover";
+import { useDispatch, useSelector } from "react-redux";
+import Loader from "../../UIinterface/Loader";
 
-const ApproversPage = () => {
+const ApproveExpense = () => {
   const [status, setStatus] = useState("pending");
+  const dispatch = useDispatch();
+
+  const { data: approverExpenses, loading: approverExpensesLoading } =
+    useSelector((state) => state.getAllExpenseByApproverReducer);
 
   const handleChange = (e) => {
     const value = e.target.value;
     return setStatus(value);
   };
+
+  useEffect(() => {
+    dispatch(getAllExpenseByApprover({ status, id: "012" }));
+  }, [status]);
 
   const [data, setData] = useState([
     {
@@ -48,36 +59,40 @@ const ApproversPage = () => {
   // Table displayed on Expense Page
   const columns = [
     {
-      title: "Request ID",
-      dataIndex: "req_id",
+      title: "Request Type",
+      dataIndex: "requestTypeName",
       sorter: (a, b) => a.mobile.length - b.mobile.length,
     },
     {
+      title: "Requestor Name",
+      dataIndex: "requestorName",
+      sorter: (a, b) => a.employee_id.length - b.employee_id.length,
+    },
+    {
+      title: "Vendor Name",
+      dataIndex: "vendorName",
+      sorter: (a, b) => a.employee_id.length - b.employee_id.length,
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      sorter: (a, b) => a.employee_id.length - b.employee_id.length,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      sorter: (a, b) => a.employee_id.length - b.employee_id.length,
+    },
+    {
       title: "Request Date",
-      dataIndex: "req_date",
-      render: (text, record) => <h2 className="table-avatar">{text}</h2>,
-      sorter: (a, b) => a.name.length - b.name.length,
-    },
-    {
-      title: "Staff ID",
-      dataIndex: "staff_id",
-      sorter: (a, b) => a.employee_id.length - b.employee_id.length,
-    },
-    {
-      title: "Description",
-      dataIndex: "desc_txt",
-      sorter: (a, b) => a.employee_id.length - b.employee_id.length,
-    },
-    {
-      title: "Amount Requested",
-      dataIndex: "amount_req",
+      dataIndex: "dateCreated",
       sorter: (a, b) => a.employee_id.length - b.employee_id.length,
     },
     {
       title: "",
       render: (text, record) => (
         <Link
-          to="/app/expenseManagement/expenseDetails/844048"
+          to={`/app/expenseManagement/expenseDetails/${text.referenceId}`}
           className="btn btn-sm btn-outline-primary m-r-10"
         >
           <i className="fa fa-eye m-r-5" />
@@ -124,7 +139,7 @@ const ApproversPage = () => {
         <h3 className="page-title">
           {status === "approved" && "Approved"}{" "}
           {status === "rejected" && "Rejected"}{" "}
-          {status === "pending" && "Pending"} Requests
+          {status === "pending" && "Pending"} Requestsss
         </h3>
 
         {/* Search Filter */}
@@ -153,17 +168,21 @@ const ApproversPage = () => {
               <Table
                 className="table-striped"
                 pagination={{
-                  total: data.length,
+                  total: approverExpenses.length,
                   showTotal: (total, range) =>
                     `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                   showSizeChanger: true,
                   onShowSizeChange: onShowSizeChange,
                   itemRender: itemRender,
                 }}
+                loading={{
+                  indicator: <Loader />,
+                  spinning: approverExpensesLoading,
+                }}
                 style={{ overflowX: "auto" }}
                 columns={columns}
                 // bordered
-                dataSource={data}
+                dataSource={approverExpenses}
                 rowKey={(record) => record.id}
                 // onChange={console.log("change")}
               />
@@ -179,4 +198,4 @@ const ApproversPage = () => {
   );
 };
 
-export default ApproversPage;
+export default ApproveExpense;

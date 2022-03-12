@@ -17,11 +17,11 @@ const Sidebar = (props) => {
               </li>
 
               <li className={pathname.includes('clients') ? "active" :""}> 
-                <Link to = "/app/expenseManagement/expenses"><i className="la la-money-bill"/><span>Expenses</span></Link>
+                <Link to = "/app/expenseManagement/expenses"><i className="la la-money-bill"/><span>Raise Expenses</span></Link>
                 {/* <Link to = "/app/employees/myrequests"><i className="la la-hand-holding-usd"/> <span>My Requests</span></Link> */}
-                <Link to = "/app/expenseManagement/expenseReports"><i className="la la-hand-holding-usd"/> <span>Expense Reports</span></Link>
-                <Link to = "/app/employees/approversPage_Init"><i className="la la-hand-holding-usd"/> <span>Approvers Page - Init</span></Link>
-                <Link to = "/app/expenseManagement/personnelconfig"><i className="la la-users-cog"/> <span>Personnel Configuration</span></Link>
+                <Link to = "/app/expenseManagement/approveExpense"><i className="la la-hand-holding-usd"/> <span>Approve Expense</span></Link>
+                <Link to = "/app/expenseManagement/completeJobOrder"><i className="la la-hand-holding-usd"/> <span>Complete Job Order</span></Link>
+                <Link to = "/app/expenseManagement/personnelconfig"><i className="la la-users-cog"/> <span>Approver Configuration</span></Link>
               </li>
 
               <li className="submenu">

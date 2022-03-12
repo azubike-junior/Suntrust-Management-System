@@ -8,7 +8,7 @@ import InputField, {
 } from "../../../../../MainPage/UIinterface/Forms/InputField/Index";
 import { useGetDivisionsQuery } from "../../../../../services/configurations/codeConfig/getCodesQueries";
 import { toggleAddDepartmentModal } from "../../../../../services/modals/modals";
-import { getValues } from "../../../../../utils/helper";
+import { addSelect } from "../../../../../utils/helper";
 import Loader from "./../../../../../MainPage/UIinterface/Loader/index";
 import { addDepartment } from "./../../../../../services/configurations/codeConfig/depts/addDepartment";
 
@@ -90,7 +90,7 @@ export default function AddDepartmentModal() {
                       {...register("divisionCode", { required: true })}
                       className="form-control"
                     >
-                      {getValues(divisions, {
+                      {addSelect(divisions, {
                         divisionCode: "",
                       })?.map((division) => {
                         return (

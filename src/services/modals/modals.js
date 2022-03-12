@@ -21,6 +21,8 @@ const initialState = {
   openUpdateDepartment: false,
   openUpdateUnit: false,
   openUpdateDivision: false,
+  openAddExpense: false,
+  openDeleteExpense: false
 };
 
 const modalSlice = createSlice({
@@ -84,6 +86,12 @@ const modalSlice = createSlice({
     toggleUpdateDivisionModal: (state) => {
       state.openUpdateDivision = !state.openUpdateDivision;
     },
+    toggleAddExpenseModal: (state) => {
+      state.openAddExpense = !state.openAddExpense;
+    },
+    toggleDeleteExpenseModal: (state) => {
+      state.openDeleteExpense = !state.openDeleteExpense;
+    },
   },
 });
 
@@ -107,5 +115,7 @@ export const {
   toggleUpdateDepartmentModal,
   toggleUpdateUnitModal,
   toggleUpdateDivisionModal,
+  toggleAddExpenseModal,
+  toggleDeleteExpenseModal
 } = modalSlice.actions;
 export default modalSlice.reducer;

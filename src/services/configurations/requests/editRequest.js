@@ -16,11 +16,11 @@ const initialState = {
 export const editRequest = createAsyncThunk(
   "editRequest",
   async (data, { rejectWithValue }) => {
-    const { requestData, dispatch } = data;
+    const { id, requestData, dispatch } = data;
     console.log(">>>>>data", data, dispatch);
     try {
-      const response = await axios.post(
-        `${configUrl}/AddExpenseRequest`,
+      const response = await axios.put(
+        `${configUrl}/UpdateExpenseRequest/id?Id=${id}`,
         requestData
       );
       if (response.data.responseCode === "00") {

@@ -6,9 +6,11 @@ import InputField, {
 import Modal from "react-bootstrap/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleEditRequestModal } from "../../../../../services/modals/modals";
-import date from "../../../../../utils/helper";
+import date, { addSelect, percentages } from "../../../../../utils/helper";
 import Loader from "../../../../../MainPage/UIinterface/Loader";
 import { useGetRequestTypesQuery } from "../../../../../services/configurations/requests/getRequestTypes";
+import { classNames } from "../../../../../utils/classNames";
+import { editRequest } from "../../../../../services/configurations/requests/editRequest";
 
 export default function EditRequestModal({ requestDetail }) {
   const { openEditRequest } = useSelector((state) => state.modalReducer);
@@ -17,11 +19,6 @@ export default function EditRequestModal({ requestDetail }) {
   );
 
   const ledger = requestDetail?.ledger?.split("/");
-
-  //   console.log("====================================");
-  //   console.log(requestDetail);
-  //   console.log(ledger);
-  //   console.log("====================================");
 
   const { data: requestTypes } = useGetRequestTypesQuery();
 
@@ -35,9 +32,6 @@ export default function EditRequestModal({ requestDetail }) {
     formState: { errors },
   } = useForm({
     mode: "onTouched",
-    defaultValues: {
-      // description: hello,
-    },
   });
 
   const editRequestHandler = (data, e) => {
@@ -49,12 +43,16 @@ export default function EditRequestModal({ requestDetail }) {
         customerNumber,
         currencyCode,
         ledgerCode,
+        directCredit,
+        paymentTerms,
         subAccount,
       } = data;
 
       const requestData = {
         description,
         requestType,
+        paymentTerms,
+        directCredit,
         ledger:
           branchCode +
           "/" +
@@ -66,8 +64,9 @@ export default function EditRequestModal({ requestDetail }) {
           "/" +
           subAccount,
       };
-      const newData = { requestData, dispatch };
-      //   dispatch(addRequest(newData));
+      dispatch(
+        editRequest({ id: requestDetail.expenseRequestId, requestData, dispatch })
+      );
     }
   };
 
@@ -105,8 +104,12 @@ export default function EditRequestModal({ requestDetail }) {
                   name="requestType"
                   label="Request Type"
                   className="col-md-6"
-                  selectArray={requestTypes}
+                  selectArray={addSelect(requestTypes, {
+                    requestId: "",
+                    requestName: "Select Request",
+                  })}
                   required
+                  request
                   type="text"
                   errors={errors?.requestType}
                 />
@@ -121,6 +124,53 @@ export default function EditRequestModal({ requestDetail }) {
                   type="text"
                   errors={errors?.description}
                 />
+
+                <div className="col-lg-6">
+                  <div className="form-group">
+                    <label className="col-form-label">
+                      Direct Credit<span className="text-danger">*</span>
+                    </label>
+                    <select
+                      name="directCredit"
+                      {...register("directCredit", { required: true })}
+                      className={classNames(
+                        errors?.directCredit ? "error-class" : "",
+                        "form-control"
+                      )}
+                    >
+                      <option value="">Select Credit Option </option>,
+                      <option value={true}>Yes</option>,
+                      <option value={false}>No</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="col-lg-6">
+                  <div className="form-group">
+                    <label className="col-form-label">
+                      Payment Terms<span className="text-danger">*</span>
+                    </label>
+                    <select
+                      name="paymentTerms"
+                      {...register("paymentTerms", { required: true })}
+                      className={classNames(
+                        errors?.paymentTerms ? "error-class" : "",
+                        "form-control"
+                      )}
+                    >
+                      {percentages.map((percentage) => {
+                        return (
+                          <option
+                            key={percentage.value}
+                            value={percentage.value}
+                          >
+                            {percentage.percent}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                </div>
 
                 <div className="col-md-12 m-t-20 d-flex">
                   <InputField

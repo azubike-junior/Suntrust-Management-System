@@ -37,7 +37,6 @@ const getRequestsSlice = createSlice({
       state.isSuccessful = false;
     });
     builder.addCase(getRequests.fulfilled, (state, action) => {
-      // dispatch(getVendors());
       state.loading = true;
       state.data = action.payload;
       state.loading = false;

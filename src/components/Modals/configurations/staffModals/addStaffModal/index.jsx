@@ -15,7 +15,7 @@ import {
   toggleAddStaffModal,
   toggleAddUnitModal,
 } from "../../../../../services/modals/modals";
-import { getValues } from "../../../../../utils/helper";
+import { addSelect } from "../../../../../utils/helper";
 import Loader from "./../../../../../MainPage/UIinterface/Loader/index";
 
 export default function AddStaffModal() {
@@ -73,19 +73,19 @@ export default function AddStaffModal() {
     defaultValues: {},
   });
 
-  const allRegions = getValues(regions, {
+  const allRegions = addSelect(regions, {
     regionId: "",
     regionName: "Choose a region",
   });
-  const allBranches = getValues(branches, {
+  const allBranches = addSelect(branches, {
     branchId: "",
     branchName: "Choose a branch",
   });
-  const allDepartments = getValues(departments, {
+  const allDepartments = addSelect(departments, {
     departmentId: "",
     departmentName: "Choose a department",
   });
-  const allUnits = getValues(units, {
+  const allUnits = addSelect(units, {
     unitId: "",
     unitName: "Choose a unit",
   });

@@ -24,7 +24,6 @@ export default function EditVendorModal({ editData }) {
    * todo: change hard coded parameters in newData
    */
   const editVendorHandler = (data) => {
-    console.log(editData);
     const { registeredBy, ...rest } = data;
     if (data) {
       const newData = {

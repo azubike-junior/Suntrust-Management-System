@@ -27,6 +27,10 @@ const Requests = () => {
     (state) => state.getRequestsReducer
   );
 
+  console.log('====================================');
+  console.log(requestsData);
+  console.log('====================================');
+
   useEffect(() => {
     if ($(".select").length > 0) {
       $(".select").select2({
@@ -65,6 +69,11 @@ const Requests = () => {
       sorter: (a, b) => a.employee_id.length - b.employee_id.length,
     },
     {
+      title: "Payment Terms",
+      dataIndex: "paymentTerms",
+      sorter: (a, b) => a.mobile.length - b.mobile.length,
+    },
+    {
       title: "Ledger",
       dataIndex: "ledger",
       sorter: (a, b) => a.mobile.length - b.mobile.length,
@@ -86,7 +95,10 @@ const Requests = () => {
           <a
             className="btn btn-sm btn-outline-danger m-r-10"
             href="#"
-            onClick={() => dispatch(toggleDeleteRequestModal())}
+            onClick={() => {
+              setRequestDetail(text);
+              dispatch(toggleDeleteRequestModal())
+            }}
           >
             <i className="fa fa-trash-o m-r-5" /> Delete
           </a>
@@ -185,7 +197,7 @@ const Requests = () => {
       {/* /Edit Request Modal */}
 
       {/* Delete Request Modal */}
-      <DeleteRequestModal />
+      <DeleteRequestModal requestDetail={requestDetail} />
       {/* /Delete Request Modal */}
     </div>
   );

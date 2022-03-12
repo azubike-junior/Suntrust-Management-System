@@ -7,12 +7,20 @@ import { Link, useParams } from "react-router-dom";
 import { Table } from "antd";
 import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../paginationfunction";
-import "../../antdstyle.css"
+import "../../antdstyle.css";
+import { useDispatch } from "react-redux";
+import { getExpenseByReference } from "./../../../services/Expense/getExpenseByReferenceId";
+import { useSelector } from "react-redux";
 
 const ExpenseDetails = () => {
-  const { id } = useParams();
+  const { referenceId } = useParams();
+  const dispatch = useDispatch();
 
-  console.log(">>>>>>kid", id);
+  const { data: specificExpense } = useSelector(
+    (state) => state.getExpenseByReferenceReducer
+  );
+
+  console.log(">>>>>>kid", referenceId, specificExpense);
 
   const [data, setData] = useState([
     {
@@ -52,6 +60,10 @@ const ExpenseDetails = () => {
       });
     }
   });
+
+  useEffect(() => {
+    dispatch(getExpenseByReference(referenceId));
+  }, []);
 
   // Table displayed on Expense Page
   const columns = [
@@ -178,7 +190,7 @@ const ExpenseDetails = () => {
               <h3 className="page-title">Requests</h3>
               <ul className="breadcrumb">
                 <li className="breadcrumb-item">
-                  <Link to="/app/employees/approversPage_Snr">
+                  <Link to="/app/expenseManagement/approveExpense">
                     Back to Expense Requests
                   </Link>
                 </li>
@@ -201,29 +213,41 @@ const ExpenseDetails = () => {
                       </h3>
                       <div className="d-flex m-b-10">
                         <div className="m-r-30 col-md-3">Request ID:</div>
-                        <div className="m-r-30 col-md-9">REQ-0021</div>
+                        <div className="m-r-30 col-md-9">{referenceId}</div>
                       </div>
 
                       <div className="d-flex m-b-10">
                         <div className="m-r-30 col-md-3">Request Date:</div>
-                        <div className="m-r-30 col-md-9">28/02/2022</div>
+                        <div className="m-r-30 col-md-9">
+                          {specificExpense?.dateCreated}
+                        </div>
                       </div>
 
                       <div className="d-flex m-b-10">
                         <div className="m-r-30 col-md-3">Staff ID:</div>
-                        <div className="m-r-30 col-md-9">N/A</div>
+                        <div className="m-r-30 col-md-9">
+                          {specificExpense?.initiatingStaffId}
+                        </div>
+                      </div>
+
+                      <div className="d-flex m-b-10">
+                        <div className="m-r-30 col-md-3">Staff Name:</div>
+                        <div className="m-r-30 col-md-9">
+                          {specificExpense?.initiatingStaffName}
+                        </div>
                       </div>
 
                       <div className="d-flex m-b-10">
                         <div className="m-r-30 col-md-3">Request Type:</div>
-                        <div className="m-r-30 col-md-9">Travelling</div>
+                        <div className="m-r-30 col-md-9">
+                          {specificExpense?.requestTypeName}
+                        </div>
                       </div>
 
                       <div className="d-flex m-b-10">
                         <div className="m-r-30 col-md-3">Description:</div>
                         <div className="m-r-30 col-md-9">
-                          An expense request for an Onsite repair job at Abuja
-                          Branch
+                          {specificExpense?.narration}
                         </div>
                       </div>
 

@@ -48,14 +48,6 @@ const Documents = () => {
           <a className="btn btn-sm btn-outline-secondary m-r-10" href="#">
             <i className="fa fa-pencil m-r-5" /> Edit
           </a>
-          <a
-            className="btn btn-sm btn-outline-danger m-r-10"
-            href="#"
-            data-toggle="modal"
-            data-target="#delete_client"
-          >
-            <i className="fa fa-trash-o m-r-5" /> Delete
-          </a>
         </div>
       ),
     },

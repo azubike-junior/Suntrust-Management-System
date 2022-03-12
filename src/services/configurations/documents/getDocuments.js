@@ -3,7 +3,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { configUrl } from "../../../utils/helper";
-import { closeVendorModal } from "../../modals/modals";
 
 const initialState = {
   error: "",
@@ -26,7 +25,7 @@ export const getDocuments = createAsyncThunk("getRequests", async () => {
 });
 
 const getDocumentsSlice = createSlice({
-  name: "getRequests",
+  name: "getDocumentTypes",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
