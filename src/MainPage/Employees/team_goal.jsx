@@ -11,52 +11,52 @@ import 'antd/dist/antd.css';
 import { itemRender, onShowSizeChange } from "../paginationfunction"
 import "../antdstyle.css"
 
-const Department_Goal = () => {
+const Team_Goal = () => {
     const [organizational_data, setOrganizationalData] = useState([
         {
             id: 1, category_name: "Process",
             organ_goal: "Codified and Automated Processes and Manuals",
-            depart_goal: "Ensure optimal performance on all core deliverables",
+            team_goal: "Ensure optimal performance on all core deliverables",
         },
         {
             id: 1, category_name: "Process",
             organ_goal: "Zero Governace Breaches, Regulatory Penalties and Fines",
-            depart_goal: "Ensure total compliance with regulations and internal policies",
+            team_goal: "Ensure total compliance with regulations and internal policies",
         },
         {
             id: 3, category_name: "Customer",
             organ_goal: "External Net Promoter Score (Customer Experience) > 70%",
-            depart_goal: "Maintain excellent service delivery to internal customers (regulatory enquiries, error free offer letters, credit checks, etc)",
+            team_goal: "Maintain excellent service delivery to internal customers (regulatory enquiries, error free offer letters, credit checks, etc)",
         },
         {
             id: 4, category_name: "Financial",
             organ_goal: "Total Customer Liabilities of N100 Billion",
-            depart_goal: "Drive balance sheet growth",
+            team_goal: "Drive balance sheet growth",
         },
         {
             id: 5, category_name: "Financial",
             organ_goal: "Profitability of N1 Billion",
-            depart_goal: "Minimize operational losses due to data privacy and database security breaches",
+            team_goal: "Minimize operational losses due to data privacy and database security breaches",
         },
         {
             id: 6, category_name: "Financial",
             organ_goal: "Profitability of N1 Billion",
-            depart_goal: "Achieve optimal Implementation of Opex",
+            team_goal: "Achieve optimal Implementation of Opex",
         },
         {
             id: 7, category_name: "Financial",
             organ_goal: "Profitability of N1 Billion",
-            depart_goal: "Achieve optimal Implementation of Capex",
+            team_goal: "Achieve optimal Implementation of Capex",
         },
         {
             id: 8, category_name: "Financial",
             organ_goal: "Profitability of N1 Billion",
-            depart_goal: "Drive cost savings",
+            team_goal: "Drive cost savings",
         },
         {
             id: 9, category_name: "Capacity Development",
             organ_goal: "Human Capacity Development Index  > 70%",
-            depart_goal: "Pursue self-development as well as training hours on SunTrust Academy"
+            team_goal: "Pursue self-development as well as training hours on SunTrust Academy"
         },
     ]);
 
@@ -84,8 +84,8 @@ const Department_Goal = () => {
             sorter: (a, b) => a.mobile.length - b.mobile.length,
         },
         {
-            title: 'Department Goals',
-            dataIndex: 'depart_goal',
+            title: 'Team Goals',
+            dataIndex: 'team_goal',
             sorter: (a, b) => a.mobile.length - b.mobile.length,
         },
         {
@@ -109,7 +109,7 @@ const Department_Goal = () => {
 
                 {/* Page Header */}
                 <div className=''>
-                    <h3 className="user-name m-b-10">Department Goals</h3>
+                    <h3 className="user-name m-b-10">Team Goals</h3>
                 </div>
                 {/* /Page Header */}
 
@@ -119,7 +119,7 @@ const Department_Goal = () => {
 
                         <div className="row flex-column">
                             <div className="col-lg-12 m-t-10 m-b-20">
-                                <h4 className="user-name m-t-0">Setup Department Goal</h4>
+                                <h4 className="user-name m-t-0">Setup Team Goal</h4>
                             </div>
 
                             <div className="col-lg-6 m-b-10">
@@ -145,7 +145,7 @@ const Department_Goal = () => {
                             </div>
 
                             <div className="col-lg-6 m-b-10">
-                                <div className="m-b-10">Department Goal</div>
+                                <div className="m-b-10">Team Goal</div>
                                 <div className="form-group">
                                     <textarea className="form-control" rows="3" />
                                 </div>
@@ -221,4 +221,4 @@ const Department_Goal = () => {
     );
 
 }
-export default Department_Goal;
+export default Team_Goal;

@@ -6,7 +6,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
-const Staff_Appraisal = (props) => {
+const Supervisor_Self_Appraisal = (props) => {
   const { location } = props;
   let pathname = location.pathname;
 
@@ -24,14 +24,10 @@ const Staff_Appraisal = (props) => {
           <div className="page-header">
             <div className="card">
               <div className="card-body">
-                <h4 className="card-title">Appraisals</h4>
+                <h4 className="card-title">Supervisor Self Appraisal</h4>
                 <ul className="nav nav-tabs nav-tabs-solid nav-justified">
                   <li className="nav-item">
-                    <a
-                      className="nav-link active"
-                      href="#process_tab"
-                      data-toggle="tab"
-                    >
+                    <a className="nav-link active" href="#process_tab" data-toggle="tab">
                       Process
                     </a>
                   </li>
@@ -604,7 +600,7 @@ const Staff_Appraisal = (props) => {
             <div className="form-group col-lg-12 col-md-12 col-sm-12 m-t-50 m-b-20">
               <div className="d-flex align-items-center justify-content-center">
                 <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
-                  <Link to="/app/employees/staff_Appraisal_review" className='btn btn-block btn-primary font-weight-700'>PREVIEW</Link>
+                  <Link to="/app/employees/super_self_review" className='btn btn-block btn-primary font-weight-700'>PREVIEW</Link>
                 </div>
               </div>
             </div>
@@ -617,4 +613,4 @@ const Staff_Appraisal = (props) => {
     </div>
   );
 };
-export default Staff_Appraisal;
+export default Supervisor_Self_Appraisal;
