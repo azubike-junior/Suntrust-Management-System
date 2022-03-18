@@ -23,7 +23,26 @@ export const pad = (num, size) => {
   num = num.toString();
   while (num.length < size) num = "0" + num;
   return num;
-}
+};
+
+export const getBase64 = (file) => {
+  return new Promise((resolve) => {
+    // Make new FileReader
+    let reader = new FileReader();
+
+    // Convert the file to base64 text
+    reader.readAsDataURL(file[0]);
+
+    // on reader load somthing...
+    reader.onloadend = () => {
+      // Make a fileInfo Object
+
+      // baseURL = reader.result;
+
+      resolve(reader.result);
+    };
+  });
+};
 
 export const configUrl = `http://10.11.200.97/ExpenseManagement/Configuration`;
 export const codeConfigUrl = `http://10.11.200.97/ExpenseManagement/CodeConfiguration`;
@@ -47,3 +66,101 @@ export const percentages = [
   { value: 95, percent: "95%" },
   { value: 100, percent: "100%" },
 ];
+
+// this array contains, the information of the student, the course,
+// the unit and his/her score
+
+export const studentResult = [
+  {
+    course: "GNS122",
+    unit: 2,
+    score: 99,
+  },
+  {
+    course: "MAT104",
+    unit: 3,
+    score: 20,
+  },
+  {
+    course: "SMS105",
+    unit: 3,
+    score: 62,
+  },
+  {
+    course: "AGRIC103",
+    unit: 4,
+    score: 47,
+  },
+  {
+    course: "Math100",
+    unit: 5,
+    score: 20,
+  },
+  {
+    course: "GNS143",
+    unit: 2,
+    score: 88,
+  },
+];
+
+// this is the function that calculates the cgpa
+// it takes the studentResult array above as a parameter.
+// when i mean parameter. the *studentResult* is passed into *results* in the below function
+
+export const cgpaCalculator = (results) => {
+  // assign an empty value to qualityPoint,
+  // so that it can be accessed outside the blocked scope same with the creditPoint
+  let qualityPoint;
+  let creditPoint = 0;
+
+  // you should learn the higher array
+  // functions (map, filter, foreach, find, push, pop, reduce, findIndex, every, etc)
+
+  // map modifies all the values passed into the array, then returns a new array.
+  // reduce executes a callback function on all the elements in the array, then it
+  // returns the calculation expected.
+
+  // this array function (map) checks the score of the each course and assign the points to each result
+  // moves forward to multiply the point with course unit
+
+  const totalScore = results
+    .map((result) => {
+      if (result.score >= 70) {
+        // 5 * 2
+        qualityPoint = 5 * result.unit;
+      }
+      if (result.score >= 60 && result.score <= 69) {
+        // 4 * 3 and so on
+        qualityPoint = 4 * result.unit;
+      }
+      if (result.score >= 50 && result.score <= 59) {
+        qualityPoint = 3 * result.unit;
+      }
+      if (result.score >= 45 && result.score <= 49) {
+        qualityPoint = 2 * result.unit;
+      }
+      if (result.score >= 40 && result.score <= 44) {
+        qualityPoint = 1 * result.unit;
+      }
+      if (result.score >= 0 && result.score <= 30) {
+        qualityPoint = 0 * result.unit;
+      }
+
+      // at this point it adds up all the units of the courses and assign the totalUnit
+      // to creditPoint variable
+      // [ 2 + 3 + 3 + 4 + 5 + 2] = creditPoint
+      creditPoint += result.unit;
+
+      return qualityPoint;
+    })
+    // at this point the reduce func sums up all the qualityPoint gotten from the result
+    // [10 + 0 + 12 + 8 + 0 + 10] = totalScore
+    .reduce((acc, num) => acc + num, 0);
+
+    // totalScore / creditPoint
+    // tofixed coverts it to 2 decimal point
+  return (totalScore / creditPoint).toFixed(2);
+};
+
+// this outputs the result to the console
+console.log(">>>>>CgpaCalc", cgpaCalculator(studentResult));

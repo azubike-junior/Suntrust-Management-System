@@ -5,8 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleDeleteExpenseModal } from "../../../../services/modals/modals";
 import { deleteExpenseByReference } from "../../../../services/Expense/deleteExpenseByReference";
 
-export default function DeleteExpenseModal({ referenceId }) {
+export default function DeleteExpenseModal({ expenseData }) {
   const { openDeleteExpense } = useSelector((state) => state.modalReducer);
+  const { referenceId, approvalStage } = expenseData;
   const dispatch = useDispatch();
 
   console.log(">>>>>", referenceId);

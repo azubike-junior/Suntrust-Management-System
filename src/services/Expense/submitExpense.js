@@ -16,17 +16,11 @@ const initialState = {
 
 export const submitExpense = createAsyncThunk(
   "submitExpense",
-  async ({ formData, dispatch, reset }, { rejectWithValue }) => {
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    };
+  async ({ data, dispatch, reset }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
         `${expenseUrl}/submitExpense`,
-        formData,
-        config
+        data
       );
       console.log(">>>>>response", response);
       if (response.data.responseCode === "96") {

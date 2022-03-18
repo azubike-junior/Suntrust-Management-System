@@ -9,7 +9,12 @@ import {
 } from "../../../../MainPage/paginationfunction";
 import { toggleAddExpenseModal } from "../../../../services/modals/modals";
 import { getRequests } from "./../../../../services/configurations/requests/getRequests";
-import { configUrl, addSelect, codeConfigUrl } from "../../../../utils/helper";
+import {
+  configUrl,
+  addSelect,
+  codeConfigUrl,
+  getBase64,
+} from "../../../../utils/helper";
 import { getVendors } from "../../../../services/configurations/vendors/getVendors";
 import { getDocuments } from "../../../../services/configurations/documents/getDocuments";
 import {
@@ -25,6 +30,13 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { submitExpense } from "./../../../../services/Expense/submitExpense";
 import Loader from "../../../../MainPage/UIinterface/Loader";
+import { classNames } from "../../../../utils/classNames";
+
+import {
+  FileService,
+  validateFileSize,
+  validateFileType,
+} from "../../../../utils/fileValidator";
 
 export default function AddExpenseModal() {
   const { openAddExpense } = useSelector((state) => state.modalReducer);
@@ -36,7 +48,9 @@ export default function AddExpenseModal() {
   const [selectedOption, setSelectedOption] = useState("");
   const [requestBy, setRequestBy] = useState("");
   const [vendor1, setVendor] = useState("");
-
+  const [fileType, setFileType] = useState("");
+  const [uploadDocError, setUploadDocError] = useState("");
+  const [fileBase64, setFileBase64] = useState();
   const [allDetails, setAllDetails] = useState([]);
   const [expenseName, setExpenseName] = useState("");
   const [expenseTypeId, setExpenseTypeId] = useState();
@@ -55,6 +69,10 @@ export default function AddExpenseModal() {
     setSelectedOption(selectedOption);
   };
 
+  /**
+   * this function maps the values coming from the filteredHandler,
+   * so that the asyncSelect library can recognize and display the values mapped to the interface
+   */
   const mapOptionsToValue = (options, requestBy) => {
     if (requestBy === "staff") {
       return options.map((option) => ({
@@ -82,6 +100,10 @@ export default function AddExpenseModal() {
     }
   };
 
+  /**
+   * this function filters {staffs, depts, units, branches} by value entered.
+   * it returns an array of filtered data.
+   */
   const filterHandler = (inputValue, requestBy) => {
     if (requestBy === "staff") {
       return staffs?.filter((staff) =>
@@ -107,8 +129,12 @@ export default function AddExpenseModal() {
     }
   };
 
-  const fetchSelectedStaff = (value, callback) => {
-    console.log("value from func", value);
+  /**
+   * This function fetches the data when input changes.
+   * it returns array of data
+   *
+   */
+  const fetchDataBySelectedOption = (value, callback) => {
     if (!value) {
       return callback([]);
     } else {
@@ -131,10 +157,41 @@ export default function AddExpenseModal() {
     }
   };
 
+  // const handleFiles = async (e) => {
+  //   const file = e.target.files;
+  //   setFile(file[0]);
+  // };
+
   const handleFiles = async (e) => {
     const file = e.target.files;
-    setFile(file[0]);
+    if (!file) {
+      return setUploadDocError("An image is required");
+    }
+    const validFileSize = await validateFileSize(file[0]?.size);
+
+    const validFileType = await validateFileType(
+      FileService.getFileExtension(file[0]?.name)
+    );
+    if (!validFileSize.isValid) {
+      return setUploadDocError(validFileSize.errorMessage);
+    }
+    if (!validFileType.isValid) {
+      setUploadDocError(validFileType.errorMessage);
+      return;
+    }
+    const imageUrl = URL.createObjectURL(file[0]);
+
+    // setFileUrl(imageUrl);
+    // setDoc(file[0]);
+    setFileType(file[0].type);
+    // setImageName(file[0].name);
+
+    getBase64(file).then((result) => {
+      setFileBase64(result);
+    });
   };
+
+  // console.log(">>>>>>>", fileBase64, fileType);
 
   const [modal_data, setModalData] = useState([
     {
@@ -145,6 +202,10 @@ export default function AddExpenseModal() {
     },
   ]);
 
+  /**
+   * addSelect.. add selects to the beginning of select input
+   * returns an array
+   */
   const allExpenses = addSelect(expenseRequests, {
     expenseRequestId: "",
     description: "Select Request Type",
@@ -182,8 +243,10 @@ export default function AddExpenseModal() {
   // const vendorName = vendors?.find((vendor) => vendor.id == Number(vendor1));
   // console.log(">>>>>>>vendor", vendor1, vendorName);
 
-  let details = [];
-
+  /**
+   * it populates the vendor table with the vendor data.
+   * this function increment the vendor table with data as you add.
+   */
   const handleAddRequest = (data) => {
     const {
       recommend,
@@ -202,14 +265,38 @@ export default function AddExpenseModal() {
     const expenseRequestTypeName = expenseRequestTypes?.find(
       (expense) => expense.expenseRequestId === Number(requestType)
     )?.description;
-
-    // console.log(">>>>vendorName", vendorName);
+    const documentTypeName = documentTypes?.find(
+      (document) => document.id === Number(documentType)
+    )?.documentName;
 
     setExpenseName(expenseRequestTypeName);
     setExpenseTypeId(Number(requestType));
     setNarrate(narration);
 
     const recommendBool = recommend === "true" ? true : false;
+
+    // {
+    //   "expenseRequestTypeName": "string",
+    //   "expenseRequestTypeId": 0,
+    //   "narration": "string",
+    //   "requestorId": 0,
+    //   "requestorName": "string",
+    //   "requestBy": "string",
+    //   "initiatingStaffId": "string",
+    //   "initiatingStaffName": "string",
+    //   "details": [
+    //     {
+    //       "vendorName": "string",
+    //       "vendorId": 0,
+    //       "documentTypeId": 0,
+    //       "recommend": true,
+    //       "reason": "string",
+    //       "amount": 0,
+    //       "fileExtension": "string",
+    //       "uploadedFile": "string"
+    //     }
+    //   ]
+    // }
 
     const vendorDetails = {
       vendorName,
@@ -218,63 +305,48 @@ export default function AddExpenseModal() {
       recommend: recommendBool,
       reason,
       documentTypeId: Number(documentType),
-      uploadedFile: file,
+      documentTypeName,
+      file: fileBase64,
+      fileExtension: fileType,
     };
-
-    // details.push(...details, vendorDetails);
 
     setAllDetails((prev) => [...prev, vendorDetails]);
 
+    /**
+     * resetField.... clearing fields after submission
+     * from React-Hook-Form
+     */
     resetField("reason");
     resetField("amount");
     resetField("recommend");
     resetField("vendor");
     resetField("documentType");
+  };
 
+  /**
+   * delete a vendor from a table
+   * @param {*} id
+   */
+  const deleteVendorFromTable = (id) => {
+    setAllDetails(allDetails.filter((vendor) => vendor.vendorId !== id));
+  };
 
+  /**
+   * submits the ExpenseRequest to the endpoint
+   */
+  const handleSubmitExpense = () => {
     // const formData = new FormData();
-    // formData.append("expenseRequestTypeName", expenseRequestTypeName);
-    // formData.append("expenseRequestTypeId", Number(requestType));
-    // formData.append("narration", narration);
+    // formData.append("expenseRequestTypeName", expenseName);
+    // formData.append("expenseRequestTypeId", expenseTypeId);
+    // formData.append("narration", narrate);
     // formData.append("requestorId", Number(selectedOption.value));
     // formData.append("requestorName", selectedOption.label);
     // formData.append("requestBy", requestBy);
     // formData.append("initiatingStaffId", "330");
     // formData.append("initiatingStaffName", "sean");
-    // formData.append("details", details);
+    // formData.append("details", allDetails);
 
-    // formData.append("vendorName", vendorName);
-    // formData.append("vendorId", Number(vendor));
-    // formData.append("amount", amount);
-    // formData.append("recommend", recommendBool);
-    // formData.append("reason", reason);
-    // formData.append("documentTypeId", Number(documentType));
-    // formData.append("uploadedFile", file);
-
-    // const newData = {
-    //   formData,
-    //   dispatch,
-    //   reset,
-    // };
-
-    // dispatch(submitExpense(newData));
-
-    // console.log("someData", someData);
-  };
-
-  const handleSubmitRequest = () => {
-    const formData = new FormData();
-    formData.append("expenseRequestTypeName", expenseName);
-    formData.append("expenseRequestTypeId", expenseTypeId);
-    formData.append("narration", narrate);
-    formData.append("requestorId", Number(selectedOption.value));
-    formData.append("requestorName", selectedOption.label);
-    formData.append("requestBy", requestBy);
-    formData.append("initiatingStaffId", "330");
-    formData.append("initiatingStaffName", "sean");
-    formData.append("details", allDetails);
-
-    const lastSubmit = {
+    const data = {
       expenseRequestTypeName: expenseName,
       expenseRequestTypeId: expenseTypeId,
       narration: narrate,
@@ -286,10 +358,14 @@ export default function AddExpenseModal() {
       details: allDetails,
     };
 
-    console.log(">>>>>>lastSubmit", lastSubmit);
+    console.log(">>>>>data", data);
+
+    if (!selectedOption.value) {
+      return;
+    }
 
     const newData = {
-      formData,
+      data,
       dispatch,
       reset,
     };
@@ -305,7 +381,7 @@ export default function AddExpenseModal() {
     },
     {
       title: "Document Type",
-      dataIndex: "documentTypeId",
+      dataIndex: "documentTypeName",
       sorter: (a, b) => a.employee_id.length - b.employee_id.length,
     },
     {
@@ -322,6 +398,9 @@ export default function AddExpenseModal() {
             href="#"
             data-toggle="modal"
             data-target="#delete_expense"
+            onClick={() => {
+              deleteVendorFromTable(text.vendorId);
+            }}
           >
             <i className="fa fa-trash-o" />
           </a>
@@ -330,13 +409,12 @@ export default function AddExpenseModal() {
     },
   ];
 
-  console.log(">>>>allDetails", allDetails);
-
   return (
     <Modal show={openAddExpense} centered backdrop="static" keyboard={false}>
       <div className="modal-90w modal-dialog-centered modal-lg" role="document">
         <div className="modal-content">
           <div className="modal-header">
+            {uploadDocError && <p>{uploadDocError}</p>}
             <h5 className="modal-title">Add New Expense</h5>
             <button
               type="button"
@@ -357,7 +435,10 @@ export default function AddExpenseModal() {
                     <select
                       {...register("requestType", { required: true })}
                       name="requestType"
-                      className="select"
+                      className={classNames(
+                        errors?.requestType ? "error-class" : "",
+                        "form-control"
+                      )}
                     >
                       {allExpenses?.map((expense) => {
                         return (
@@ -382,7 +463,10 @@ export default function AddExpenseModal() {
                       name="requestBy"
                       {...register("requestBy", { required: true })}
                       onChange={(e) => handleRequestBy(e)}
-                      className="custom-select"
+                      className={classNames(
+                        !requestBy ? "error-class" : "",
+                        "form-control"
+                      )}
                     >
                       <option value="">Select an Option</option>
                       <option value="department">Department</option>
@@ -395,13 +479,15 @@ export default function AddExpenseModal() {
 
                 <div className="col-lg-4">
                   {/* <div className="form-group"> */}
-                  <label className="col-form-label">Requestor Name</label>
+                  <label className="col-form-label">Type Requestor Name</label>
                   <AsyncSelect
                     cacheOptions
                     value={selectedOption}
-                    loadOptions={fetchSelectedStaff}
+                    loadOptions={fetchDataBySelectedOption}
                     defaultOptions
+                    placeholder="Type Name...."
                     onChange={handleSearchChange}
+                    className={!selectedOption.value ? "error-class" : ""}
                   />
                   {/* </div> */}
                 </div>
@@ -414,8 +500,11 @@ export default function AddExpenseModal() {
                     <textarea
                       name="narration"
                       {...register("narration", { required: true })}
-                      className="form-control"
                       rows="2"
+                      className={classNames(
+                        errors.narration && "error-class",
+                        "form-control"
+                      )}
                     />
                   </div>
                 </div>
@@ -440,8 +529,11 @@ export default function AddExpenseModal() {
                     </label>
                     <select
                       name="documentType"
-                      {...register("documentType")}
-                      className="custom-select"
+                      {...register("documentType", { required: true })}
+                      className={classNames(
+                        errors.documentType && "error-class",
+                        "form-control"
+                      )}
                     >
                       {allDocumentTypes?.map((document) => {
                         return (
@@ -461,7 +553,10 @@ export default function AddExpenseModal() {
                       name="vendor"
                       {...register("vendor", { required: true })}
                       onChange={(e) => handleVendor(e)}
-                      className="custom-select"
+                      className={classNames(
+                        errors.vendor && "error-class",
+                        "form-control"
+                      )}
                     >
                       {allVendors?.map((vendor) => {
                         return (
@@ -479,8 +574,11 @@ export default function AddExpenseModal() {
                     <label className="col-form-label">Recommend Vendor</label>
                     <select
                       name="recommend"
-                      {...register("recommend")}
-                      className="custom-select"
+                      {...register("recommend", { required: true })}
+                      className={classNames(
+                        errors?.recommend ? "error-class" : "",
+                        "form-control"
+                      )}
                     >
                       <option value="">Select an Option</option>
                       <option value={true}>Yes</option>
@@ -494,8 +592,11 @@ export default function AddExpenseModal() {
                     <label className="col-form-label">Reason</label>
                     <input
                       name="reason"
-                      {...register("reason")}
-                      className="form-control"
+                      {...register("reason", { required: true })}
+                      className={classNames(
+                        errors?.reason ? "error-class" : "",
+                        "form-control"
+                      )}
                       type="text"
                     />
                   </div>
@@ -514,7 +615,10 @@ export default function AddExpenseModal() {
                         name="amount"
                         {...register("amount", { required: true })}
                         type="number"
-                        className="form-control"
+                        className={classNames(
+                          errors.amount && "error-class",
+                          "form-control"
+                        )}
                       />
                     </div>
                   </div>
@@ -565,7 +669,7 @@ export default function AddExpenseModal() {
 
             <div className="submit-section m-b-30">
               <button
-                onClick={() => handleSubmitRequest()}
+                onClick={() => handleSubmitExpense()}
                 className="btn btn-sm btn-primary submit-btn m-r-10"
               >
                 {expenseResponseLoading ? <Loader /> : "Submit"}

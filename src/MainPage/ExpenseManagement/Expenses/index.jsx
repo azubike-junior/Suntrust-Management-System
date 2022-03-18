@@ -6,7 +6,10 @@ import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../paginationfunction";
 import "../../antdstyle.css";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleAddExpenseModal, toggleDeleteExpenseModal } from "../../../services/modals/modals";
+import {
+  toggleAddExpenseModal,
+  toggleDeleteExpenseModal,
+} from "../../../services/modals/modals";
 import AddExpenseModal from "../../../components/Modals/ExpenseModals/AddExpenseModal";
 import { getAllExpenseByStaff } from "./../../../services/Expense/getAllExpenseByStaffId";
 import Loader from "../../UIinterface/Loader";
@@ -14,11 +17,23 @@ import DeleteExpenseModal from "../../../components/Modals/ExpenseModals/DeleteE
 
 const Expenses = () => {
   const { openAddExpense } = useSelector((state) => state.modalReducer);
-  const [referenceId, setReferenceId] = useState("");
+  const [expenseData, setExpenseData] = useState({});
   const { data: staffExpenses, loading: staffExpensesLoading } = useSelector(
     (state) => state.getAllExpenseByStaffReducer
   );
-  console.log(">>>>>>>staffExpense", staffExpenses);
+
+  const approvalStageText = (text) => {
+    if (text === 1) {
+      return <p>Level One</p>;
+    }
+    if (text === 2) {
+      return <p>Level Two</p>;
+    }
+    if (text === 3) {
+      return <p>Level Three</p>;
+    } else <p>Level Four</p>;
+  };
+
   const dispatch = useDispatch();
   const [data, setData] = useState([
     {
@@ -69,6 +84,11 @@ const Expenses = () => {
       sorter: (a, b) => a.employee_id.length - b.employee_id.length,
     },
     {
+      title: "Approval Stage",
+      dataIndex: "approvalStage",
+      render: (text, record) => approvalStageText(text),
+    },
+    {
       title: "Amount",
       dataIndex: "amount",
       sorter: (a, b) => a.employee_id.length - b.employee_id.length,
@@ -90,16 +110,17 @@ const Expenses = () => {
           >
             <i className="fa fa-pencil m-r-5" /> Edit
           </a>
-          <a
+          <button
+            disabled={text.approvalStage > 1 ? true : false}
             className="btn btn-sm btn-outline-danger m-r-10"
             href="#"
             onClick={() => {
-              setReferenceId(text.referenceId)
-              dispatch(toggleDeleteExpenseModal())
+              setExpenseData(text);
+              dispatch(toggleDeleteExpenseModal());
             }}
           >
             <i className="fa fa-trash-o m-r-5" /> Delete
-          </a>
+          </button>
         </div>
       ),
     },
@@ -209,7 +230,6 @@ const Expenses = () => {
                 // bordered
                 dataSource={staffExpenses}
                 rowKey={(record) => record.id}
-               
               />
             </div>
           </div>
@@ -219,188 +239,7 @@ const Expenses = () => {
 
       <AddExpenseModal />
 
-      <DeleteExpenseModal referenceId={referenceId}/>
-
-      {/* Add Expense Modal */}
-      <div id="add_client" className="modal custom-modal fade" role="dialog">
-        <div
-          className="modal-dialog modal-dialog-centered modal-lg"
-          role="document"
-        >
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Add New Expense</h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <form>
-                <div className="row">
-                  <div className="col-md-4">
-                    <div className="form-group">
-                      <label className="col-form-label">
-                        Request Type<span className="text-danger">*</span>
-                      </label>
-                      <select className="select">
-                        <option>Choose a Request Type</option>
-                        <option value={1}>Travelling</option>
-                        <option value={2}>Staff Training</option>
-                        <option value={2}>Staff Retreat</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    <div className="form-group">
-                      <label className="col-form-label">
-                        Request By<span className="text-danger">*</span>
-                      </label>
-                      <select className="select">
-                        <option>Select an Option</option>
-                        <option value={1}>ST031</option>
-                        <option value={2}>ST032</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="col-lg-4">
-                    <div className="form-group">
-                      <label className="col-form-label">Staff ID / Name</label>
-                      <input className="form-control" type="text" />
-                    </div>
-                  </div>
-
-                  <div className="col-lg-12 m-b-10">
-                    <div className="form-group">
-                      <label className="col-form-label">
-                        Narration<span className="text-danger">*</span>
-                      </label>
-                      <textarea className="form-control" rows="2" />
-                    </div>
-                  </div>
-
-                  <div className="col-lg-12 m-b-10">
-                    <div className="form-group font-weight-700">
-                      <label className="text-center">Upload Document</label>
-                      <br />
-                      <input
-                        type="file"
-                        name="file-1[]"
-                        id="file-1"
-                        className="custom-input-file"
-                        data-multiple-caption="{count} files selected"
-                        multiple
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-md-4">
-                    <div className="form-group">
-                      <label className="col-form-label">
-                        Document Type<span className="text-danger">*</span>
-                      </label>
-                      <select className="select">
-                        <option>Choose a Document Type</option>
-                        <option value={1}>Invoice</option>
-                        <option value={2}>Flight Ticket</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="col-md-4 m-b-10">
-                    <div className="form-group">
-                      <label className="col-form-label">Vendor</label>
-                      <select className="select">
-                        <option>Select a Vendor</option>
-                        <option value={1}>Vendor 1</option>
-                        <option value={2}>Vendor 2</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="col-md-4 m-b-10">
-                    <div className="form-group">
-                      <label className="col-form-label">Recommendation</label>
-                      <select className="select">
-                        <option>Select an Option</option>
-                        <option value={1}>Yes</option>
-                        <option value={2}>No</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="col-lg-6">
-                    <div className="form-group">
-                      <label className="col-form-label">Reason</label>
-                      <input className="form-control" type="text" />
-                    </div>
-                  </div>
-
-                  <div className="col-lg-6">
-                    <div className="form-group">
-                      <label className="col-form-label">Amount Requested</label>
-                      <div className="input-group mb-3">
-                        <div className="input-group-prepend">
-                          <span className="input-group-text font-14">
-                            &#8358;
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value="50,000"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="submit-section m-b-30">
-                  <button className="btn btn-sm btn-primary submit-btn m-r-10">
-                    Add
-                  </button>
-                  <button className="btn btn-sm btn-primary submit-btn">
-                    Clear
-                  </button>
-                </div>
-
-                <div className="text-lg font-weight-light">EXPENSES ADDED</div>
-
-                <div className="row">
-                  <div className="col-md-12">
-                    <div className="table-responsive">
-                      <Table
-                        className="table-striped"
-                        pagination={{
-                          total: modal_data.length,
-                          showTotal: (total, range) =>
-                            `Showing ${range[0]} to ${range[1]} of ${total} entries`,
-                          showSizeChanger: true,
-                          onShowSizeChange: onShowSizeChange,
-                          itemRender: itemRender,
-                        }}
-                        style={{ overflowX: "auto" }}
-                        columns={modal_columns}
-                        // bordered
-                        dataSource={modal_data}
-                        rowKey={(record) => record.id}
-                        onChange={console.log("change")}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* /Add Expense Modal */}
+      <DeleteExpenseModal expenseData={expenseData} />
 
       {/* Edit Expense Modal */}
       <div id="edit_expense" className="modal custom-modal fade" role="dialog">
@@ -436,7 +275,6 @@ const Expenses = () => {
                       </select>
                     </div>
                   </div>
-
                   <div className="col-md-4">
                     <div className="form-group">
                       <label className="col-form-label">

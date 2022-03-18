@@ -1,8 +1,12 @@
+/**
+ * Signin Firebase
+ */
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
-const StaffAppraisal = (props) => {
+const Supervisor_Self_Appraisal = (props) => {
   const { location } = props;
   let pathname = location.pathname;
 
@@ -20,14 +24,10 @@ const StaffAppraisal = (props) => {
           <div className="page-header">
             <div className="card">
               <div className="card-body">
-                <h4 className="card-title">Appraisals</h4>
+                <h4 className="card-title">Supervisor Self Appraisal</h4>
                 <ul className="nav nav-tabs nav-tabs-solid nav-justified">
                   <li className="nav-item">
-                    <a
-                      className="nav-link active"
-                      href="#process_tab"
-                      data-toggle="tab"
-                    >
+                    <a className="nav-link active" href="#process_tab" data-toggle="tab">
                       Process
                     </a>
                   </li>
@@ -90,7 +90,7 @@ const StaffAppraisal = (props) => {
                               href="#unit_kpi_tab"
                               data-toggle="tab"
                             >
-                              Unit KPI
+                              Individual KPI
                             </a>
                           </li>
                         </ul>
@@ -135,128 +135,117 @@ const StaffAppraisal = (props) => {
                             </div>
                           </div>
 
-                          <div
-                            className="tab-pane show active"
-                            id="unit_kpi_tab"
-                          >
+                          <div className="tab-pane show active" id="unit_kpi_tab" >
                             <div className="row">
                               <div className="col-lg-12 d-flex border-bottom pt-2 pb-2 font-weight-bolder">
-                                <div className="col-lg-6">UNIT KPI</div>
-                                <div className="col-lg-3 text-center">
-                                  MEASURABLE TARGET (Metric)
+                                <div className="col-lg-4">KPI</div>
+                                <div className="col-lg-2 text-center">
+                                  MEASURABLE TARGET
                                 </div>
                                 <div className="col-lg-2 text-center">
-                                  WEIGHT (100%)
+                                  WEIGHT
                                 </div>
-                                <div className="col-lg-1 text-center">
-                                  SCORE
+                                <div className="col-lg-2 text-center">
+                                  APPRAISEE RATE
+                                </div>
+                                <div className="col-lg-2 text-center">
+                                  APPRAISEE RESULT
                                 </div>
                               </div>
                             </div>
 
                             <div className="row">
+
+
                               <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
+                                <div className="col-lg-4">
                                   # Self-help reports built for internal
                                   customers within a period.
                                 </div>
-                                <div className="col-lg-3 text-center">40</div>
+                                <div className="col-lg-2 text-center">40</div>
                                 <div className="col-lg-2 text-center">10</div>
-                                <div className="col-lg-1 text-center">
+                                <div className="col-lg-2 text-center">
                                   <input type="text" className="form-control" />
                                 </div>
-                              </div>
-
-                              <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  % Completion of all projects committed to for
-                                  delivery.
-                                </div>
-                                <div className="col-lg-3 text-center">90%</div>
-                                <div className="col-lg-2 text-center">15</div>
-                                <div className="col-lg-1 text-center">
-                                  <input type="text" className="form-control" />
-                                </div>
-                              </div>
-
-                              <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  % Provision of quarterly DB/CBA capacity
-                                  report.
-                                </div>
-                                <div className="col-lg-3 text-center">100%</div>
-                                <div className="col-lg-2 text-center">5</div>
-                                <div className="col-lg-1 text-center">
-                                  <input type="text" className="form-control" />
-                                </div>
-                              </div>
-
-                              <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  Maintain 95% success rate for changes in line
-                                  with IT Governance and quarterly capacity
-                                  report of DB/CBA.
-                                </div>
-                                <div className="col-lg-3 text-center">95%</div>
-                                <div className="col-lg-2 text-center">5</div>
-                                <div className="col-lg-1 text-center">
-                                  <input type="text" className="form-control" />
-                                </div>
-                              </div>
-
-                              <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  % Ensure database performance tuning / CBA
-                                  ugrade is done quarterly for improved
-                                  performance across the Bank's CBA and all
-                                  databases.
-                                </div>
-                                <div className="col-lg-3 text-center">100%</div>
                                 <div className="col-lg-2 text-center">10</div>
-                                <div className="col-lg-1 text-center">
-                                  <input type="text" className="form-control" />
-                                </div>
                               </div>
 
                               <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  % Provision of quarterly DB/CBA capacity
-                                  report.
+                                <div className="col-lg-4">
+                                  % Completion of all projects committed to for delivery
                                 </div>
-                                <div className="col-lg-3 text-center">
-                                  24hrs
-                                </div>
-                                <div className="col-lg-2 text-center">5</div>
-                                <div className="col-lg-1 text-center">
+                                <div className="col-lg-2 text-center">40</div>
+                                <div className="col-lg-2 text-center">10</div>
+                                <div className="col-lg-2 text-center">
                                   <input type="text" className="form-control" />
                                 </div>
+                                <div className="col-lg-2 text-center">10</div>
                               </div>
 
                               <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  "System Uptime % DB/CBA a ilability"
+                                <div className="col-lg-4">
+                                  % Provision of quarterly DB/CBA capacity report
                                 </div>
-                                <div className="col-lg-3 text-center">98%</div>
-                                <div className="col-lg-2 text-center">8</div>
-                                <div className="col-lg-1 text-center">
+                                <div className="col-lg-2 text-center">40</div>
+                                <div className="col-lg-2 text-center">10</div>
+                                <div className="col-lg-2 text-center">
                                   <input type="text" className="form-control" />
                                 </div>
+                                <div className="col-lg-2 text-center">10</div>
                               </div>
 
                               <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">"% Audit Rating"</div>
-                                <div className="col-lg-3 text-center">100%</div>
-                                <div className="col-lg-2 text-center">5</div>
-                                <div className="col-lg-1 text-center">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    readOnly
-                                  />
+                                <div className="col-lg-4">
+                                  Maintain 95% success rate for changes in line with IT Governance  and quarterly capacity report of DB/CBA
                                 </div>
+                                <div className="col-lg-2 text-center">40</div>
+                                <div className="col-lg-2 text-center">10</div>
+                                <div className="col-lg-2 text-center">
+                                  <input type="text" className="form-control" />
+                                </div>
+                                <div className="col-lg-2 text-center">10</div>
                               </div>
+
+                              <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
+                                <div className="col-lg-4">
+                                  Ensure database performance tuning / CBA ugrade is done quarterly for improved performance across the Bank's CBA and all databases
+                                </div>
+                                <div className="col-lg-2 text-center">40</div>
+                                <div className="col-lg-2 text-center">10</div>
+                                <div className="col-lg-2 text-center">
+                                  <input type="text" className="form-control" />
+                                </div>
+                                <div className="col-lg-2 text-center">10</div>
+                              </div>
+
+                              <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
+                                <div className="col-lg-4">
+                                  Generation of RCA within 24 hours of incident occurrence  for which root cause was determined.
+                                </div>
+                                <div className="col-lg-2 text-center">40</div>
+                                <div className="col-lg-2 text-center">10</div>
+                                <div className="col-lg-2 text-center">
+                                  <input type="text" className="form-control" />
+                                </div>
+                                <div className="col-lg-2 text-center">10</div>
+                              </div>
+
+                              <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
+                                <div className="col-lg-4">
+                                  "System Uptime. % DB/CBA availability".
+                                </div>
+                                <div className="col-lg-2 text-center">40</div>
+                                <div className="col-lg-2 text-center">10</div>
+                                <div className="col-lg-2 text-center">
+                                  <input type="text" className="form-control" />
+                                </div>
+                                <div className="col-lg-2 text-center">10</div>
+                              </div>
+
+
                             </div>
                           </div>
+
                         </div>
                       </div>
                     </div>
@@ -291,16 +280,13 @@ const StaffAppraisal = (props) => {
                               href="#cust_unit_kpi_tab"
                               data-toggle="tab"
                             >
-                              Unit KPI
+                              Individual KPI
                             </a>
                           </li>
                         </ul>
 
                         <div className="tab-content">
-                          <div
-                            className="tab-pane"
-                            id="cust_organized_goal_tab"
-                          >
+                          <div className="tab-pane" id="cust_organized_goal_tab" >
                             <div className="m-t-10 m-b-20">
                               <h4 style={{ textDecorationLine: "underline" }}>
                                 Organizational Goals
@@ -308,18 +294,13 @@ const StaffAppraisal = (props) => {
                             </div>
                             <div className="">
                               <ol>
-                                <li className="m-b-10">
-                                  External Net Promoter Score (Customer
-                                  Experience) &gt; 70%
+                                <li className="m-b-10"> External Net Promoter Score (Customer Experience) &gt; 70%
                                 </li>
                               </ol>
                             </div>
                           </div>
 
-                          <div
-                            className="tab-pane"
-                            id="cust_department_goal_tab"
-                          >
+                          <div className="tab-pane" id="cust_department_goal_tab" >
                             <div className="m-t-10 m-b-20">
                               <h4 style={{ textDecorationLine: "underline" }}>
                                 Department Goals
@@ -336,49 +317,52 @@ const StaffAppraisal = (props) => {
                             </div>
                           </div>
 
-                          <div
-                            className="tab-pane show active"
-                            id="cust_unit_kpi_tab"
-                          >
+                          <div className="tab-pane show active" id="cust_unit_kpi_tab">
                             <div className="row">
                               <div className="col-lg-12 d-flex border-bottom pt-2 pb-2 font-weight-bolder">
-                                <div className="col-lg-6">UNIT KPI</div>
-                                <div className="col-lg-3 text-center">
-                                  MEASURABLE TARGET (Metric)
+                                <div className="col-lg-4">KPI</div>
+                                <div className="col-lg-2 text-center">
+                                  MEASURABLE TARGET
                                 </div>
                                 <div className="col-lg-2 text-center">
-                                  WEIGHT (100%)
+                                  WEIGHT
                                 </div>
-                                <div className="col-lg-1 text-center">
-                                  SCORE
+                                <div className="col-lg-2 text-center">
+                                  APPRAISEE RATE
+                                </div>
+                                <div className="col-lg-2 text-center">
+                                  APPRAISEE RESULT
                                 </div>
                               </div>
                             </div>
 
                             <div className="row">
                               <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
+                                <div className="col-lg-4">
                                   % Customer satisfaction
                                 </div>
-                                <div className="col-lg-3 text-center">80%</div>
-                                <div className="col-lg-2 text-center">5</div>
-                                <div className="col-lg-1 text-center">
+                                <div className="col-lg-2 text-center">40</div>
+                                <div className="col-lg-2 text-center">10</div>
+                                <div className="col-lg-2 text-center">
                                   <input type="text" className="form-control" />
                                 </div>
+                                <div className="col-lg-2 text-center">10</div>
                               </div>
 
                               <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
+                                <div className="col-lg-4">
                                   Service Desk Time to Resolve
                                 </div>
-                                <div className="col-lg-3 text-center">8hrs</div>
-                                <div className="col-lg-2 text-center">5</div>
-                                <div className="col-lg-1 text-center">
+                                <div className="col-lg-2 text-center">40</div>
+                                <div className="col-lg-2 text-center">10</div>
+                                <div className="col-lg-2 text-center">
                                   <input type="text" className="form-control" />
                                 </div>
+                                <div className="col-lg-2 text-center">10</div>
                               </div>
                             </div>
                           </div>
+
                         </div>
                       </div>
                     </div>
@@ -390,30 +374,18 @@ const StaffAppraisal = (props) => {
                       <div className="col-lg-12">
                         <ul className="nav nav-tabs nav-tabs-bottom nav-justified">
                           <li className="nav-item">
-                            <a
-                              className="nav-link"
-                              href="#fin_organized_goal_tab"
-                              data-toggle="tab"
-                            >
+                            <a className="nav-link" href="#fin_organized_goal_tab" data-toggle="tab" >
                               Organizational Goals
                             </a>
                           </li>
                           <li className="nav-item">
-                            <a
-                              className="nav-link"
-                              href="#fin_department_goal_tab"
-                              data-toggle="tab"
-                            >
+                            <a className="nav-link" href="#fin_department_goal_tab" data-toggle="tab">
                               Department Goals
                             </a>
                           </li>
                           <li className="nav-item">
-                            <a
-                              className="nav-link active"
-                              href="#fin_unit_kpi_tab"
-                              data-toggle="tab"
-                            >
-                              Unit KPI
+                            <a className="nav-link active" href="#fin_unit_kpi_tab" data-toggle="tab">
+                              Individual KPI
                             </a>
                           </li>
                         </ul>
@@ -475,88 +447,41 @@ const StaffAppraisal = (props) => {
                             </div>
                           </div>
 
-                          <div
-                            className="tab-pane show active"
-                            id="fin_unit_kpi_tab"
-                          >
+                          <div className="tab-pane show active" id="fin_unit_kpi_tab">
                             <div className="row">
                               <div className="col-lg-12 d-flex border-bottom pt-2 pb-2 font-weight-bolder">
-                                <div className="col-lg-6">UNIT KPI</div>
-                                <div className="col-lg-3 text-center">
-                                  MEASURABLE TARGET (Metric)
+                                <div className="col-lg-4">KPI</div>
+                                <div className="col-lg-2 text-center">
+                                  MEASURABLE TARGET
                                 </div>
                                 <div className="col-lg-2 text-center">
-                                  WEIGHT (100%)
+                                  WEIGHT
                                 </div>
-                                <div className="col-lg-1 text-center">
-                                  SCORE
+                                <div className="col-lg-2 text-center">
+                                  APPRAISEE RATE
+                                </div>
+                                <div className="col-lg-2 text-center">
+                                  APPRAISEE RESULT
                                 </div>
                               </div>
                             </div>
 
                             <div className="row">
                               <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  Value of deposit target.
+                                <div className="col-lg-4">
+                                  # Self-help reports built for internal
+                                  customers within a period.
                                 </div>
-                                <div className="col-lg-3 text-center">
-                                  N150Million
+                                <div className="col-lg-2 text-center">40</div>
+                                <div className="col-lg-2 text-center">10</div>
+                                <div className="col-lg-2 text-center">
+                                  <input type="text" className="form-control" />
                                 </div>
                                 <div className="col-lg-2 text-center">10</div>
-                                <div className="col-lg-1 text-center">
-                                  <input type="text" className="form-control" />
-                                </div>
-                              </div>
-
-                              <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  Value of operational losses.
-                                </div>
-                                <div className="col-lg-3 text-center">N0</div>
-                                <div className="col-lg-2 text-center">3</div>
-                                <div className="col-lg-1 text-center">
-                                  <input type="text" className="form-control" />
-                                </div>
-                              </div>
-
-                              <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  % Implementation of OpEx budget.
-                                </div>
-                                <div className="col-lg-3 text-center">100%</div>
-                                <div className="col-lg-2 text-center">3</div>
-                                <div className="col-lg-1 text-center">
-                                  <input type="text" className="form-control" />
-                                </div>
-                              </div>
-
-                              <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  % Implementation of CapEx budget.
-                                </div>
-                                <div className="col-lg-3 text-center">
-                                  &ge;80%
-                                </div>
-                                <div className="col-lg-2 text-center">3</div>
-                                <div className="col-lg-1 text-center">
-                                  <input type="text" className="form-control" />
-                                </div>
-                              </div>
-
-                              <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  % Cost savings on Budget
-                                </div>
-                                <div className="col-lg-3 text-center">
-                                  &ge;5%
-                                </div>
-                                <div className="col-lg-2 text-center">3</div>
-                                <div className="col-lg-1 text-center">
-                                  <input type="text" className="form-control" />
-                                </div>
                               </div>
                             </div>
                           </div>
+
                         </div>
                       </div>
                     </div>
@@ -591,7 +516,7 @@ const StaffAppraisal = (props) => {
                               href="#cap_unit_kpi_tab"
                               data-toggle="tab"
                             >
-                              Unit KPI
+                              Individual KPI
                             </a>
                           </li>
                         </ul>
@@ -612,10 +537,7 @@ const StaffAppraisal = (props) => {
                             </div>
                           </div>
 
-                          <div
-                            className="tab-pane"
-                            id="cap_department_goal_tab"
-                          >
+                          <div className="tab-pane" id="cap_department_goal_tab">
                             <div className="m-t-10 m-b-20">
                               <h4 style={{ textDecorationLine: "underline" }}>
                                 Department Goals
@@ -631,66 +553,46 @@ const StaffAppraisal = (props) => {
                             </div>
                           </div>
 
-                          <div
-                            className="tab-pane show active"
-                            id="cap_unit_kpi_tab"
-                          >
+                          <div className="tab-pane show active" id="cap_unit_kpi_tab">
                             <div className="row">
                               <div className="col-lg-12 d-flex border-bottom pt-2 pb-2 font-weight-bolder">
-                                <div className="col-lg-6">UNIT KPI</div>
-                                <div className="col-lg-3 text-center">
-                                  MEASURABLE TARGET (Metric)
+                                <div className="col-lg-4">KPI</div>
+                                <div className="col-lg-2 text-center">
+                                  MEASURABLE TARGET
                                 </div>
                                 <div className="col-lg-2 text-center">
-                                  WEIGHT (100%)
+                                  WEIGHT
                                 </div>
-                                <div className="col-lg-1 text-center">
-                                  SCORE
+                                <div className="col-lg-2 text-center">
+                                  APPRAISEE RATE
+                                </div>
+                                <div className="col-lg-2 text-center">
+                                  APPRAISEE RESULT
                                 </div>
                               </div>
                             </div>
 
                             <div className="row">
                               <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  # Relevant Professional
-                                  Certifications/Trainings.
+                                <div className="col-lg-4">
+                                  # Self-help reports built for internal
+                                  customers within a period.
                                 </div>
-                                <div className="col-lg-3 text-center">
-                                  * ≥ 1
+                                <div className="col-lg-2 text-center">40</div>
+                                <div className="col-lg-2 text-center">10</div>
+                                <div className="col-lg-2 text-center">
+                                  <input type="text" className="form-control" />
                                 </div>
-                                <div className="col-lg-2 text-center">5</div>
-                                <div className="col-lg-1 text-center">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    readOnly
-                                  />
-                                </div>
-                              </div>
-
-                              <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                <div className="col-lg-6">
-                                  # Completed Courses on SunTrust Academy
-                                </div>
-                                <div className="col-lg-3 text-center">
-                                  * ≥ 36
-                                </div>
-                                <div className="col-lg-2 text-center">5</div>
-                                <div className="col-lg-1 text-center">
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    readOnly
-                                  />
-                                </div>
+                                <div className="col-lg-2 text-center">10</div>
                               </div>
                             </div>
                           </div>
+
                         </div>
                       </div>
                     </div>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -698,12 +600,7 @@ const StaffAppraisal = (props) => {
             <div className="form-group col-lg-12 col-md-12 col-sm-12 m-t-50 m-b-20">
               <div className="d-flex align-items-center justify-content-center">
                 <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
-                  <a
-                    href=""
-                    className="btn btn-block btn-primary font-weight-700"
-                  >
-                    SUBMIT
-                  </a>
+                  <Link to="/app/employees/super_self_review" className='btn btn-block btn-primary font-weight-700'>PREVIEW</Link>
                 </div>
               </div>
             </div>
@@ -716,4 +613,4 @@ const StaffAppraisal = (props) => {
     </div>
   );
 };
-export default StaffAppraisal;
+export default Supervisor_Self_Appraisal;

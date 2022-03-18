@@ -15,12 +15,13 @@ import { useSelector } from "react-redux";
 const ExpenseDetails = () => {
   const { referenceId } = useParams();
   const dispatch = useDispatch();
+  const [reason, setReason] = useState({});
 
   const { data: specificExpense } = useSelector(
     (state) => state.getExpenseByReferenceReducer
   );
 
-  console.log(">>>>>>kid", referenceId, specificExpense);
+  console.log(">>>>>>kid", reason);
 
   const [data, setData] = useState([
     {
@@ -42,6 +43,14 @@ const ExpenseDetails = () => {
       vendor_recomm: "Recommended",
     },
   ]);
+
+  const setReasonState = (text) => {
+    const reason = specificExpense?.details.find(
+      (vendor) => vendor.vendorId === text
+    );
+    console.log(">>>reaosn", reason);
+    setReason(reason);
+  };
 
   const [approve_data, setApproversData] = useState([
     {
@@ -110,34 +119,36 @@ const ExpenseDetails = () => {
   // Table displayed on Expense Requests Page
   const expense_columns = [
     {
-      title: "Vendor ID",
-      dataIndex: "vendor_id",
+      title: "Vendor Name",
+      dataIndex: "vendorName",
       sorter: (a, b) => a.mobile.length - b.mobile.length,
     },
     {
       title: "Document Type",
-      dataIndex: "doc_type",
+      dataIndex: "documentTypeId",
       sorter: (a, b) => a.employee_id.length - b.employee_id.length,
     },
     {
       title: "Amount Requested",
-      dataIndex: "amount_req",
+      dataIndex: "amount",
       sorter: (a, b) => a.employee_id.length - b.employee_id.length,
     },
     {
       title: "Recommendation",
-      dataIndex: "vendor_recomm",
-      sorter: (a, b) => a.employee_id.length - b.employee_id.length,
+      dataIndex: "recommend",
+      render: (text, record) =>
+        text === true ? <p>Recommended</p> : <p>Not Recommended</p>,
     },
     {
       title: "Reason",
-      dataIndex: "vendor_reason",
+      dataIndex: "vendorId",
       render: (text, record) => (
         <Link
           to="#"
           data-toggle="modal"
           data-target="#view_reason_modal"
           className="btn btn-sm btn-outline-primary m-r-10"
+          onClick={() => setReasonState(text)}
         >
           <i className="fa fa-comments m-r-5" />
           Reason
@@ -153,6 +164,7 @@ const ExpenseDetails = () => {
           data-toggle="modal"
           data-target="#view_document"
           className="btn btn-sm btn-outline-primary m-r-10"
+          onClick={() => console.log(">>>>>text", text)}
         >
           <i className="fa fa-eye m-r-5" />
           View Document
@@ -240,7 +252,7 @@ const ExpenseDetails = () => {
                       <div className="d-flex m-b-10">
                         <div className="m-r-30 col-md-3">Request Type:</div>
                         <div className="m-r-30 col-md-9">
-                          {specificExpense?.requestTypeName}
+                          {specificExpense?.expenseRequestTypeName}
                         </div>
                       </div>
 
@@ -288,7 +300,7 @@ const ExpenseDetails = () => {
                         <Table
                           className="table-striped"
                           pagination={{
-                            total: expense_data.length,
+                            total: specificExpense?.details?.length,
                             showTotal: (total, range) =>
                               `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                             showSizeChanger: true,
@@ -298,9 +310,9 @@ const ExpenseDetails = () => {
                           style={{ overflowX: "auto" }}
                           columns={expense_columns}
                           // bordered
-                          dataSource={expense_data}
+                          dataSource={specificExpense?.details}
                           rowKey={(record) => record.id}
-                          onChange={console.log("change")}
+                          // onChange={console.log("change")}
                         />
                       </div>
                     </div>
@@ -519,16 +531,18 @@ const ExpenseDetails = () => {
                 className="modal-title text-white font-weight-700 m-b-20"
                 id="modal_title_6"
               >
-                REQUEST ID - ER4367
+                REQUEST ID - {reason.vendorId}
               </h5>
             </div>
             <div className="modal-body">
               <div className="align-items-center justify-content-center">
                 <div className="d-flex m-b-10 margin_bottom font_size">
                   <label className="col-lg-4 col-md-6 col-sm-12 font-weight-700">
-                    VENDOR ID:
+                    VENDOR NAME:
                   </label>
-                  <div className="col-lg-8 col-md-6 col-sm-12">0019</div>
+                  <div className="col-lg-8 col-md-6 col-sm-12">
+                    {reason.vendorName}
+                  </div>
                 </div>
 
                 <div className="d-flex m-b-10 margin_bottom font_size">
@@ -536,21 +550,27 @@ const ExpenseDetails = () => {
                     DOCUMENT TYPE:
                   </label>
                   <div className="col-lg-8 col-md-6 col-sm-12">
-                    Travelling Invoice
+                    {reason.documentTypeId}
                   </div>
                 </div>
                 <div className="d-flex m-t-20 m-b-10 margin_bottom font_size">
                   <label className="col-lg-4 col-md-6 col-sm-12 font-weight-700">
                     AMOUNT REQUESTED:
                   </label>
-                  <div className="col-lg-8 col-md-6 col-sm-12">N25,000.90</div>
+                  <div className="col-lg-8 col-md-6 col-sm-12">
+                    {reason.amount}
+                  </div>
                 </div>
 
                 <div className="d-flex m-b-10 margin_bottom font_size">
                   <label className="col-lg-4 col-md-6 col-sm-12 font-weight-700">
                     RECOMMENDATION:
                   </label>
-                  <div className="col-lg-8 col-md-6 col-sm-12">Recommended</div>
+                  <div className="col-lg-8 col-md-6 col-sm-12">
+                    {reason.recommend === true
+                      ? "Recommended"
+                      : " Not recommended"}
+                  </div>
                 </div>
 
                 <div className="d-flex m-b-10 margin_bottom font_size">
@@ -558,15 +578,7 @@ const ExpenseDetails = () => {
                     REASON:
                   </label>
                   <div className="col-lg-8 col-md-6 col-sm-12">
-                    Lorizzle ipsizzle yo mamma sit i saw beyonces tizzles and my
-                    pizzle went crizzle, bow wow wow adipiscing da bomb. Nullam
-                    sapien velizzle, bling bling volutpizzle, suscipizzle quis,
-                    gravida vizzle, its fo rizzle. Things eget tortizzle. Fo
-                    shizzle erizzle. Own yo' tellivizzle dope dapibizzle mah
-                    nizzle tempizzle da bomb. Maurizzle pellentesque nibh et
-                    turpizzle. stuff tortizzle. shizzlin dizzle rhoncus mofo.
-                    Shut the shizzle up fizzle habitasse fo shizzle dictumst.
-                    Shizzle my nizzle crocodizzle dapibizzle.
+                    {reason.reason}
                   </div>
                 </div>
               </div>

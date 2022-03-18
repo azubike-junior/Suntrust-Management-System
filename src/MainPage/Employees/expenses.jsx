@@ -33,6 +33,7 @@ const Expense = () => {
 
 
 
+
     // Table displayed on Expense Page
     const columns = [
 
