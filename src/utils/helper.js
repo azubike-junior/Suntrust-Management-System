@@ -47,6 +47,7 @@ export const getBase64 = (file) => {
 export const configUrl = `http://10.11.200.97/ExpenseManagement/Configuration`;
 export const codeConfigUrl = `http://10.11.200.97/ExpenseManagement/CodeConfiguration`;
 export const expenseUrl = `http://10.11.200.97/ExpenseManagement/Expenses`;
+export const baseUrl = `http://localhost:3000`;
 
 export const percentages = [
   { value: "", percent: "0%" },
@@ -65,6 +66,17 @@ export const percentages = [
   { value: 90, percent: "90%" },
   { value: 95, percent: "95%" },
   { value: 100, percent: "100%" },
+];
+
+export const timeDuration = [
+  { value: "", duration: "Select Option" },
+  { value: "hourly", duration: "Hourly" },
+  { value: "daily", duration: "Daily" },
+  { value: "weekly", duration: "Weekly" },
+  { value: "monthly", duration: "Monthly" },
+  { value: "quarterly", duration: "Quarterly" },
+  { value: "bi-annually", duration: "Bi-Annually" },
+  { value: "annually", duration: "Annually" },
 ];
 
 // this array contains, the information of the student, the course,
@@ -157,8 +169,8 @@ export const cgpaCalculator = (results) => {
     // [10 + 0 + 12 + 8 + 0 + 10] = totalScore
     .reduce((acc, num) => acc + num, 0);
 
-    // totalScore / creditPoint
-    // tofixed coverts it to 2 decimal point
+  // totalScore / creditPoint
+  // tofixed coverts it to 2 decimal point
   return (totalScore / creditPoint).toFixed(2);
 };
 

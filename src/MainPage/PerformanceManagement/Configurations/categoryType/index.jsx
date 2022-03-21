@@ -4,31 +4,53 @@
 import React, { Component, useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-
 import { Table } from "antd";
 import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../../paginationfunction";
 import "../../../antdstyle.css";
+import {
+  useDeleteCategoryTypeMutation,
+  useGetCategoriesQuery,
+  usePostCategoryTypeMutation,
+} from "../../../../services/PerformanceManagement/Configurations/getPerformanceConfigs";
+import { useForm } from "react-hook-form";
+import InputField from "../../../UIinterface/Forms/InputField/Index";
+import { useDispatch } from "react-redux";
 
 const CategoryType = () => {
-  const [category_data, setCategoryData] = useState([
-    {
-      id: 1,
-      category_name: "Process",
-    },
-    {
-      id: 2,
-      category_name: "Customer",
-    },
-    {
-      id: 3,
-      category_name: "Financial",
-    },
-    {
-      id: 4,
-      category_name: "Capacity Development",
-    },
-  ]);
+  const [allCategories, setAllCategories] = useState([]);
+  const dispatch = useDispatch();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    resetField,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    mode: "onTouched",
+    defaultValues: {},
+  });
+
+  const { data: categories } = useGetCategoriesQuery("");
+  const [postCategory, { data: response }] = usePostCategoryTypeMutation();
+  const [deleteCategoryType] = useDeleteCategoryTypeMutation();
+
+  // console.log(">>>>cat", categories);
+
+  const deleteCategory = (cat) => {
+    const filtered = allCategories.filter(
+      (category) => category.categoryType !== cat
+    );
+    setAllCategories(filtered);
+  };
+
+  const categoryTypeHandler = async (data) => {
+    setAllCategories((prev) => [...prev, data]);
+    reset();
+    await postCategory(data);
+  };
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -43,24 +65,46 @@ const CategoryType = () => {
   const category_columns = [
     {
       title: "Category Name",
-      dataIndex: "category_name",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
+      dataIndex: "categoryType",
     },
     {
       title: "",
       render: (text, record) => (
-        <Link
-          to="#"
-          data-toggle="modal"
-          data-target="#delete_category"
-          className="btn btn-sm btn-outline-danger m-r-10"
-        >
-          <i className="fa fa-trash" />
-        </Link>
+        <div className="">
+          <a
+            to="#"
+            data-toggle="modal"
+            data-target="#edit_category"
+            className="btn btn-sm btn-outline-primary m-r-10"
+          >
+            <i className="fa fa-edit" />
+          </a>
+
+          <a
+            className="btn btn-sm btn-outline-danger m-r-10"
+            onClick={() => {
+              console.log(text)
+              deleteCategory(text.categoryType);
+            }}
+          >
+            <i className="fa fa-trash" />
+          </a>
+        </div>
       ),
     },
   ];
 
+  // const addCategoryType = (data) => {
+  //   if (allCategories.includes(data.category)) {
+  //     return;
+  //   }
+  //   setAllCategories((prev) => [...prev, data]);
+  //   reset();
+  // };
+
+  
+
+  // console.log(">>>>>categories", allCategories, response);
   return (
     <div className="page-wrapper">
       <Helmet>
@@ -79,29 +123,34 @@ const CategoryType = () => {
 
         <div className="card m-b-50 col-lg-12">
           <div className="card-body">
-            <div className="row">
-              <div className="col-lg-12 m-t-10 m-b-20">
-                <h4 className="user-name m-t-0">Setup Category Type</h4>
+            <form onSubmit={handleSubmit(categoryTypeHandler)}>
+              <div className="row">
+                <div className="col-lg-12 m-t-10 m-b-20">
+                  <h4 className="user-name m-t-0">Setup Category Type</h4>
+                </div>
+                <InputField
+                  register={register}
+                  name="categoryType"
+                  label="Category"
+                  className="col-lg-5 m-b-10"
+                  required
+                  type="text"
+                  errors={errors?.categoryType}
+                />
               </div>
 
-              <div className="col-lg-4 m-b-10">
-                <div className="m-b-10">Category</div>
-                <div className="form-group">
-                  <input type="text" className="form-control" />
+              <div className="row">
+                <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
+                  <button
+                    href=""
+                    className="btn btn-block btn-primary font-weight-700"
+                    type="submit"
+                  >
+                    Submit
+                  </button>
                 </div>
               </div>
-            </div>
-
-            <div className="row">
-              <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
-                <a
-                  href=""
-                  className="btn btn-block btn-primary font-weight-700"
-                >
-                  ADD
-                </a>
-              </div>
-            </div>
+            </form>
 
             <div className="row m-t-50 m-b-20">
               <h4 className="user-name m-b-10 col-md-12">CATEGORY LIST</h4>
@@ -111,7 +160,7 @@ const CategoryType = () => {
                   <Table
                     className="table-striped"
                     pagination={{
-                      total: category_data.length,
+                      total: allCategories.length,
                       showTotal: (total, range) =>
                         `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                       showSizeChanger: true,
@@ -121,27 +170,28 @@ const CategoryType = () => {
                     style={{ overflowX: "auto" }}
                     columns={category_columns}
                     // bordered
-                    dataSource={category_data}
+                    dataSource={allCategories}
                     rowKey={(record) => record.id}
-                    onChange={console.log("change")}
+                    // onChange={console.log("change")}
                   />
                 </div>
               </div>
             </div>
 
             {/* Submit Button */}
-            <div className="form-group col-lg-12 col-md-12 col-sm-12 m-b-20">
+            {/* <div className="form-group col-lg-12 col-md-12 col-sm-12 m-b-20">
               <div className="d-flex align-items-center justify-content-center">
                 <div className="col-lg-5 col-md-6 col-sm-12 m-b-10">
                   <a
-                    href=""
+                    href="#"
                     className="btn btn-block btn-primary font-weight-700"
+                    onClick={() => categoryTypeHandler()}
                   >
                     SUBMIT
                   </a>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -163,7 +213,11 @@ const CategoryType = () => {
               <div className="modal-btn delete-action">
                 <div className="row">
                   <div className="col-6">
-                    <a href="" className="btn btn-primary continue-btn">
+                    <a
+                      href="#"
+                      className="btn btn-primary continue-btn"
+                      // onClick={() => deleteCategory(category)}
+                    >
                       Delete
                     </a>
                   </div>

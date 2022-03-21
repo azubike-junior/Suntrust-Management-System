@@ -1,0 +1,77 @@
+{
+  "appraisals": [
+    {
+      "id": 1,
+      "status": "Open",
+      "appraisalPeriod": "Hourly",
+      "startDate": "01-01-2021",
+      "endDate": "02-02-2022"
+    }
+  ],
+  "categoryTypes": [
+    {
+      "id": 1,
+      "categoryType": "Process"
+    },
+    {
+      "id": 2,
+      "categoryType": "Communication"
+    },
+    {
+      "categoryType": "marketing",
+      "id": 3
+    },
+    {
+      "categoryType": "customer",
+      "id": 4
+    }
+  ],
+  "organizationalGoals": [
+    {
+      "id": 1,
+      "categoryType": "Process",
+      "organizationalGoal": "Codified and Automated Processes and Manuals"
+    },
+    {
+      "categoryType": "2",
+      "organizationalGoal": "thus is it",
+      "id": 2
+    },
+    {
+      "categoryType": "2",
+      "organizationalGoal": "organizational Goal",
+      "id": 3
+    },
+    {
+      "categoryType": "4",
+      "organizationalGoal": "hsjskslslslsls",
+      "id": 4
+    },
+    {
+      "categoryType": "4",
+      "organizationalGoal": "iuoo",
+      "id": 5
+    }
+  ],
+  "teamGoals": [
+    {
+      "id": 1,
+      "category": "Process",
+      "organizationalGoal": "Codified and Automated Processes and Manuals",
+      "teamGoal": "Ensure optimal performance on all core deliverables"
+    }
+  ],
+  "individualKpis": [
+    {
+      "id": 1,
+      "category": "Process",
+      "organizationalGoal": "Codified and Automated Processes and Manuals",
+      "teamGoal": "Ensure optimal performance on all core deliverables",
+      "individualKpi": "this is my kpi",
+      "targetSource": "",
+      "rateType": "",
+      "measurableTarget": "",
+      "weightedScores": ""
+    }
+  ]
+}

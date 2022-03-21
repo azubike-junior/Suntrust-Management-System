@@ -6,7 +6,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
-const StaffAppraisal = (props) => {
+const SupervisorAppraisal = (props) => {
   const { location } = props;
   let pathname = location.pathname;
 
@@ -24,7 +24,7 @@ const StaffAppraisal = (props) => {
           <div className="page-header">
             <div className="card">
               <div className="card-body">
-                <h4 className="card-title">Appraisals</h4>
+                <h4 className="card-title">Supervisor Self Appraisal</h4>
                 <ul className="nav nav-tabs nav-tabs-solid nav-justified">
                   <li className="nav-item">
                     <a
@@ -641,7 +641,7 @@ const StaffAppraisal = (props) => {
               <div className="d-flex align-items-center justify-content-center">
                 <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
                   <Link
-                    to="/app/performanceManagement/staffAppraisalReview"
+                    to="/app/employees/super_self_review"
                     className="btn btn-block btn-primary font-weight-700"
                   >
                     PREVIEW
@@ -658,4 +658,4 @@ const StaffAppraisal = (props) => {
     </div>
   );
 };
-export default StaffAppraisal;
+export default SupervisorAppraisal;

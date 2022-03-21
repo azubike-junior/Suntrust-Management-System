@@ -4,26 +4,13 @@
 import React, { Component, useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import {
-  Avatar_01,
-  Avatar_02,
-  Avatar_05,
-  Avatar_09,
-  Avatar_10,
-  Avatar_11,
-  Avatar_12,
-  Avatar_13,
-  Avatar_16,
-  Avatar_19,
-} from "../../Entryfile/imagepath";
 
 import { Table } from "antd";
 import "antd/dist/antd.css";
-import { itemRender, onShowSizeChange } from "../paginationfunction";
-import "../antdstyle.css";
-import Staff_Appraisal from "./staff_Appraisal";
+import { itemRender, onShowSizeChange } from "../../paginationfunction";
+import "../../antdstyle.css";
 
-const Staff_Appraisal_Detail = () => {
+const StaffAppraisalDetail = () => {
   useEffect(() => {
     if ($(".select").length > 0) {
       $(".select").select2({
@@ -48,7 +35,7 @@ const Staff_Appraisal_Detail = () => {
               <h3 className="page-title">Appraisal Review</h3>
               <ul className="breadcrumb">
                 <li className="breadcrumb-item">
-                  <Link to="/app/employees/my_staff_Appraisal">
+                  <Link to="/app/performanceManagement/allStaffAppraisals">
                     Back to Appraisal Page
                   </Link>
                 </li>
@@ -826,4 +813,4 @@ const Staff_Appraisal_Detail = () => {
     </div>
   );
 };
-export default Staff_Appraisal_Detail;
+export default StaffAppraisalDetail;

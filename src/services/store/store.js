@@ -1,4 +1,4 @@
-import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
+import { Action, configureStore, combineReducers, ThunkAction } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import getVendorsReducer from "../configurations/vendors/getVendors";
 import addVendorReducer from "../configurations/vendors/addVendor";
@@ -28,11 +28,21 @@ import submitExpenseReducer from "./../Expense/submitExpense";
 import getAllExpenseByApproverReducer from "./../Expense/getAllExpenseByApprover";
 import deleteExpenseReducer from "./../Expense/deleteExpenseByReference";
 import getExpenseByReferenceReducer from "./../Expense/getExpenseByReferenceId";
+import setupAppraisalReducer from "./../PerformanceManagement/Configurations/appraisalSetup/setUpAppraisal";
+import { getPerformanceConfigQuery } from "./../PerformanceManagement/Configurations/getPerformanceConfigs";
+import addOrganizationalGoalReducer  from './../PerformanceManagement/Configurations/organizationalGoal/addOrganizationalGoal';
+import getOrganizationalGoalReducer from './../PerformanceManagement/Configurations/organizationalGoal/getOrganizationalGoal';
 
 import {
   getCodeConfigQuery,
   getCodesQueries,
 } from "../configurations/codeConfig/getCodesQueries";
+
+const performanceStuff = combineReducers({
+  setupAppraisalReducer,
+  addOrganizationalGoalReducer,
+  getOrganizationalGoalReducer
+});
 
 export const store = configureStore({
   reducer: {
@@ -40,6 +50,7 @@ export const store = configureStore({
     [getRequestTypes.reducerPath]: getRequestTypes.reducer,
     [getCodesQueries.reducerPath]: getCodesQueries.reducer,
     [getCodeConfigQuery.reducerPath]: getCodeConfigQuery.reducer,
+    [getPerformanceConfigQuery.reducerPath]: getPerformanceConfigQuery.reducer,
     getVendorsReducer,
     addVendorReducer,
     modalReducer,
@@ -65,7 +76,8 @@ export const store = configureStore({
     submitExpenseReducer,
     getAllExpenseByApproverReducer,
     deleteExpenseReducer,
-    getExpenseByReferenceReducer
+    getExpenseByReferenceReducer,
+    performanceStuff,
   },
   middleware: (gdm) =>
     gdm({

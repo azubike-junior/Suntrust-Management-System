@@ -8,55 +8,49 @@ import { Table } from "antd";
 import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../../paginationfunction";
 import "../../../antdstyle.css";
+import {
+  useGetCategoriesQuery,
+  useGetOrganizationalGoalsQuery,
+} from "../../../../services/PerformanceManagement/Configurations/getPerformanceConfigs";
+import { useForm } from "react-hook-form";
+import { classNames } from "../../../../utils/classNames";
+import { useDispatch, useSelector } from "react-redux";
+import { addOrganizationalGoal } from "./../../../../services/PerformanceManagement/Configurations/organizationalGoal/addOrganizationalGoal";
+import { getOrganizationalGoal } from "./../../../../services/PerformanceManagement/Configurations/organizationalGoal/getOrganizationalGoal";
 
 const OrganizationalGoal = () => {
-  const [organizational_data, setOrganizationalData] = useState([
-    {
-      id: 1,
-      category_name: "Process",
-      organ_goal: "Codified and Automated Processes and Manuals",
-    },
-    {
-      id: 2,
-      category_name: "Process",
-      organ_goal: "Zero Governace Breaches, Regulatory Penalties and Fines",
-    },
-    {
-      id: 3,
-      category_name: "Customer",
-      organ_goal: "External Net Promoter Score (Customer Experience) > 70%",
-    },
-    {
-      id: 4,
-      category_name: "Financial",
-      organ_goal: "Total Customer Liabilities of N100 Billion",
-    },
-    {
-      id: 5,
-      category_name: "Financial",
-      organ_goal: "Profitability of N1 Billion",
-    },
-    {
-      id: 6,
-      category_name: "Financial",
-      organ_goal: "Profitability of N1 Billion",
-    },
-    {
-      id: 7,
-      category_name: "Financial",
-      organ_goal: "Profitability of N1 Billion",
-    },
-    {
-      id: 8,
-      category_name: "Financial",
-      organ_goal: "Profitability of N1 Billion",
-    },
-    {
-      id: 9,
-      category_name: "Capacity Development",
-      organ_goal: "Human Capacity Development Index  > 70%",
-    },
-  ]);
+//   const { data: categories } = useGetCategoriesQuery("");
+  const [allOrganGoals, setAllOrganGoals] = useState([]);
+  const { data: organizationalGoals } = useGetOrganizationalGoalsQuery("");
+  const dispatch = useDispatch();
+
+  const { data: categories } = useSelector(
+    (state) => state.performanceStuff.getOrganizationalGoalReducer
+  );
+
+//   console.log(">>>>cats", cats);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    resetField,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    mode: "onTouched",
+    defaultValues: {},
+  });
+
+  const organizationalGoalHandler = (data) => {
+    console.log(">>>dtd", data);
+    setAllOrganGoals((prev) => [...prev, data]);
+    dispatch(addOrganizationalGoal({ data, reset, dispatch }));
+  };
+
+  useEffect(() => {
+    dispatch(getOrganizationalGoal());
+  }, []);
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -71,13 +65,12 @@ const OrganizationalGoal = () => {
   const organizational_columns = [
     {
       title: "Category Type",
-      dataIndex: "category_name",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
+      dataIndex: "categoryType",
+      
     },
     {
       title: "Organizational Goals",
-      dataIndex: "organ_goal",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
+      dataIndex: "organizationalGoal",
     },
     {
       title: "",
@@ -111,41 +104,60 @@ const OrganizationalGoal = () => {
 
         <div className="card m-b-50 col-lg-12">
           <div className="card-body">
-            <div className="row flex-column">
-              <div className="col-lg-12 m-t-10 m-b-20">
-                <h4 className="user-name m-t-0">Setup Organizational Goal</h4>
-              </div>
+            <form onSubmit={handleSubmit(organizationalGoalHandler)}>
+              <div className="row flex-column">
+                <div className="col-lg-12 m-t-10 m-b-20">
+                  <h4 className="user-name m-t-0">Setup Organizational Goal</h4>
+                </div>
 
-              <div className="col-lg-4 m-b-10">
-                <div className="m-b-10">Category</div>
-                <div className="form-group">
-                  <select className="select">
-                    <option>Process</option>
-                    <option>Customer</option>
-                    <option>Financial</option>
-                    <option>Capacity Development</option>
-                  </select>
+                <div className="col-lg-4 m-b-10">
+                  <div className="m-b-10">Category</div>
+                  <div className="form-group">
+                    <select
+                      {...register("categoryType", { required: true })}
+                      className={classNames(
+                        errors?.categoryType ? "error-class" : "",
+                        "form-control"
+                      )}
+                    >
+                      {categories?.map((category) => {
+                        return (
+                          <option value={category?.id}>
+                            {category?.categoryType}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="col-lg-4 m-b-10">
+                  <div className="m-b-10">Organizational Goal</div>
+                  <div className="form-group">
+                    <textarea
+                      {...register("organizationalGoal", { required: true })}
+                      className={classNames(
+                        errors?.organizationalGoal ? "error-class" : "",
+                        "form-control"
+                      )}
+                      rows="3"
+                    ></textarea>
+                  </div>
                 </div>
               </div>
 
-              <div className="col-lg-4 m-b-10">
-                <div className="m-b-10">Organizational Goal</div>
-                <div className="form-group">
-                  <textarea className="form-control" rows="3" />
+              <div className="row">
+                <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
+                  <button
+                    href="#"
+                    type="submit"
+                    className="btn btn-block btn-primary font-weight-700"
+                  >
+                    ADD
+                  </button>
                 </div>
               </div>
-            </div>
-
-            <div className="row">
-              <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
-                <a
-                  href=""
-                  className="btn btn-block btn-primary font-weight-700"
-                >
-                  ADD
-                </a>
-              </div>
-            </div>
+            </form>
 
             <div className="row m-t-50 m-b-20">
               {/* <h4 className="user-name m-b-10 col-md-12">CATEGORY LIST</h4> */}
@@ -155,7 +167,7 @@ const OrganizationalGoal = () => {
                   <Table
                     className="table-striped"
                     pagination={{
-                      total: organizational_data.length,
+                      total: organizationalGoals?.length,
                       showTotal: (total, range) =>
                         `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                       showSizeChanger: true,
@@ -165,7 +177,7 @@ const OrganizationalGoal = () => {
                     style={{ overflowX: "auto" }}
                     columns={organizational_columns}
                     // bordered
-                    dataSource={organizational_data}
+                    dataSource={organizationalGoals}
                     rowKey={(record) => record.id}
                     onChange={console.log("change")}
                   />
@@ -174,7 +186,7 @@ const OrganizationalGoal = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="form-group col-lg-12 col-md-12 col-sm-12 m-b-20">
+            {/* <div className="form-group col-lg-12 col-md-12 col-sm-12 m-b-20">
               <div className="d-flex align-items-center justify-content-center">
                 <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
                   <a
@@ -185,7 +197,7 @@ const OrganizationalGoal = () => {
                   </a>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

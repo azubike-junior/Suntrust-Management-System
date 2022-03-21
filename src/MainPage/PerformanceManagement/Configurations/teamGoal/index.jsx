@@ -4,73 +4,70 @@
 import React, { Component, useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import {
-  Avatar_01,
-  Avatar_02,
-  Avatar_05,
-  Avatar_09,
-  Avatar_10,
-  Avatar_11,
-  Avatar_12,
-  Avatar_13,
-  Avatar_16,
-  Avatar_19,
-} from "../../Entryfile/imagepath";
-
 import { Table } from "antd";
 import "antd/dist/antd.css";
-import { itemRender, onShowSizeChange } from "../paginationfunction";
-import "../antdstyle.css";
-import { useGetCategoriesQuery } from "../../services/PerformanceManagement/Configurations/getPerformanceConfigs";
+import { itemRender, onShowSizeChange } from "../../../paginationfunction";
+import "../../../antdstyle.css";
 
-const Organizational_Goal = () => {
-  const { data: categories } = useGetCategoriesQuery("");
-
+const TeamGoal = () => {
   const [organizational_data, setOrganizationalData] = useState([
     {
       id: 1,
       category_name: "Process",
       organ_goal: "Codified and Automated Processes and Manuals",
+      team_goal: "Ensure optimal performance on all core deliverables",
     },
     {
-      id: 2,
+      id: 1,
       category_name: "Process",
       organ_goal: "Zero Governace Breaches, Regulatory Penalties and Fines",
+      team_goal:
+        "Ensure total compliance with regulations and internal policies",
     },
     {
       id: 3,
       category_name: "Customer",
       organ_goal: "External Net Promoter Score (Customer Experience) > 70%",
+      team_goal:
+        "Maintain excellent service delivery to internal customers (regulatory enquiries, error free offer letters, credit checks, etc)",
     },
     {
       id: 4,
       category_name: "Financial",
       organ_goal: "Total Customer Liabilities of N100 Billion",
+      team_goal: "Drive balance sheet growth",
     },
     {
       id: 5,
       category_name: "Financial",
       organ_goal: "Profitability of N1 Billion",
+      team_goal:
+        "Minimize operational losses due to data privacy and database security breaches",
     },
     {
       id: 6,
       category_name: "Financial",
       organ_goal: "Profitability of N1 Billion",
+      team_goal: "Achieve optimal Implementation of Opex",
     },
     {
       id: 7,
       category_name: "Financial",
       organ_goal: "Profitability of N1 Billion",
+      team_goal: "Achieve optimal Implementation of Capex",
     },
     {
       id: 8,
       category_name: "Financial",
       organ_goal: "Profitability of N1 Billion",
+      team_goal: "Drive cost savings",
     },
     {
       id: 9,
       category_name: "Capacity Development",
       organ_goal: "Human Capacity Development Index  > 70%",
+      team_goal:
+        "Pursue self-development as well as training hours on SunTrust Academy",
     },
   ]);
 
@@ -93,6 +90,11 @@ const Organizational_Goal = () => {
     {
       title: "Organizational Goals",
       dataIndex: "organ_goal",
+      sorter: (a, b) => a.mobile.length - b.mobile.length,
+    },
+    {
+      title: "Team Goals",
+      dataIndex: "team_goal",
       sorter: (a, b) => a.mobile.length - b.mobile.length,
     },
     {
@@ -121,7 +123,7 @@ const Organizational_Goal = () => {
       <div className="content container-fluid">
         {/* Page Header */}
         <div className="">
-          <h3 className="user-name m-b-10">Organizational Goals</h3>
+          <h3 className="user-name m-b-10">Team Goals</h3>
         </div>
         {/* /Page Header */}
 
@@ -129,26 +131,37 @@ const Organizational_Goal = () => {
           <div className="card-body">
             <div className="row flex-column">
               <div className="col-lg-12 m-t-10 m-b-20">
-                <h4 className="user-name m-t-0">Setup Organizational Goal</h4>
+                <h4 className="user-name m-t-0">Setup Team Goal</h4>
               </div>
 
-              <div className="col-lg-4 m-b-10">
+              <div className="col-lg-6 m-b-10">
                 <div className="m-b-10">Category</div>
                 <div className="form-group">
-                  <select className="form-control">
-                    {categories?.map((category) => {
-                      return (
-                        <option value={category?.id}>
-                          {category?.categoryType}
-                        </option>
-                      );
-                    })}
+                  <select className="select">
+                    <option>Process</option>
+                    <option>Customer</option>
+                    <option>Financial</option>
+                    <option>Capacity Development</option>
                   </select>
                 </div>
               </div>
 
-              <div className="col-lg-4 m-b-10">
+              <div className="col-lg-6 m-b-10">
                 <div className="m-b-10">Organizational Goal</div>
+                <div className="form-group">
+                  <select className="select">
+                    <option>
+                      Codified and Automated Processes and Manuals
+                    </option>
+                    <option>
+                      Zero Governace Breaches, Regulatory Penalties and Fines
+                    </option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="col-lg-6 m-b-10">
+                <div className="m-b-10">Team Goal</div>
                 <div className="form-group">
                   <textarea className="form-control" rows="3" />
                 </div>
@@ -249,4 +262,4 @@ const Organizational_Goal = () => {
     </div>
   );
 };
-export default Organizational_Goal;
+export default TeamGoal;
