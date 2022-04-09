@@ -7,6 +7,7 @@ import { baseUrl } from "../../../../utils/helper";
 // import { closeVendorModal } from "../../modals/modals";
 // import { getVendors } from "./getVendors";
 import { getOrganizationalGoal } from './getOrganizationalGoal';
+import { performanceManagementConfigUrl } from './../../../../utils/helper';
 
 const initialState = {
   error: "",
@@ -20,13 +21,15 @@ export const addOrganizationalGoal = createAsyncThunk(
   "addOrganizationalGoal",
   async ({ data, dispatch, reset }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${baseUrl}/organizationalGoals`, data);
+      const response = await axios.post(
+        `${performanceManagementConfigUrl}/SubmitOrganizationalGoal`,
+        data
+      );
       console.log("<<<<<response", response);
-      if (response.status === 201) {
+      if (response.status === 200) {
         Swal.fire("Organizational Goal has been added", "Successful!", "success").then(
           (result) => {
             if (result.isConfirmed) {
-            //   dispatch(closeVendorModal());
               dispatch(getOrganizationalGoal());
               reset();
             }

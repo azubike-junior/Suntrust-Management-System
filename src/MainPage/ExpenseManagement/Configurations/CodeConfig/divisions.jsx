@@ -32,6 +32,8 @@ const Divisions = () => {
     }
   });
 
+  
+
   useEffect(() => {
     dispatch(getDivision());
   }, []);

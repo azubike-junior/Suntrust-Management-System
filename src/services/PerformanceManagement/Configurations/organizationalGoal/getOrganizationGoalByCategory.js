@@ -6,7 +6,7 @@ import { baseUrl } from "../../../../utils/helper";
 // import { configUrl } from "../../../utils/helper";
 // import { closeVendorModal } from "../../modals/modals";
 // import { getVendors } from "./getVendors";
-import { performanceManagementConfigUrl } from './../../../../utils/helper';
+import { performanceManagementConfigUrl } from "./../../../../utils/helper";
 
 const initialState = {
   error: "",
@@ -16,12 +16,12 @@ const initialState = {
   isSuccessful: false,
 };
 
-export const getOrganizationalGoal = createAsyncThunk(
-  "getOrganizationalGoal",
-  async () => {
+export const getOrganizationalGoalsByCategory = createAsyncThunk(
+  "getOrganizationalGoalsByCategory",
+  async (id) => {
     try {
       const response = await axios.get(
-        `${performanceManagementConfigUrl}/GetAllOrganizationalGoals`
+        `${performanceManagementConfigUrl}/OrganizationalGoalsByCategoryId?categoryId=${id}`
       );
       console.log("<<<<<response", response);
       if (response.status === 200) {
@@ -34,18 +34,18 @@ export const getOrganizationalGoal = createAsyncThunk(
   }
 );
 
-const getOrganizationalGoalSlice = createSlice({
-  name: "getOrganizationalGoal",
+const getOrganizationalGoalsByCategorySlice = createSlice({
+  name: "getOrganizationalGoalsByCategory",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getOrganizationalGoal.rejected, (state, action) => {
+    builder.addCase(getOrganizationalGoalsByCategory.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(getOrganizationalGoal.fulfilled, (state, action) => {
+    builder.addCase(getOrganizationalGoalsByCategory.fulfilled, (state, action) => {
       // dispatch(getVendors());
       state.loading = true;
       state.data = action.payload;
@@ -53,7 +53,7 @@ const getOrganizationalGoalSlice = createSlice({
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(getOrganizationalGoal.pending, (state, action) => {
+    builder.addCase(getOrganizationalGoalsByCategory.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -61,4 +61,4 @@ const getOrganizationalGoalSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default getOrganizationalGoalSlice.reducer;
+export default getOrganizationalGoalsByCategorySlice.reducer;

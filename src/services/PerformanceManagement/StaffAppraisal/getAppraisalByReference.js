@@ -2,58 +2,54 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { baseUrl } from "../../../../utils/helper";
-// import { configUrl } from "../../../utils/helper";
-// import { closeVendorModal } from "../../modals/modals";
-// import { getVendors } from "./getVendors";
-import { performanceManagementConfigUrl } from './../../../../utils/helper';
+import { performanceManagementAppraisalUrl } from "../../../utils/helper";
 
 const initialState = {
   error: "",
   loading: false,
   error2: "",
-  data: [],
+  data: {},
   isSuccessful: false,
 };
 
-export const getOrganizationalGoal = createAsyncThunk(
-  "getOrganizationalGoal",
-  async () => {
+export const getAppraisalByReferenceId = createAsyncThunk(
+  "getAppraisalByReferenceId",
+  async (appraisalReference) => {
     try {
       const response = await axios.get(
-        `${performanceManagementConfigUrl}/GetAllOrganizationalGoals`
+        `${performanceManagementAppraisalUrl}/GetAppraisalByRefrenceId?Id=${appraisalReference}`
       );
-      console.log("<<<<<response", response);
+
       if (response.status === 200) {
         return response.data;
       }
+
       return response.data;
     } catch (e) {
-      return e.response.data;
+      return rejectWithValue(e.response.data);
     }
   }
 );
 
-const getOrganizationalGoalSlice = createSlice({
-  name: "getOrganizationalGoal",
+const getAppraisalByReferenceIdSlice = createSlice({
+  name: "getAppraisalByReferenceId",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getOrganizationalGoal.rejected, (state, action) => {
+    builder.addCase(getAppraisalByReferenceId.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(getOrganizationalGoal.fulfilled, (state, action) => {
-      // dispatch(getVendors());
+    builder.addCase(getAppraisalByReferenceId.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(getOrganizationalGoal.pending, (state, action) => {
+    builder.addCase(getAppraisalByReferenceId.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -61,4 +57,4 @@ const getOrganizationalGoalSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default getOrganizationalGoalSlice.reducer;
+export default getAppraisalByReferenceIdSlice.reducer;

@@ -25,6 +25,10 @@ export const pad = (num, size) => {
   return num;
 };
 
+export const getText = (data, value) => {
+  return data[value]?.categoryType;
+};
+
 export const getBase64 = (file) => {
   return new Promise((resolve) => {
     // Make new FileReader
@@ -47,7 +51,10 @@ export const getBase64 = (file) => {
 export const configUrl = `http://10.11.200.97/ExpenseManagement/Configuration`;
 export const codeConfigUrl = `http://10.11.200.97/ExpenseManagement/CodeConfiguration`;
 export const expenseUrl = `http://10.11.200.97/ExpenseManagement/Expenses`;
-export const baseUrl = `http://localhost:3000`;
+export const performanceManagementConfigUrl = `http://10.11.200.97/PerformanceManagement/Configuration`;
+export const performanceManagementAppraisalUrl = `http://10.11.200.97/PerformanceManagement/Appraisals`;
+
+
 
 export const percentages = [
   { value: "", percent: "0%" },
@@ -79,8 +86,34 @@ export const timeDuration = [
   { value: "annually", duration: "Annually" },
 ];
 
+export const rateTypes = [
+  { value: "", rate: "Select Option" },
+  { value: "fixedValue", rate: "fixedValue" },
+  { value: "Hours", rate: "Hours" },
+  { value: "Percentage (%)", rate: "Percentage (%)" },
+  { value: "MoneyTarget", rate: "MoneyTarget" },
+  { value: "Greater Than", rate: "Greater Than" },
+  { value: "Less Than", rate: "Less Than" },
+];
+
+export const targetSources = [
+  { value: "", target: "Select Option" },
+  { value: "banks", target: "banks" },
+  { value: "budgetSystems", target: "budgetSystems" },
+  { value: "helpDesk", target: "helpDesk" },
+  { value: "input", target: "input" },
+];
+
 // this array contains, the information of the student, the course,
 // the unit and his/her score
+
+export const updateName = (state, payload) => ({
+  ...state,
+  data: {
+    ...state.data,
+    ...payload,
+  },
+});
 
 export const studentResult = [
   {
@@ -114,6 +147,14 @@ export const studentResult = [
     score: 88,
   },
 ];
+
+export const getUniqueValues = (data, type) => {
+  let unique = data?.map((item) => item[type]);
+  if (type === "colors") {
+    unique = unique.flat();
+  }
+  return [...new Set(unique)];
+};
 
 // this is the function that calculates the cgpa
 // it takes the studentResult array above as a parameter.

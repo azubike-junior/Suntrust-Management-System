@@ -2,9 +2,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { baseUrl } from "../../../../utils/helper";
 // import { toggleAddDocumentModal } from "../../modals/modals";
 // import { getDocuments } from "./getDocuments";
+import { getTeamGoals } from "./getTeamGoals";
 import { performanceManagementConfigUrl } from "./../../../../utils/helper";
 
 const initialState = {
@@ -15,25 +15,23 @@ const initialState = {
   isSuccessful: false,
 };
 
-export const setupAppraisal = createAsyncThunk(
-  "setupAppraisal",
-  async (newData, { rejectWithValue }) => {
-    console.log("++++++", newData);
-    const { reset, ...rest } = newData;
+export const addTeamGoal = createAsyncThunk(
+  "addTeamGoal",
+  async ({ data, reset, dispatch }, { rejectWithValue }) => {
+    console.log(">>>>data", data)
     try {
-      const response = await axios.post(
-        `${performanceManagementConfigUrl}/SetUpAppraisal`,
-        { rest }
+     const response = await axios.post(
+        `${performanceManagementConfigUrl}/SubmitTeamGoal`,
+        data
       );
-      console.log(">>>>>response", response);
+      console.log(">>>>>>respomsne", response)
       if (response.status === 200) {
-        Swal.fire(
-          `Appraisal has been ${newData.status}`,
-          "Successful!",
-          "success"
-        ).then(() => {
-          reset();
-        });
+        Swal.fire(`Team Goal has been added`, "Successful!", "success").then(
+          () => {
+            dispatch(getTeamGoals());
+            reset();
+          }
+        );
         return response.data;
       }
       return response.data;
@@ -43,25 +41,25 @@ export const setupAppraisal = createAsyncThunk(
   }
 );
 
-const setupAppraisalSlice = createSlice({
-  name: "addDocument",
+const teamGoalSlice = createSlice({
+  name: "addTeamGoal",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(setupAppraisal.rejected, (state, action) => {
+    builder.addCase(addTeamGoal.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(setupAppraisal.fulfilled, (state, action) => {
+    builder.addCase(addTeamGoal.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(setupAppraisal.pending, (state, action) => {
+    builder.addCase(addTeamGoal.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -69,4 +67,4 @@ const setupAppraisalSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default setupAppraisalSlice.reducer;
+export default teamGoalSlice.reducer;

@@ -5,8 +5,12 @@ import { Table } from "antd";
 import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../paginationfunction";
 import "../../antdstyle.css";
+import { useDispatch, useSelector } from "react-redux";
+import { getAppraisalsBySupervisorId } from "./../../../services/PerformanceManagement/StaffAppraisal/getAppraisalsBySupervisorId";
+import Loader from './../../UIinterface/Loader/index';
 
 const StaffsAppraisals = () => {
+  const dispatch = useDispatch();
   const [data, setData] = useState([
     {
       id: 1,
@@ -15,6 +19,12 @@ const StaffsAppraisals = () => {
       tot_app_result: "87%",
     },
   ]);
+
+  const { data: supervisorAppraisals, loading: appraisalsLoading } = useSelector(
+    (state) => state.performanceManagement.getAppraisalsBySupervisorIdReducer
+  );
+
+  console.log(">>>>>data", supervisorAppraisals);
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -25,29 +35,38 @@ const StaffsAppraisals = () => {
     }
   });
 
+  useEffect(() => {
+    dispatch(getAppraisalsBySupervisorId("328"));
+  }, []);
+
   // Table displayed on Expense Page
   const columns = [
     {
       title: "Staff ID",
-      dataIndex: "staff_id",
+      dataIndex: "staffId",
       sorter: (a, b) => a.mobile.length - b.mobile.length,
     },
     {
       title: "Staff Name",
-      dataIndex: "staff_name",
+      dataIndex: "staffName",
       render: (text, record) => <h2 className="table-avatar">{text}</h2>,
       sorter: (a, b) => a.name.length - b.name.length,
     },
     {
-      title: "Appraisee Result",
-      dataIndex: "tot_app_result",
-      sorter: (a, b) => a.employee_id.length - b.employee_id.length,
+      title: "Status",
+      dataIndex: "status",
+      render: (text, record) => (
+        <h2 className="table-avatar">
+          {text}
+        </h2>
+      ),
     },
     {
       title: "",
       render: (text, record) => (
         <Link
-          to="/app/performanceManagement/staffAppraisalDetail"
+          onClick={() => console.log("text", text)}
+          to={`/app/performanceManagement/staffAppraisalDetail/${text.appraisalReference}`}
           className="btn btn-sm btn-outline-primary m-r-10"
         >
           <i className="fa fa-eye m-r-5" />
@@ -71,7 +90,7 @@ const StaffsAppraisals = () => {
         <div className="page-header">
           <div className="row align-items-center">
             <div className="col">
-              <h3 className="page-title">Staff Appraisals</h3>
+              <h3 className="page-title">Supervisor Appraisals</h3>
             </div>
           </div>
         </div>
@@ -103,19 +122,20 @@ const StaffsAppraisals = () => {
               <Table
                 className="table-striped"
                 pagination={{
-                  total: data.length,
+                  total: supervisorAppraisals.length,
                   showTotal: (total, range) =>
                     `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                   showSizeChanger: true,
                   onShowSizeChange: onShowSizeChange,
                   itemRender: itemRender,
                 }}
+                loading={{ indicator: <Loader />, spinning: appraisalsLoading }}
                 style={{ overflowX: "auto" }}
                 columns={columns}
                 // bordered
-                dataSource={data}
+                dataSource={supervisorAppraisals}
                 rowKey={(record) => record.id}
-                onChange={console.log("change")}
+                // onChange={console.log("change")}
               />
             </div>
           </div>

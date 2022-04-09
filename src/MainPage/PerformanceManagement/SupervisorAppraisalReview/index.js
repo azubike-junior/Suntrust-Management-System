@@ -19,81 +19,59 @@ import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { getAppraisalByReferenceId } from "../../../services/PerformanceManagement/StaffAppraisal/getAppraisalByReference";
 import { useSelector } from "react-redux";
-import { SupervisorKpiInput } from "../KpiComponent";
+import { SupervisorKpiComponent } from "./../KpiComponent/index";
+import { useHistory } from "react-router-dom";
 
-const StaffAppraisalDetail = () => {
+const SupervisorAppraisalReview = () => {
+  const { state: allData, actions } = useStateMachine({ updateName });
   const dispatch = useDispatch();
-  const [values, setValues] = useState({});
-  const [appraiseeResults, setAppraiseeResults] = useState({});
-  const [allKPIs, setAllKPIs] = useState([]);
-  const [supervisorComment, setSupervisorComment] = useState("");
-  const [recommendation, setRecommendation] = useState("");
-
-  const { appraisalReference } = useParams();
-
-  const { state, actions } = useStateMachine({ updateName });
+  const [KPIs, setKPIs] = useState([]);
+  const [kpiResult, setKpiResult] = useState("");
+  const history = useHistory();
 
   const { data: details } = useSelector(
     (state) => state.performanceManagement.getAppraisalByReferenceReducer
   );
 
-  const updateValues = (e, id, kpi) => {
-    let { value, min, max } = e.target;
-    if ((value > Number(max)) | (value < Number(min))) {
-      value = 0;
-    }
+  const allProcess = allData?.data.KPIs.filter(
+    (kpi) => kpi.category === "Process"
+  );
+  const allCustomer = allData?.data.KPIs.filter(
+    (kpi) => kpi.category === "Customer"
+  );
+  const allFinancial = allData?.data.KPIs.filter(
+    (kpi) => kpi.category === "Financial"
+  );
+  const allCapacityDevelopment = allData?.data.KPIs.filter(
+    (kpi) => kpi.category === "Capacity Development"
+  );
 
-    console.log(value, min, max);
+  const submitAppraisal = () => {
+    const appraisals = KPIs?.map((kpi) => {
+      return {
+        staffId: kpi.staffId,
+        supervisorRate: kpi.supervisorRate,
+        appraiseeComment: kpi.appraiseeComment,
+        supervisorComment: kpi.supervisorComment,
+        supervisorResult: kpi.supervisorResult,
+        kpiId: Number(kpi.kpiId),
+        categoryId: Number(kpi.categoryId),
+        measurableTarget: kpi.measurableTarget,
+        weightedScore: kpi.weightedScore,
+        appraiseeResult: kpi.appraiseeResult,
+        appraiseeRate: kpi.appraiseeRate,
+        recommendation: kpi.recommendation,
+      };
+    });
 
-    setValues({ ...values, [id]: value });
-
-    const result = ((value / kpi.measurableTarget) * kpi.weightedScore) / 1;
-
-    setAppraiseeResults({ ...appraiseeResults, [id]: result });
-
-    const eachKPI = {
-      staffId: "265",
-      supervisorRate: e.target.value,
-      supervisorResult: result.toFixed(),
-      description: kpi.kpiDescription,
-      kpiId: kpi.kpiId,
-      categoryId: kpi.categoryId,
-      measurableTarget: kpi.measurableTarget,
-      weightedScore: kpi.weightedScore,
-      category: kpi.categoryDescription,
-      appraiseeResult: kpi.appraiseeResult,
-      appraiseeRate: kpi.appraiseeRate,
+    const data = {
+      appraisals,
+      history,
+      clearKPIs,
     };
 
-    if (value.length >= 2) {
-      setAllKPIs((prev) => [...prev, eachKPI]);
-    }
+    dispatch(submitStaffAppraisal(data));
   };
-
-  const addKPIsToState = () => {
-    state.data = {
-      supervisorRecommendation: recommendation,
-      supervisorComment,
-      appraiseeComment: "",
-      KPIs: allKPIs,
-    };
-    actions.updateName(state.data);
-  };
-
-  const allProcess = details?.kpis?.filter(
-    (kpi) => kpi.categoryDescription === "Process"
-  );
-  const allCustomer = details?.kpis?.filter(
-    (kpi) => kpi.categoryDescription === "Customer"
-  );
-  const allFinancial = details?.kpis?.filter(
-    (kpi) => kpi.categoryDescription === "Financial"
-  );
-  const allCapacityDevelopment = details?.kpis?.filter(
-    (kpi) => kpi.categoryDescription === "Capacity Development"
-  );
-
-  console.log(">>>>>>allKPIs", allKPIs);
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -104,9 +82,18 @@ const StaffAppraisalDetail = () => {
     }
   });
 
+  const result = KPIs.reduce((acc, kpi) => {
+    const allResults = kpi.supervisorResult.split("%");
+    console.log(">>>>acc", allResults[0]);
+
+    return Number(acc) + Number(allResults[0]);
+  }, 0);
+
   useEffect(() => {
-    dispatch(getAppraisalByReferenceId(appraisalReference));
-  }, []);
+    console.log(">>>>allData", allData);
+    setKPIs(allData?.data.KPIs);
+    setKpiResult(result);
+  });
 
   return (
     <div className="page-wrapper">
@@ -171,7 +158,9 @@ const StaffAppraisalDetail = () => {
                       </div>
                     </div>
                   </div>
-               
+                  {/* Table Header Ends Here */}
+
+                  {/* Process Review Starts Here */}
                   <div className="col-md-12 m-b-20 m-t-20">
                     <h4
                       className="user-name"
@@ -184,15 +173,7 @@ const StaffAppraisalDetail = () => {
                     </h4>
                   </div>
                   {allProcess?.map((kpi) => {
-                    // console.log(">>>>>>kpi", kpi)
-                    return (
-                      <SupervisorKpiInput
-                        kpi={kpi}
-                        values={values}
-                        appraiseeResults={appraiseeResults}
-                        updateValues={updateValues}
-                      />
-                    );
+                    return <SupervisorKpiComponent kpi={kpi} />;
                   })}
 
                   <div className="col-md-12 m-b-20 m-t-20">
@@ -207,14 +188,7 @@ const StaffAppraisalDetail = () => {
                     </h4>
                   </div>
                   {allCustomer?.map((kpi) => {
-                    return (
-                      <SupervisorKpiInput
-                        kpi={kpi}
-                        values={values}
-                        appraiseeResults={appraiseeResults}
-                        updateValues={updateValues}
-                      />
-                    );
+                    return <SupervisorKpiComponent kpi={kpi} />;
                   })}
 
                   <div className="col-md-12 m-b-20 m-t-20">
@@ -229,14 +203,7 @@ const StaffAppraisalDetail = () => {
                     </h4>
                   </div>
                   {allFinancial?.map((kpi) => {
-                    return (
-                      <SupervisorKpiInput
-                        kpi={kpi}
-                        values={values}
-                        appraiseeResults={appraiseeResults}
-                        updateValues={updateValues}
-                      />
-                    );
+                    return <SupervisorKpiComponent kpi={kpi} />;
                   })}
 
                   <div className="col-md-12 m-b-20 m-t-20">
@@ -251,14 +218,7 @@ const StaffAppraisalDetail = () => {
                     </h4>
                   </div>
                   {allCapacityDevelopment?.map((kpi) => {
-                    return (
-                      <SupervisorKpiInput
-                        kpi={kpi}
-                        values={values}
-                        appraiseeResults={appraiseeResults}
-                        updateValues={updateValues}
-                      />
-                    );
+                    return <SupervisorKpiComponent kpi={kpi} />;
                   })}
 
                   {/* Supervisor's Comments Starts Here */}
@@ -283,41 +243,25 @@ const StaffAppraisalDetail = () => {
                     </div>
 
                     <div className="col-lg-12 pt-2 pb-2 m-b-30">
-                      <div className="col-lg-3 m-b-10">SUPERVISOR COMMENTS</div>
                       <div className="col-lg-6">
-                        <textarea
-                          className="form-control"
-                          rows="3"
-                          onChange={(e) => setSupervisorComment(e.target.value)}
-                        />
+                        {allData?.data.supervisorComment}
                       </div>
                     </div>
 
                     <div className="col-lg-12 pt-2 pb-2">
                       <div className="col-lg-3 m-b-10">RECOMMENDATION</div>
                       <div className="col-lg-4">
-                        <select
-                          className="select"
-                          onChange={(e) => setRecommendation(e.target.value)}
-                        >
-                          <option value={"training"}>Training</option>
-                          <option value={"maintainStatus"}>Maintain Status</option>
-                          <option value={"transfer"}>Transfer to Unit Department</option>
-                          <option value={"terminate"}>Terminate Employment</option>
-                          <option value={"advice"}>Advice to Resign</option>
-                          <option value={"sendStaff"}>Send staff to Pool</option>
-                        </select>
+                        {allData?.data.supervisorRecommendation}
                       </div>
                     </div>
 
                     <div className="form-group col-lg-12 col-md-12 col-sm-12 m-t-20 m-b-20">
                       <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
                         <Link
-                          onClick={() => addKPIsToState()}
-                          to="/app/performanceManagement/supervisorAppraisalReview"
+                          onClick={() => submitAppraisal()}
                           className="btn btn-block btn-primary font-weight-700"
                         >
-                          PREVIEW
+                          Confirm
                         </Link>
                       </div>
                     </div>
@@ -333,4 +277,4 @@ const StaffAppraisalDetail = () => {
     </div>
   );
 };
-export default StaffAppraisalDetail;
+export default SupervisorAppraisalReview;

@@ -32,16 +32,41 @@ import setupAppraisalReducer from "./../PerformanceManagement/Configurations/app
 import { getPerformanceConfigQuery } from "./../PerformanceManagement/Configurations/getPerformanceConfigs";
 import addOrganizationalGoalReducer  from './../PerformanceManagement/Configurations/organizationalGoal/addOrganizationalGoal';
 import getOrganizationalGoalReducer from './../PerformanceManagement/Configurations/organizationalGoal/getOrganizationalGoal';
+import teamGoalReducer from "./../PerformanceManagement/Configurations/teamGoal/addTeamGoal";
+import getTeamGoalsReducer from "../PerformanceManagement/Configurations/teamGoal/getTeamGoals";
+import getCategoryTypesReducer  from './../PerformanceManagement/Configurations/categoryType/getCategoryTypes';
+import addCategoryTypeReducer from "./../PerformanceManagement/Configurations/categoryType/addCategoryType";
+import getIndividualKpisReducer from "./../PerformanceManagement/Configurations/individualKpi/getIndividualKpi";
+import addIndividualKpiReducer from "./../PerformanceManagement/Configurations/individualKpi/addIndividualKpi";
+import getOrganizationalGoalsByCategoryReducer from "./../PerformanceManagement/Configurations/organizationalGoal/getOrganizationGoalByCategory";
+import getTeamGoalsByOrganizationIdReducer from "./../PerformanceManagement/Configurations/teamGoal/getTeamGoalsByOrganizationalId";
+import getKpiByCategoryIdReducer from "./../PerformanceManagement/StaffAppraisal/getKpiByCategoryId";
+import getAppraisalsByStaffIdReducer from "./../PerformanceManagement/StaffAppraisal/getAppraisalsByStaffId";
+import getAppraisalsBySupervisorIdReducer from "./../PerformanceManagement/StaffAppraisal/getAppraisalsBySupervisorId";
+import getAppraisalByReferenceReducer from "../PerformanceManagement/StaffAppraisal/getAppraisalByReference";
+
 
 import {
   getCodeConfigQuery,
   getCodesQueries,
 } from "../configurations/codeConfig/getCodesQueries";
 
-const performanceStuff = combineReducers({
+const performanceManagement = combineReducers({
   setupAppraisalReducer,
   addOrganizationalGoalReducer,
-  getOrganizationalGoalReducer
+  getOrganizationalGoalReducer,
+  teamGoalReducer,
+  getTeamGoalsReducer,
+  getCategoryTypesReducer,
+  addCategoryTypeReducer,
+  getIndividualKpisReducer,
+  addIndividualKpiReducer,
+  getOrganizationalGoalsByCategoryReducer,
+  getTeamGoalsByOrganizationIdReducer,
+  getKpiByCategoryIdReducer,
+  getAppraisalsByStaffIdReducer,
+  getAppraisalsBySupervisorIdReducer,
+  getAppraisalByReferenceReducer
 });
 
 export const store = configureStore({
@@ -77,7 +102,7 @@ export const store = configureStore({
     getAllExpenseByApproverReducer,
     deleteExpenseReducer,
     getExpenseByReferenceReducer,
-    performanceStuff,
+    performanceManagement,
   },
   middleware: (gdm) =>
     gdm({

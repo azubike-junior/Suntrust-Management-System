@@ -2,11 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { baseUrl } from "../../../../utils/helper";
-// import { configUrl } from "../../../utils/helper";
-// import { closeVendorModal } from "../../modals/modals";
-// import { getVendors } from "./getVendors";
-import { performanceManagementConfigUrl } from './../../../../utils/helper';
+import { performanceManagementConfigUrl } from "../../../utils/helper";
 
 const initialState = {
   error: "",
@@ -16,44 +12,44 @@ const initialState = {
   isSuccessful: false,
 };
 
-export const getOrganizationalGoal = createAsyncThunk(
-  "getOrganizationalGoal",
-  async () => {
+export const getKpiByCategoryId = createAsyncThunk(
+  "getKpiByCategoryId",
+  async (id, setAllKPIs) => {
     try {
       const response = await axios.get(
-        `${performanceManagementConfigUrl}/GetAllOrganizationalGoals`
+        `${performanceManagementConfigUrl}/getKpiByCategoryId?categoryId=${id.categoryId}`
       );
-      console.log("<<<<<response", response);
+      
       if (response.status === 200) {
         return response.data;
       }
+      setAllKPIs(response.data);
       return response.data;
     } catch (e) {
-      return e.response.data;
+      return rejectWithValue(e.response.data);
     }
   }
 );
 
-const getOrganizationalGoalSlice = createSlice({
-  name: "getOrganizationalGoal",
+const getKpiByCategoryIdSlice = createSlice({
+  name: "getKpiByCategoryId",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getOrganizationalGoal.rejected, (state, action) => {
+    builder.addCase(getKpiByCategoryId.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(getOrganizationalGoal.fulfilled, (state, action) => {
-      // dispatch(getVendors());
+    builder.addCase(getKpiByCategoryId.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(getOrganizationalGoal.pending, (state, action) => {
+    builder.addCase(getKpiByCategoryId.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -61,4 +57,4 @@ const getOrganizationalGoalSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default getOrganizationalGoalSlice.reducer;
+export default getKpiByCategoryIdSlice.reducer;

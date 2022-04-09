@@ -6,6 +6,7 @@ export default function InputField({
   name,
   type,
   label,
+  placeholder,
   value,
   disabled,
   className,
@@ -23,6 +24,7 @@ export default function InputField({
           {required && <span className="text-danger">*</span>}
         </label>
         <input
+          placeholder={placeholder}
           disabled={disabled}
           {...register(name, {
             required,

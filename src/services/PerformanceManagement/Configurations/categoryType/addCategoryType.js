@@ -2,10 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { baseUrl } from "../../../../utils/helper";
-// import { toggleAddDocumentModal } from "../../modals/modals";
-// import { getDocuments } from "./getDocuments";
-import { performanceManagementConfigUrl } from "./../../../../utils/helper";
+import { baseUrl, performanceManagementConfigUrl } from "./../../../../utils/helper";
+import { getCategoryTypes } from "./getCategoryTypes";
 
 const initialState = {
   error: "",
@@ -15,25 +13,25 @@ const initialState = {
   isSuccessful: false,
 };
 
-export const setupAppraisal = createAsyncThunk(
-  "setupAppraisal",
-  async (newData, { rejectWithValue }) => {
-    console.log("++++++", newData);
-    const { reset, ...rest } = newData;
+export const addCategoryType = createAsyncThunk(
+  "addCategoryType",
+  async ({ data, reset, dispatch }, { rejectWithValue }) => {
+    const { categoryType } = data;
+
+    // console.log(">>>>>cat", categoryType)
+
     try {
       const response = await axios.post(
-        `${performanceManagementConfigUrl}/SetUpAppraisal`,
-        { rest }
+        `${performanceManagementConfigUrl}/SubmitCategoryType?categoryType=${categoryType}`
       );
-      console.log(">>>>>response", response);
+      // console.log(">>>>response", response);
       if (response.status === 200) {
-        Swal.fire(
-          `Appraisal has been ${newData.status}`,
-          "Successful!",
-          "success"
-        ).then(() => {
-          reset();
-        });
+        Swal.fire(`CategoryType has been added`, "Successful!", "success").then(
+          () => {
+            dispatch(getCategoryTypes());
+            reset();
+          }
+        );
         return response.data;
       }
       return response.data;
@@ -43,25 +41,25 @@ export const setupAppraisal = createAsyncThunk(
   }
 );
 
-const setupAppraisalSlice = createSlice({
-  name: "addDocument",
+const addCategoryTypeSlice = createSlice({
+  name: "addCategoryType",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(setupAppraisal.rejected, (state, action) => {
+    builder.addCase(addCategoryType.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(setupAppraisal.fulfilled, (state, action) => {
+    builder.addCase(addCategoryType.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(setupAppraisal.pending, (state, action) => {
+    builder.addCase(addCategoryType.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -69,4 +67,4 @@ const setupAppraisalSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default setupAppraisalSlice.reducer;
+export default addCategoryTypeSlice.reducer;

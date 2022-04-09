@@ -2,11 +2,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { baseUrl } from "../../../../utils/helper";
-// import { configUrl } from "../../../utils/helper";
-// import { closeVendorModal } from "../../modals/modals";
-// import { getVendors } from "./getVendors";
-import { performanceManagementConfigUrl } from './../../../../utils/helper';
+import { baseUrl } from "./../../../../utils/helper";
+import { getTeamGoals } from './getTeamGoals';
 
 const initialState = {
   error: "",
@@ -16,44 +13,43 @@ const initialState = {
   isSuccessful: false,
 };
 
-export const getOrganizationalGoal = createAsyncThunk(
-  "getOrganizationalGoal",
-  async () => {
+export const deleteTeamGoal = createAsyncThunk(
+  "deleteTeamGoal",
+  async ({ teamGoalId, dispatch }) => {
     try {
-      const response = await axios.get(
-        `${performanceManagementConfigUrl}/GetAllOrganizationalGoals`
+      const response = await axios.delete(
+        `${baseUrl}/teamGoals/${teamGoalId}`
       );
-      console.log("<<<<<response", response);
       if (response.status === 200) {
+        dispatch(getTeamGoals());
         return response.data;
       }
       return response.data;
     } catch (e) {
-      return e.response.data;
+      return rejectWithValue(e.response.data);
     }
   }
 );
 
-const getOrganizationalGoalSlice = createSlice({
-  name: "getOrganizationalGoal",
+const deleteTeamGoalSlice = createSlice({
+  name: "deleteTeamGoal",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getOrganizationalGoal.rejected, (state, action) => {
+    builder.addCase(deleteTeamGoal.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(getOrganizationalGoal.fulfilled, (state, action) => {
-      // dispatch(getVendors());
+    builder.addCase(deleteTeamGoal.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(getOrganizationalGoal.pending, (state, action) => {
+    builder.addCase(deleteTeamGoal.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -61,4 +57,4 @@ const getOrganizationalGoalSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default getOrganizationalGoalSlice.reducer;
+export default deleteTeamGoalSlice.reducer;

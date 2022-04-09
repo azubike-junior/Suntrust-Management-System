@@ -8,68 +8,88 @@ import { Table } from "antd";
 import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../../paginationfunction";
 import "../../../antdstyle.css";
+import {
+  useGetCategoriesQuery,
+  useGetOrganizationalGoalsQuery,
+  useGetTeamGoalsQuery,
+} from "../../../../services/PerformanceManagement/Configurations/getPerformanceConfigs";
+import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { addTeamGoal } from "./../../../../services/PerformanceManagement/Configurations/teamGoal/addTeamGoal";
+import { getTeamGoals } from "./../../../../services/PerformanceManagement/Configurations/teamGoal/getTeamGoals";
+import { useSelector } from "react-redux";
+import { classNames } from "./../../../../utils/classNames";
+import { deleteTeamGoal } from "./../../../../services/PerformanceManagement/Configurations/teamGoal/deleteTeamGoal";
+import { getOrganizationalGoalsByCategory } from "../../../../services/PerformanceManagement/Configurations/organizationalGoal/getOrganizationGoalByCategory";
+import Loader from "../../../UIinterface/Loader";
 
 const TeamGoal = () => {
-  const [organizational_data, setOrganizationalData] = useState([
-    {
-      id: 1,
-      category_name: "Process",
-      organ_goal: "Codified and Automated Processes and Manuals",
-      team_goal: "Ensure optimal performance on all core deliverables",
-    },
-    {
-      id: 1,
-      category_name: "Process",
-      organ_goal: "Zero Governace Breaches, Regulatory Penalties and Fines",
-      team_goal:
-        "Ensure total compliance with regulations and internal policies",
-    },
-    {
-      id: 3,
-      category_name: "Customer",
-      organ_goal: "External Net Promoter Score (Customer Experience) > 70%",
-      team_goal:
-        "Maintain excellent service delivery to internal customers (regulatory enquiries, error free offer letters, credit checks, etc)",
-    },
-    {
-      id: 4,
-      category_name: "Financial",
-      organ_goal: "Total Customer Liabilities of N100 Billion",
-      team_goal: "Drive balance sheet growth",
-    },
-    {
-      id: 5,
-      category_name: "Financial",
-      organ_goal: "Profitability of N1 Billion",
-      team_goal:
-        "Minimize operational losses due to data privacy and database security breaches",
-    },
-    {
-      id: 6,
-      category_name: "Financial",
-      organ_goal: "Profitability of N1 Billion",
-      team_goal: "Achieve optimal Implementation of Opex",
-    },
-    {
-      id: 7,
-      category_name: "Financial",
-      organ_goal: "Profitability of N1 Billion",
-      team_goal: "Achieve optimal Implementation of Capex",
-    },
-    {
-      id: 8,
-      category_name: "Financial",
-      organ_goal: "Profitability of N1 Billion",
-      team_goal: "Drive cost savings",
-    },
-    {
-      id: 9,
-      category_name: "Capacity Development",
-      organ_goal: "Human Capacity Development Index  > 70%",
-      team_goal:
-        "Pursue self-development as well as training hours on SunTrust Academy",
-    },
-  ]);
+  const dispatch = useDispatch();
+  const [categoryId, setCategoryId] = useState("");
+  const { data: categories } = useGetCategoriesQuery();
+  const [teamGoalId, setTeamGoalId] = useState("");
+
+  const { data: teamGoals } = useSelector(
+    (state) => state.performanceManagement.getTeamGoalsReducer
+  );
+
+  const { loading: addTeamLoading } = useSelector(
+    (state) => state.performanceManagement.teamGoalReducer
+  );
+
+  const { data: orgGoals } = useSelector(
+    (state) =>
+      state.performanceManagement.getOrganizationalGoalsByCategoryReducer
+  );
+
+  const handleGetOrganizationalGoal = (e) => {
+    console.log(e.target.value);
+    dispatch(getOrganizationalGoalsByCategory(e.target.value));
+  };
+
+  const setCategoryDesc = (text) => {
+    return categories?.find((category) => category.categoryId === text)
+      ?.description;
+  };
+
+  const setOrgDesc = (text) => {
+    return orgGoals?.find((org) => org.organizationalGoalId === text)
+      ?.description;
+  };
+
+  console.log(">>>>>>>orgGoals", orgGoals);
+
+  let allCategories;
+
+  if (categories) {
+    allCategories = [
+      { categoryId: "", description: "-Select-" },
+      ...categories,
+    ];
+  }
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    resetField,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    mode: "onTouched",
+    defaultValues: {},
+  });
+
+  const submitTeamGoalHandler = (data) => {
+    console.log(">>>>>data", data);
+    dispatch(addTeamGoal({ data, reset, dispatch }));
+  };
+
+  useEffect(() => {
+    dispatch(getTeamGoals());
+  }, []);
+
+  console.log(">>>>>>>>teamGoal", teamGoals);
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -81,20 +101,18 @@ const TeamGoal = () => {
   });
 
   // Table displayed on
-  const organizational_columns = [
+  const team_columns = [
     {
       title: "Category Type",
-      dataIndex: "category_name",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
+      dataIndex: "category",
     },
     {
       title: "Organizational Goals",
-      dataIndex: "organ_goal",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
+      dataIndex: "organizationalGoal",
     },
     {
       title: "Team Goals",
-      dataIndex: "team_goal",
+      dataIndex: "description",
       sorter: (a, b) => a.mobile.length - b.mobile.length,
     },
     {
@@ -105,6 +123,9 @@ const TeamGoal = () => {
           data-toggle="modal"
           data-target="#delete_category"
           className="btn btn-sm btn-outline-danger m-r-10"
+          onClick={() => {
+            setTeamGoalId(text.id);
+          }}
         >
           <i className="fa fa-trash" />
         </Link>
@@ -129,55 +150,82 @@ const TeamGoal = () => {
 
         <div className="card m-b-50 col-lg-12">
           <div className="card-body">
-            <div className="row flex-column">
-              <div className="col-lg-12 m-t-10 m-b-20">
-                <h4 className="user-name m-t-0">Setup Team Goal</h4>
-              </div>
+            <form onSubmit={handleSubmit(submitTeamGoalHandler)}>
+              <div className="row flex-column">
+                <div className="col-lg-12 m-t-10 m-b-20">
+                  <h4 className="user-name m-t-0">Setup Team Goal</h4>
+                </div>
 
-              <div className="col-lg-6 m-b-10">
-                <div className="m-b-10">Category</div>
-                <div className="form-group">
-                  <select className="select">
-                    <option>Process</option>
-                    <option>Customer</option>
-                    <option>Financial</option>
-                    <option>Capacity Development</option>
-                  </select>
+                <div className="col-lg-6 m-b-10">
+                  <div className="m-b-10">Category</div>
+                  <div className="form-group">
+                    <select
+                      {...register("categoryId", { required: true })}
+                      className={classNames(
+                        errors?.categoryId ? "error-class" : "",
+                        "form-control"
+                      )}
+                      onChange={(e) => handleGetOrganizationalGoal(e)}
+                    >
+                      {allCategories?.map((category) => {
+                        return (
+                          <option value={category?.categoryId}>
+                            {category?.description}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="col-lg-6 m-b-10">
+                  <div className="m-b-10">Organizational Goal</div>
+                  <div className="form-group">
+                    <select
+                      {...register("organizationalGoalId", { required: true })}
+                      className={classNames(
+                        errors?.organizationalGoalId ? "error-class" : "",
+                        "form-control"
+                      )}
+                    >
+                      {orgGoals?.map((orgGoal) => {
+                        return (
+                          <option value={orgGoal?.organizationalGoalId}>
+                            {orgGoal?.description}
+                          </option>
+                        );
+                      })}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="col-lg-6 m-b-10">
+                  <div className="m-b-10">Team Goal</div>
+                  <div className="form-group">
+                    <textarea
+                      {...register("description", { required: true })}
+                      className={classNames(
+                        errors?.description ? "error-class" : "",
+                        "form-control"
+                      )}
+                      rows="3"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="col-lg-6 m-b-10">
-                <div className="m-b-10">Organizational Goal</div>
-                <div className="form-group">
-                  <select className="select">
-                    <option>
-                      Codified and Automated Processes and Manuals
-                    </option>
-                    <option>
-                      Zero Governace Breaches, Regulatory Penalties and Fines
-                    </option>
-                  </select>
+              <div className="row">
+                <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
+                  <button
+                    href=""
+                    type="submit"
+                    className="btn btn-block btn-primary font-weight-700"
+                  >
+                    {addTeamLoading ? <Loader /> : "Submit"}
+                  </button>
                 </div>
               </div>
-
-              <div className="col-lg-6 m-b-10">
-                <div className="m-b-10">Team Goal</div>
-                <div className="form-group">
-                  <textarea className="form-control" rows="3" />
-                </div>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
-                <a
-                  href=""
-                  className="btn btn-block btn-primary font-weight-700"
-                >
-                  ADD
-                </a>
-              </div>
-            </div>
+            </form>
 
             <div className="row m-t-50 m-b-20">
               {/* <h4 className="user-name m-b-10 col-md-12">CATEGORY LIST</h4> */}
@@ -187,7 +235,7 @@ const TeamGoal = () => {
                   <Table
                     className="table-striped"
                     pagination={{
-                      total: organizational_data.length,
+                      total: teamGoals?.length,
                       showTotal: (total, range) =>
                         `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                       showSizeChanger: true,
@@ -195,26 +243,12 @@ const TeamGoal = () => {
                       itemRender: itemRender,
                     }}
                     style={{ overflowX: "auto" }}
-                    columns={organizational_columns}
+                    columns={team_columns}
                     // bordered
-                    dataSource={organizational_data}
+                    dataSource={teamGoals}
                     rowKey={(record) => record.id}
-                    onChange={console.log("change")}
+                    // onChange={console.log("change")}
                   />
-                </div>
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <div className="form-group col-lg-12 col-md-12 col-sm-12 m-b-20">
-              <div className="d-flex align-items-center justify-content-center">
-                <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
-                  <a
-                    href=""
-                    className="btn btn-block btn-primary font-weight-700"
-                  >
-                    SUBMIT
-                  </a>
                 </div>
               </div>
             </div>
@@ -239,7 +273,14 @@ const TeamGoal = () => {
               <div className="modal-btn delete-action">
                 <div className="row">
                   <div className="col-6">
-                    <a href="" className="btn btn-primary continue-btn">
+                    <a
+                      href="#"
+                      data-dismiss="modal"
+                      className="btn btn-primary continue-btn"
+                      onClick={() =>
+                        dispatch(deleteTeamGoal({ teamGoalId, dispatch }))
+                      }
+                    >
                       Delete
                     </a>
                   </div>

@@ -15,9 +15,17 @@ import { addSelect, timeDuration } from "../../../../utils/helper";
 import { classNames } from "./../../../../utils/classNames";
 import { useDispatch } from "react-redux";
 import { setupAppraisal } from "./../../../../services/PerformanceManagement/Configurations/appraisalSetup/setupAppraisal";
+import { useSelector } from "react-redux";
+import Loader from "../../../UIinterface/Loader";
+import { performanceManagement } from "./../../../../utils/helper";
 
 const SetupAppraisal = () => {
+  const [appraisalPeriod, setAppraisalPeriod] = useState("");
   const dispatch = useDispatch();
+
+  const { loading: setupLoading } = useSelector(
+    (state) => state.performanceManagement.setupAppraisalReducer
+  );
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -41,8 +49,22 @@ const SetupAppraisal = () => {
   });
 
   const setupAppraisalHandler = (data) => {
-    console.log(data);
-    dispatch(setupAppraisal({ data, reset }));
+    const { status, startDate, endDate, startTime, endTime } = data;
+    const newData = {
+      status,
+      startDate,
+      endDate,
+      startTime,
+      endTime,
+      reset,
+    };
+    console.log(newData);
+
+    dispatch(setupAppraisal(newData));
+  };
+
+  const checkPeriod = (e) => {
+    setAppraisalPeriod(e.target.value);
   };
 
   return (
@@ -82,8 +104,8 @@ const SetupAppraisal = () => {
                     )}
                   >
                     <option value="">Select Option</option>
-                    <option value={true}>Open</option>
-                    <option value={false}>Closed</option>
+                    <option value="open">Open</option>
+                    <option value="closed">Closed</option>
                   </select>
                 </div>
               </div>
@@ -97,6 +119,7 @@ const SetupAppraisal = () => {
                       errors?.appraisalPeriod ? "error-class" : "",
                       "form-control"
                     )}
+                    onChange={(e) => checkPeriod(e)}
                   >
                     {timeDuration.map((duration, index) => {
                       return (
@@ -109,26 +132,53 @@ const SetupAppraisal = () => {
                   </select>
                 </div>
               </div>
+              {appraisalPeriod === "hourly" && (
+                <div>
+                  <InputField
+                    register={register}
+                    name="startTime"
+                    label="Start Time"
+                    className="col-lg-4 m-b-30"
+                    required
+                    type="time"
+                    errors={errors?.startTime}
+                  />
 
-              <InputField
-                register={register}
-                name="startDate"
-                label="Start Date"
-                className="col-lg-4 m-b-30"
-                required
-                type="date"
-                errors={errors?.startDate}
-              />
+                  <InputField
+                    register={register}
+                    name="endTime"
+                    label="End Time"
+                    className="col-lg-4 m-b-30"
+                    required
+                    type="time"
+                    errors={errors?.endTime}
+                  />
+                </div>
+              )}
 
-              <InputField
-                register={register}
-                name="endDate"
-                label="End Date"
-                className="col-lg-4 m-b-30"
-                required
-                type="date"
-                errors={errors?.endDate}
-              />
+              {appraisalPeriod !== "hourly" && (
+                <div>
+                  <InputField
+                    register={register}
+                    name="startDate"
+                    label="Start Date"
+                    className="col-lg-4 m-b-30"
+                    required
+                    type="date"
+                    errors={errors?.startDate}
+                  />
+
+                  <InputField
+                    register={register}
+                    name="endDate"
+                    label="End Date"
+                    className="col-lg-4 m-b-30"
+                    required
+                    type="date"
+                    errors={errors?.endDate}
+                  />
+                </div>
+              )}
 
               <div className="col-lg-3 m-b-10">
                 <div className="form-group">
@@ -137,7 +187,7 @@ const SetupAppraisal = () => {
                     href=""
                     className="btn btn-block btn-primary font-weight-700"
                   >
-                    SUBMIT
+                    {setupLoading ? <Loader /> : "Submit"}
                   </button>
                 </div>
               </div>

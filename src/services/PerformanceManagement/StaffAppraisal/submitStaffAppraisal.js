@@ -2,10 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { baseUrl } from "../../../../utils/helper";
-// import { toggleAddDocumentModal } from "../../modals/modals";
-// import { getDocuments } from "./getDocuments";
-import { performanceManagementConfigUrl } from "./../../../../utils/helper";
+import { performanceManagementAppraisalUrl } from "../../../utils/helper";
 
 const initialState = {
   error: "",
@@ -15,24 +12,25 @@ const initialState = {
   isSuccessful: false,
 };
 
-export const setupAppraisal = createAsyncThunk(
-  "setupAppraisal",
-  async (newData, { rejectWithValue }) => {
-    console.log("++++++", newData);
-    const { reset, ...rest } = newData;
+export const submitStaffAppraisal = createAsyncThunk(
+  "submitStaffAppraisal",
+  async (data, { rejectWithValue }) => {
+  
+    const { appraisals, history, clearKPIs } = data;
     try {
       const response = await axios.post(
-        `${performanceManagementConfigUrl}/SetUpAppraisal`,
-        { rest }
+        `${performanceManagementAppraisalUrl}/SubmitAppraisal`,
+        appraisals
       );
-      console.log(">>>>>response", response);
+      console.log(">>>>individu", response);
       if (response.status === 200) {
         Swal.fire(
-          `Appraisal has been ${newData.status}`,
+          `Appraisal has been submitted`,
           "Successful!",
           "success"
         ).then(() => {
-          reset();
+          history.push("/app/performanceManagement/staffAppraisal");
+          clearKPIs()
         });
         return response.data;
       }
@@ -43,25 +41,25 @@ export const setupAppraisal = createAsyncThunk(
   }
 );
 
-const setupAppraisalSlice = createSlice({
-  name: "addDocument",
+const submitStaffAppraisalSlice = createSlice({
+  name: "submitStaffAppraisal",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(setupAppraisal.rejected, (state, action) => {
+    builder.addCase(submitStaffAppraisal.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(setupAppraisal.fulfilled, (state, action) => {
+    builder.addCase(submitStaffAppraisal.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(setupAppraisal.pending, (state, action) => {
+    builder.addCase(submitStaffAppraisal.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -69,4 +67,4 @@ const setupAppraisalSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default setupAppraisalSlice.reducer;
+export default submitStaffAppraisalSlice.reducer;

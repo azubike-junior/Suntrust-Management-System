@@ -17,18 +17,33 @@ import { classNames } from "../../../../utils/classNames";
 import { useDispatch, useSelector } from "react-redux";
 import { addOrganizationalGoal } from "./../../../../services/PerformanceManagement/Configurations/organizationalGoal/addOrganizationalGoal";
 import { getOrganizationalGoal } from "./../../../../services/PerformanceManagement/Configurations/organizationalGoal/getOrganizationalGoal";
+import { getText } from "../../../../utils/helper";
+import { deleteOrganizationalGoal } from "./../../../../services/PerformanceManagement/Configurations/organizationalGoal/deleteOrganizationGoal";
 
 const OrganizationalGoal = () => {
-//   const { data: categories } = useGetCategoriesQuery("");
-  const [allOrganGoals, setAllOrganGoals] = useState([]);
-  const { data: organizationalGoals } = useGetOrganizationalGoalsQuery("");
   const dispatch = useDispatch();
+  const [organizationalGoalId, setOrganizationalGoalId] = useState();
 
-  const { data: categories } = useSelector(
-    (state) => state.performanceStuff.getOrganizationalGoalReducer
-  );
+  const { data: organizationalGoals, loading: organizationGoalsLoading } =
+    useSelector(
+      (state) => state.performanceManagement.getOrganizationalGoalReducer
+    );
 
-//   console.log(">>>>cats", cats);
+  const { data: categories } = useGetCategoriesQuery();
+
+  let allCategories;
+
+  if (categories) {
+    allCategories = [
+      { categoryId: "", description: "-Select-" },
+      ...categories,
+    ];
+  }
+
+  const setText = (text) => {
+    console.log(">>>>>text", text)
+    return categories?.find((category) => category.categoryId === text)?.description
+  }
 
   const {
     register,
@@ -44,7 +59,6 @@ const OrganizationalGoal = () => {
 
   const organizationalGoalHandler = (data) => {
     console.log(">>>dtd", data);
-    setAllOrganGoals((prev) => [...prev, data]);
     dispatch(addOrganizationalGoal({ data, reset, dispatch }));
   };
 
@@ -65,24 +79,31 @@ const OrganizationalGoal = () => {
   const organizational_columns = [
     {
       title: "Category Type",
-      dataIndex: "categoryType",
-      
+      dataIndex: "categoryId",
+      render: (text, record) => (
+        // setText(text)
+        <p>{setText(text)}</p>
+      )
     },
     {
       title: "Organizational Goals",
-      dataIndex: "organizationalGoal",
+      dataIndex: "description",
     },
     {
       title: "",
       render: (text, record) => (
-        <Link
+        <a
           to="#"
           data-toggle="modal"
-          data-target="#delete_category"
+          data-target="#delete_organizationalGoal"
           className="btn btn-sm btn-outline-danger m-r-10"
+          onClick={() => {
+            console.log(text.id);
+            setOrganizationalGoalId(text.id);
+          }}
         >
           <i className="fa fa-trash" />
-        </Link>
+        </a>
       ),
     },
   ];
@@ -114,16 +135,16 @@ const OrganizationalGoal = () => {
                   <div className="m-b-10">Category</div>
                   <div className="form-group">
                     <select
-                      {...register("categoryType", { required: true })}
+                      {...register("categoryId", { required: true })}
                       className={classNames(
-                        errors?.categoryType ? "error-class" : "",
+                        errors?.categoryId ? "error-class" : "",
                         "form-control"
                       )}
                     >
-                      {categories?.map((category) => {
+                      {allCategories?.map((category) => {
                         return (
-                          <option value={category?.id}>
-                            {category?.categoryType}
+                          <option value={category?.categoryId}>
+                            {category?.description}
                           </option>
                         );
                       })}
@@ -135,9 +156,9 @@ const OrganizationalGoal = () => {
                   <div className="m-b-10">Organizational Goal</div>
                   <div className="form-group">
                     <textarea
-                      {...register("organizationalGoal", { required: true })}
+                      {...register("description", { required: true })}
                       className={classNames(
-                        errors?.organizationalGoal ? "error-class" : "",
+                        errors?.description ? "error-class" : "",
                         "form-control"
                       )}
                       rows="3"
@@ -184,20 +205,6 @@ const OrganizationalGoal = () => {
                 </div>
               </div>
             </div>
-
-            {/* Submit Button */}
-            {/* <div className="form-group col-lg-12 col-md-12 col-sm-12 m-b-20">
-              <div className="d-flex align-items-center justify-content-center">
-                <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
-                  <a
-                    href=""
-                    className="btn btn-block btn-primary font-weight-700"
-                  >
-                    SUBMIT
-                  </a>
-                </div>
-              </div>
-            </div> */}
           </div>
         </div>
       </div>
@@ -206,7 +213,7 @@ const OrganizationalGoal = () => {
       {/* Delete Request Modal */}
       <div
         className="modal custom-modal fade"
-        id="delete_category"
+        id="delete_organizationalGoal"
         role="dialog"
       >
         <div className="modal-dialog modal-dialog-centered">
@@ -219,13 +226,25 @@ const OrganizationalGoal = () => {
               <div className="modal-btn delete-action">
                 <div className="row">
                   <div className="col-6">
-                    <a href="" className="btn btn-primary continue-btn">
+                    <a
+                      href="#"
+                      data-dismiss="modal"
+                      onClick={() => {
+                        dispatch(
+                          deleteOrganizationalGoal({
+                            organizationalGoalId,
+                            dispatch,
+                          })
+                        );
+                      }}
+                      className="btn btn-primary continue-btn"
+                    >
                       Delete
                     </a>
                   </div>
                   <div className="col-6">
                     <a
-                      href=""
+                      href="#"
                       data-dismiss="modal"
                       className="btn btn-primary cancel-btn"
                     >

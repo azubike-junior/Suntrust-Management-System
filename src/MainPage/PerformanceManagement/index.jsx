@@ -12,12 +12,14 @@ import IndividualKPI from "./Configurations/IndividualKpi";
 import OrganizationalGoal from "./Configurations/organizationalGoal/index";
 import TeamGoal from "./Configurations/teamGoal";
 import UnitKPI from "./Configurations/unitKpi";
-import StaffAppraisal from "./StaffAppraisal/index";
 import StaffAppraisalDetail from "./StaffAppraisalDetail";
 import StaffAppraisalReview from "./StaffAppraisalReview";
 import StaffsAppraisals from "./StaffsAppraisals";
-import SupervisorAppraisal from "./SupervisorAppraisal";
-import SupervisorAppraisalReview from "./SupervisorAppraisalReview";
+// import SupervisorAppraisal from "./SupervisorAppraisal";
+// import SupervisorAppraisalReview from "./StaffAppraisal";
+import SupervisorAppraisal from './SupervisorAppraisal/index';
+import StaffAppraisal from "./StaffAppraisal";
+import SupervisorAppraisalReview from './SupervisorAppraisalReview/index';
 
 const PerformanceManagementRoute = ({ match }) => (
   <Switch>
@@ -46,13 +48,13 @@ const PerformanceManagementRoute = ({ match }) => (
       component={OrganizationalGoal}
     />
     <Route path={`${match.url}/config/unitKpi`} component={UnitKPI} />
-    <Route path={`${match.url}/staffAppraisal`} component={StaffAppraisal} />
+    {/* <Route path={`${match.url}/staffAppraise`} component={StaffAppraisal} /> */}
     <Route path={`${match.url}/staffAppraisalReview`} component={StaffAppraisalReview}/>
     <Route path={`${match.url}/supervisorAppraisal`} component={SupervisorAppraisal} />
     <Route path={`${match.url}/supervisorAppraisalReview`} component={SupervisorAppraisalReview} />
+    <Route path={`${match.url}/staffAppraisal`} component={StaffAppraisal} />
     <Route path={`${match.url}/allStaffAppraisals`} component={StaffsAppraisals} />
-    <Route path={`${match.url}/staffAppraisalDetail`} component={StaffAppraisalDetail} />
-
+    <Route path={`${match.url}/staffAppraisalDetail/:appraisalReference`} component={StaffAppraisalDetail} />
   </Switch>
 );
 

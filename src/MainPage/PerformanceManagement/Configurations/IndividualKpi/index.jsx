@@ -8,197 +8,130 @@ import { Table } from "antd";
 import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../../paginationfunction";
 import "../../../antdstyle.css";
+import {
+  useGetCategoriesQuery,
+  useGetOrganizationalGoalsQuery,
+  useGetRateTypeMetricsQuery,
+  useGetTargetSourcesQuery,
+  useGetTeamGoalsQuery,
+} from "../../../../services/PerformanceManagement/Configurations/getPerformanceConfigs";
+import { useForm } from "react-hook-form";
+import { classNames } from "./../../../../utils/classNames";
+import InputField from "./../../../UIinterface/Forms/InputField/index";
+import { useDispatch } from "react-redux";
+import { addIndividualKpi } from "./../../../../services/PerformanceManagement/Configurations/individualKpi/addIndividualKpi";
+import { getIndividualKpis } from "./../../../../services/PerformanceManagement/Configurations/individualKpi/getIndividualKpi";
+import { useSelector } from "react-redux";
+import { deleteKpi } from "./../../../../services/PerformanceManagement/Configurations/individualKpi/deleteKpi";
+import { getOrganizationalGoalsByCategory } from "./../../../../services/PerformanceManagement/Configurations/organizationalGoal/getOrganizationGoalByCategory";
+import { getTeamGoalsByOrganizationId } from "./../../../../services/PerformanceManagement/Configurations/teamGoal/getTeamGoalsByOrganizationalId";
 
 const IndividualKPI = () => {
-  const [organizational_data, setOrganizationalData] = useState([
-    // Process Category begins here
-    {
-      id: 1,
-      category_name: "Process",
-      organ_goal: "Codified and Automated Processes and Manuals",
-      dept_goal: "Ensure optimal performance on all core deliverables",
-      individual_KPI:
-        "Self-help reports built for internal customers within a period",
-      measure_target: "40",
-      rate_type: "%",
-      weight_percentage: "10",
-    },
-    {
-      id: 2,
-      category_name: "Process",
-      organ_goal: "Codified and Automated Processes and Manuals",
-      dept_goal: "Ensure optimal performance on all core deliverables",
-      individual_KPI: "% Completion of all projects committed to for delivery",
-      measure_target: "90",
-      rate_type: "%",
-      weight_percentage: "15",
-    },
-    {
-      id: 3,
-      category_name: "Process",
-      organ_goal: "Codified and Automated Processes and Manuals",
-      dept_goal: "Ensure optimal performance on all core deliverables",
-      individual_KPI: "% Provision of quarterly DB/CBA capacity report",
-      measure_target: "100",
-      rate_type: "%",
-      weight_percentage: "5",
-    },
-    {
-      id: 4,
-      category_name: "Process",
-      organ_goal: "Codified and Automated Processes and Manuals",
-      dept_goal: "Ensure optimal performance on all core deliverables",
-      individual_KPI:
-        "Maintain 95% success rate for changes in line with IT Governance  and quarterly capacity report of DB/CBA",
-      measure_target: "95",
-      rate_type: "%",
-      weight_percentage: "5",
-    },
-    {
-      id: 5,
-      category_name: "Process",
-      organ_goal: "Codified and Automated Processes and Manuals",
-      dept_goal: "Ensure optimal performance on all core deliverables",
-      individual_KPI:
-        "Ensure database performance tuning / CBA ugrade is done quarterly for improved performance across the Bank's CBA and all databases",
-      measure_target: "100",
-      rate_type: "%",
-      weight_percentage: "10",
-    },
-    {
-      id: 6,
-      category_name: "Process",
-      organ_goal: "Codified and Automated Processes and Manuals",
-      dept_goal: "Ensure optimal performance on all core deliverables",
-      individual_KPI:
-        "Generation of RCA within 24 hours of incident occurrence  for which root cause was determined.",
-      measure_target: "24",
-      rate_type: "hrs",
-      weight_percentage: "5",
-    },
-    {
-      id: 7,
-      category_name: "Process",
-      organ_goal: "Codified and Automated Processes and Manuals",
-      dept_goal: "Ensure optimal performance on all core deliverables",
-      individual_KPI: "System Uptime % DB/CBA availability",
-      measure_target: "98",
-      rate_type: "%",
-      weight_percentage: "8",
-    },
-    {
-      id: 8,
-      category_name: "Process",
-      organ_goal: "Zero Governace Breaches, Regulatory Penalties and Fines",
-      dept_goal:
-        "Ensure total compliance with regulations and internal policies",
-      individual_KPI: "% Audit Rating",
-      measure_target: "100",
-      rate_type: "%",
-      weight_percentage: "5",
-    },
+  const dispatch = useDispatch();
+  const { data: categories } = useGetCategoriesQuery();
+  const { data: targetSources } = useGetTargetSourcesQuery();
+  const { data: rateTypes } = useGetRateTypeMetricsQuery();
+  const [allKPIs, setAllKPIs] = useState([]);
 
-    // Customer Category begins here
-    {
-      id: 9,
-      category_name: "Customer",
-      organ_goal: "External Net Promoter Score (Customer Experience) > 70%",
-      dept_goal:
-        "Maintain excellent service delivery to internal customers (regulatory enquiries, error free offer letters, credit checks, etc)",
-      individual_KPI: "% Customer satisfaction",
-      measure_target: "80",
-      rate_type: "%",
-      weight_percentage: "5",
-    },
-    {
-      id: 10,
-      category_name: "Customer",
-      organ_goal: "External Net Promoter Score (Customer Experience) > 70%",
-      dept_goal:
-        "Maintain excellent service delivery to internal customers (regulatory enquiries, error free offer letters, credit checks, etc)",
-      individual_KPI: "Service Desk Time to Resolve",
-      measure_target: "8 hrs",
-      rate_type: "%",
-      weight_percentage: "5",
-    },
+  const { data: teamGoals } = useSelector(
+    (state) => state.performanceManagement.getTeamGoalsByOrganizationIdReducer
+  );
 
-    // Financial Category begins here
-    {
-      id: 11,
-      category_name: "Financial",
-      organ_goal: "Total Customer Liabilities of N100 Billion",
-      dept_goal: "Drive balance sheet growth",
-      individual_KPI: "Value of deposit target",
-      measure_target: "150m",
-      rate_type: "N",
-      weight_percentage: "10",
-    },
-    {
-      id: 12,
-      category_name: "Financial",
-      organ_goal: "Profitability of N1 Billion",
-      dept_goal:
-        "Minimize operational losses due to data privacy and database security breaches",
-      individual_KPI: "Value of operational losses",
-      measure_target: "0",
-      rate_type: "N",
-      weight_percentage: "3",
-    },
-    {
-      id: 13,
-      category_name: "Financial",
-      organ_goal: "Profitability of N1 Billion",
-      dept_goal: "Achieve optimal Implementation of Opex",
-      individual_KPI: "% Implementation of OpEx budget",
-      measure_target: "100",
-      rate_type: "%",
-      weight_percentage: "3",
-    },
-    {
-      id: 14,
-      category_name: "Financial",
-      organ_goal: "Profitability of N1 Billion",
-      dept_goal: "Achieve optimal Implementation of Capex",
-      individual_KPI: "% Implementation of Capex budget",
-      measure_target: "80%",
-      rate_type: "≥",
-      weight_percentage: "3",
-    },
-    {
-      id: 15,
-      category_name: "Financial",
-      organ_goal: "Profitability of N1 Billion",
-      dept_goal: "Drive cost savings",
-      individual_KPI: "% Cost savings on Budget",
-      measure_target: "5%",
-      rate_type: "%",
-      weight_percentage: "3",
-    },
+  const { data: KPIs } = useSelector(
+    (state) => state.performanceManagement.getIndividualKpisReducer
+  );
 
-    // Capacity Development Category begins here
-    {
-      id: 16,
-      category_name: "Capacity Development",
-      organ_goal: "Human Capacity Development Index  > 70%",
-      dept_goal:
-        "Pursue self-development as well as training hours on SunTrust Academy",
-      individual_KPI: "Relevant Professional Certifications/Trainings",
-      measure_target: "40",
-      rate_type: "%",
-      weight_percentage: "10",
-    },
-    {
-      id: 17,
-      category_name: "Capacity Development",
-      organ_goal: "Human Capacity Development Index  > 70%",
-      dept_goal:
-        "Pursue self-development as well as training hours on SunTrust Academy",
-      individual_KPI: "Completed Courses on SunTrust Academy",
-      measure_target: "40",
-      rate_type: "%",
-      weight_percentage: "10",
-    },
-  ]);
+  let allCategories;
+
+  if (categories) {
+    allCategories = [
+      { categoryId: "", description: "-Select-" },
+      ...categories,
+    ];
+  }
+
+  const handleGetOrganizationalGoal = (e) => {
+    dispatch(getOrganizationalGoalsByCategory(e.target.value));
+  };
+
+  const handleGetTeamGoal = (e) => {
+    dispatch(getTeamGoalsByOrganizationId(e.target.value));
+  };
+
+  const { data: orgGoals } = useSelector(
+    (state) =>
+      state.performanceManagement.getOrganizationalGoalsByCategoryReducer
+  );
+
+  let allOrgGoals;
+  let allTargetSources;
+  let allRateTypes;
+  let allTeamGoals;
+
+  if (teamGoals) {
+    allTeamGoals = [{ teamGoalId: "", description: "Select" }, ...teamGoals];
+  }
+
+
+  if (orgGoals) {
+    allOrgGoals = [
+      { organizationalGoalId: "", description: "Select" },
+      ...orgGoals,
+    ];
+  }
+
+  if (targetSources) {
+    allTargetSources = [
+      { targetSourceId: "", sourceName: "Select" },
+      ...targetSources,
+    ];
+  }
+
+  if (rateTypes) {
+    allRateTypes = [{ rateTypeId: "", rateType: "Select" }, ...rateTypes];
+  }
+
+  const setText = (text) => {
+    return categories?.find((category) => category.categoryId === Number(text))
+      ?.description;
+  };
+
+  const setTeamDesc = (text) => {
+    return teamGoals?.find((team) => team.teamGoalId === Number(text))
+      ?.description;
+  };
+
+  const setRateDesc = (text) => {
+    return rateTypes?.find((rate) => rate.rateTypeId === Number(text))
+      ?.rateType;
+  };
+
+  const setTargetDesc = (text) => {
+    return targetSources?.find(
+      (target) => target.targetSourceId === Number(text)
+    )?.sourceName;
+  };
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    resetField,
+    getValues,
+    formState: { errors },
+  } = useForm({
+    mode: "onTouched",
+    defaultValues: {},
+  });
+
+  const addKpiHandler = (data) => {
+    const { organizationalGoal, ...rest } = data;
+    dispatch(addIndividualKpi({ data, reset, dispatch }));
+  };
+
+  useEffect(() => {
+    dispatch(getIndividualKpis());
+  }, []);
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -210,53 +143,55 @@ const IndividualKPI = () => {
   });
 
   // Table displayed on
-  const organizational_columns = [
+  const kpi_columns = [
     {
       title: "Category Type",
-      dataIndex: "category_name",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
+      dataIndex: "categoryId",
+      render: (text, record) => <p>{setText(text)}</p>,
     },
-    {
-      title: "Organizational Goals",
-      dataIndex: "organ_goal",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
-    },
+
     {
       title: "Team Goals",
-      dataIndex: "dept_goal",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
+      dataIndex: "teamGoalId",
+      render: (text, record) => <p>{setTeamDesc(text)}</p>,
     },
     {
       title: "Individual KPI",
-      dataIndex: "individual_KPI",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
+      dataIndex: "description",
     },
     {
       title: "Measurable Target",
-      dataIndex: "measure_target",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
+      dataIndex: "measurableTarget",
     },
     {
       title: "Rate Type",
-      dataIndex: "rate_type",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
+      dataIndex: "rateTypeId",
+      render: (text, record) => <p>{setRateDesc(text)}</p>,
+    },
+    {
+      title: "Target Source",
+      dataIndex: "targetSourceId",
+      render: (text, record) => <p>{setTargetDesc(text)}</p>,
     },
     {
       title: "Weight (Must add up to 100)",
-      dataIndex: "weight_percentage",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
+      dataIndex: "weightedScore",
     },
     {
       title: "",
       render: (text, record) => (
-        <Link
+        <a
           to="#"
           data-toggle="modal"
-          data-target="#delete_category"
+          data-target="#delete_kpi"
           className="btn btn-sm btn-outline-danger m-r-10"
+          onClick={() => {
+            console.log(">>>>>text", text.id);
+            setKpiId(text.id);
+          }}
         >
           <i className="fa fa-trash" />
-        </Link>
+        </a>
       ),
     },
   ];
@@ -269,6 +204,7 @@ const IndividualKPI = () => {
       </Helmet>
 
       {/* Page Content */}
+
       <div className="content container-fluid">
         {/* Page Header */}
         <div className="">
@@ -278,19 +214,28 @@ const IndividualKPI = () => {
 
         <div className="card m-b-50 col-lg-12">
           <div className="card-body">
-            <div className="row">
+            <form className="row" onSubmit={handleSubmit(addKpiHandler)}>
               <div className="col-lg-12 m-t-10 m-b-20">
-                <h4 className="user-name m-t-0">Setup Individual KPI</h4>
+                <h4 className="user-name m-t-0">Setup KPI</h4>
               </div>
-
               <div className="col-lg-4 m-b-10">
                 <div className="m-b-10">Category</div>
                 <div className="form-group">
-                  <select className="select">
-                    <option>Process</option>
-                    <option>Customer</option>
-                    <option>Financial</option>
-                    <option>Capacity Development</option>
+                  <select
+                    {...register("categoryId", { required: true })}
+                    className={classNames(
+                      errors?.categoryId ? "error-class" : "",
+                      "form-control"
+                    )}
+                    onChange={(e) => handleGetOrganizationalGoal(e)}
+                  >
+                    {allCategories?.map((category) => {
+                      return (
+                        <option value={category?.categoryId}>
+                          {category?.description}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
               </div>
@@ -298,13 +243,21 @@ const IndividualKPI = () => {
               <div className="col-lg-4 m-b-10">
                 <div className="m-b-10">Organizational Goal</div>
                 <div className="form-group">
-                  <select className="select">
-                    <option>
-                      Codified and Automated Processes and Manuals
-                    </option>
-                    <option>
-                      Zero Governace Breaches, Regulatory Penalties and Fines
-                    </option>
+                  <select
+                    {...register("organizationalGoal", { required: true })}
+                    className={classNames(
+                      errors?.organizationalGoalId ? "error-class" : "",
+                      "form-control"
+                    )}
+                    onChange={(e) => handleGetTeamGoal(e)}
+                  >
+                    {allOrgGoals?.map((orgGoal) => {
+                      return (
+                        <option value={orgGoal?.organizationalGoalId}>
+                          {orgGoal?.description}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
               </div>
@@ -312,14 +265,23 @@ const IndividualKPI = () => {
               <div className="col-lg-4 m-b-10">
                 <div className="m-b-10">Team Goal</div>
                 <div className="form-group">
-                  <select className="select">
-                    <option>
-                      Ensure optimal performance on all core deliverables
-                    </option>
-                    <option>
-                      Ensure total compliance with regulations and internal
-                      policies
-                    </option>
+                  <select
+                    {...register("teamGoalId", { required: true })}
+                    className={classNames(
+                      errors?.teamGoalId ? "error-class" : "",
+                      "form-control"
+                    )}
+                  >
+                    {allTeamGoals?.map((teamGoal) => {
+                      return (
+                        <option
+                          key={teamGoal?.teamGoalId}
+                          value={teamGoal?.teamGoalId}
+                        >
+                          {teamGoal?.description}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
               </div>
@@ -327,27 +289,37 @@ const IndividualKPI = () => {
               <div className="col-lg-12 m-b-10">
                 <div className="m-b-10">Individual KPI</div>
                 <div className="form-group">
-                  {/* <select className="select">
-                                         <option>Self-help reports built for internal customers within a period</option>
-                                         <option>% Completion of all projects committed to for delivery</option>
-                                         <option>% Provision of quarterly DB/CBA capacity report</option>
-                                         <option>Maintain 95% success rate for changes in line with IT Governance  and quarterly capacity report of DB/CBA</option>
-                                         <option>Ensure database performance tuning / CBA ugrade is done quarterly for improved performance across the Bank's CBA and all databases</option>
-                                         <option>Generation of RCA within 24 hours of incident occurrence  for which root cause was determined.</option>
-                                         <option>"System Uptime % DB/CBA availability"</option>
-                                     </select> */}
-                  <textarea className="form-control" rows="3" />
+                  <textarea
+                    {...register("description", { required: true })}
+                    className={classNames(
+                      errors?.description ? "error-class" : "",
+                      "form-control"
+                    )}
+                    rows="3"
+                  />
                 </div>
               </div>
 
               <div className="col-lg-3 m-b-10">
                 <div className="m-b-10">Target Source</div>
                 <div className="form-group">
-                  <select className="select">
-                    <option>Banks</option>
-                    <option>Budget Systems</option>
-                    <option>Help Desk</option>
-                    <option>Input</option>
+                  <select
+                    {...register("targetSourceId", { required: true })}
+                    className={classNames(
+                      errors?.targetSource ? "error-class" : "",
+                      "form-control"
+                    )}
+                  >
+                    {allTargetSources?.map((targetSource) => {
+                      return (
+                        <option
+                          key={targetSource.targetSourceId}
+                          value={targetSource.targetSourceId}
+                        >
+                          {targetSource.sourceName}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
               </div>
@@ -355,42 +327,66 @@ const IndividualKPI = () => {
               <div className="col-lg-3 m-b-10">
                 <div className="m-b-10">Rate Type (Metric)</div>
                 <div className="form-group">
-                  <select className="select">
-                    <option>Fixed Value</option>
-                    <option>Hours (hrs)</option>
-                    <option>Percentage (%)</option>
-                    <option>Money Target (&#8358;)</option>
-                    <option>Greater Than (&ge;)</option>
-                    <option>Less than (&le;)</option>
+                  <select
+                    {...register("rateTypeId", { required: true })}
+                    className={classNames(
+                      errors?.rateType ? "error-class" : "",
+                      "form-control"
+                    )}
+                  >
+                    {allRateTypes?.map((rateType) => {
+                      return (
+                        <option
+                          key={rateType.rateTypeId}
+                          value={rateType.rateTypeId}
+                        >
+                          {rateType.rateType}
+                        </option>
+                      );
+                    })}
                   </select>
                 </div>
               </div>
 
-              <div className="col-lg-3 m-b-10">
+              <InputField
+                register={register}
+                name="measurableTarget"
+                label="Measurable Target (Metric)"
+                className="col-lg-3 m-b-10"
+                required
+                type="text"
+                errors={errors?.measurableTarget}
+              />
+
+              {/* <div className="col-lg-3 m-b-10">
                 <div className="m-b-10">Measurable Target (Metric)</div>
                 <div className="form-group">
                   <input type="text" className="form-control" />
                 </div>
-              </div>
+              </div> */}
 
-              <div className="col-lg-3 m-b-10">
-                <div className="m-b-10">Weighted Scores</div>
-                <div className="form-group">
-                  <input type="text" className="form-control" />
-                </div>
-              </div>
-            </div>
+              {/* <div className="col-lg-3 m-b-10"> */}
+              <InputField
+                register={register}
+                name="weightedScore"
+                label="Weight Scores"
+                className="col-lg-3 m-b-10"
+                required
+                type="text"
+                errors={errors?.weightedScore}
+              />
+              {/* </div> */}
 
-            <div className="row">
               <div className="col-lg-3 col-md-6 col-sm-12 m-t-30 m-b-10">
-                <a
-                  href=""
+                <button
+                  type="submit"
+                  href="#"
                   className="btn btn-block btn-primary font-weight-700"
                 >
                   ADD
-                </a>
+                </button>
               </div>
-            </div>
+            </form>
 
             <div className="row m-t-50 m-b-20">
               {/* <h4 className="user-name m-b-10 col-md-12">CATEGORY LIST</h4> */}
@@ -400,7 +396,7 @@ const IndividualKPI = () => {
                   <Table
                     className="table-striped"
                     pagination={{
-                      total: organizational_data.length,
+                      total: KPIs.length,
                       showTotal: (total, range) =>
                         `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                       showSizeChanger: true,
@@ -408,9 +404,9 @@ const IndividualKPI = () => {
                       itemRender: itemRender,
                     }}
                     style={{ overflowX: "auto" }}
-                    columns={organizational_columns}
+                    columns={kpi_columns}
                     // bordered
-                    dataSource={organizational_data}
+                    dataSource={KPIs}
                     rowKey={(record) => record.id}
                     onChange={console.log("change")}
                   />
@@ -419,7 +415,7 @@ const IndividualKPI = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="form-group col-lg-12 col-md-12 col-sm-12 m-b-20">
+            {/* <div className="form-group col-lg-12 col-md-12 col-sm-12 m-b-20">
               <div className="d-flex align-items-center justify-content-center">
                 <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
                   <a
@@ -430,29 +426,29 @@ const IndividualKPI = () => {
                   </a>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
       {/* /Page Content */}
 
       {/* Delete Request Modal */}
-      <div
-        className="modal custom-modal fade"
-        id="delete_category"
-        role="dialog"
-      >
+      <div className="modal custom-modal fade" id="delete_kpi" role="dialog">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-body">
               <div className="form-header">
                 <h3>Delete Category</h3>
-                <p>Are you sure want to delete?</p>
+                <p>Are you sure you want to delete?</p>
               </div>
               <div className="modal-btn delete-action">
                 <div className="row">
                   <div className="col-6">
-                    <a href="" className="btn btn-primary continue-btn">
+                    <a
+                      onClick={() => dispatch(deleteKpi({ kpiId, dispatch }))}
+                      data-dismiss="modal"
+                      className="btn btn-primary continue-btn"
+                    >
                       Delete
                     </a>
                   </div>

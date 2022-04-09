@@ -3,14 +3,30 @@
  */
 import React, { Component, useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
-
+import { Link, useHistory } from "react-router-dom";
 import { Table } from "antd";
 import "antd/dist/antd.css";
-import { itemRender, onShowSizeChange } from "../../paginationfunction";
+import { updateName } from "../../../utils/helper";
+import {
+  createStore,
+  useStateMachine,
+  StateMachineProvider,
+  GlobalState,
+} from "little-state-machine";
 import "../../antdstyle.css";
+import { useDispatch } from "react-redux";
+import { submitStaffAppraisal } from "./../../../services/PerformanceManagement/StaffAppraisal/submitStaffAppraisal";
+import KpiComponent from "../KpiComponent";
 
-const Staff_Appraisal_Review = () => {
+const StaffAppraisalReview = () => {
+  const { state: allData, actions } = useStateMachine({ updateName });
+  const dispatch = useDispatch();
+  const [KPIs, setKPIs] = useState([]);
+  const [kpiResult, setKpiResult] = useState("");
+  const history = useHistory();
+
+  console.log(">>>>.state", allData);
+
   useEffect(() => {
     if ($(".select").length > 0) {
       $(".select").select2({
@@ -19,6 +35,69 @@ const Staff_Appraisal_Review = () => {
       });
     }
   });
+
+  const clearKPIs = () => {
+    allData.data = {
+      KPIs: [],
+    };
+    actions.update(allData.data);
+  };
+
+  const allProcess = allData?.data.KPIs.filter(
+    (kpi) => kpi.category === "Process"
+  );
+  const allCustomer = allData?.data.KPIs.filter(
+    (kpi) => kpi.category === "Customer"
+  );
+  const allFinancial = allData?.data.KPIs.filter(
+    (kpi) => kpi.category === "Financial"
+  );
+  const allCapacityDevelopment = allData?.data.KPIs.filter(
+    (kpi) => kpi.category === "Capacity Development"
+  );
+
+  console.log(">>>>>>allKPIs", allProcess);
+
+  const submitAppraisal = () => {
+    const appraisals = KPIs?.map((kpi) => {
+      return {
+        staffId: kpi.staffId,
+        supervisorRate: kpi.supervisorRate,
+        appraiseeComment: kpi.appraiseeComment,
+        supervisorComment: kpi.supervisorComment,
+        supervisorResult: kpi.supervisorResult,
+        kpiId: Number(kpi.kpiId),
+        categoryId: Number(kpi.categoryId),
+        measurableTarget: kpi.measurableTarget,
+        weightedScore: kpi.weightedScore,
+        appraiseeResult: kpi.appraiseeResult,
+        appraiseeRate: kpi.appraiseeRate,
+      };
+    });
+
+    const data = {
+      appraisals,
+      history,
+      clearKPIs,
+    };
+
+    dispatch(submitStaffAppraisal(data));
+  };
+
+  const result = KPIs.reduce((acc, kpi) => {
+    const allResults = kpi.appraiseeResult.split("%");
+    console.log(">>>>acc", allResults[0]);
+
+    return Number(acc) + Number(allResults[0]);
+  }, 0);
+
+  useEffect(() => {
+    console.log(">>>>allData", allData?.data.KPIs);
+    setKPIs(allData?.data.KPIs);
+    setKpiResult(result);
+  });
+
+  console.log(">>>>>>result", result);
 
   return (
     <div className="page-wrapper">
@@ -34,8 +113,8 @@ const Staff_Appraisal_Review = () => {
             <div className="col-sm-12">
               <h3 className="page-title">Appraisal Review</h3>
               <ul className="breadcrumb">
-                <li className="breadcrumb-item">
-                  <Link to="/app/employees/staff_Appraisal">
+                <li className="breadcrumb-item" onClick={() => clearKPIs()}>
+                  <Link to="/app/performanceManagement/staffAppraisal">
                     Back to Appraisal Page
                   </Link>
                 </li>
@@ -70,432 +149,65 @@ const Staff_Appraisal_Review = () => {
                   </div>
                   {/* Table Header Ends Here */}
 
-                  {/* Process Review Starts Here */}
-                  <div className="row m-t-20">
-                    <div className="col-md-12 m-b-20">
-                      <h4
-                        className="user-name"
-                        style={{
-                          fontWeight: "bolder",
-                          textDecoration: "underline",
-                        }}
-                      >
-                        PROCESS
-                      </h4>
-                    </div>
-
-                    <div className="col-lg-12">
-                      <div className="row">
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            # Self-help reports built for internal customers
-                            within a period.
-                          </div>
-                          <div className="col-lg-2 text-center">40</div>
-                          <div className="col-lg-2 text-center">10</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            % Completion of all projects committed to for
-                            delivery.
-                          </div>
-                          <div className="col-lg-2 text-center">90%</div>
-                          <div className="col-lg-2 text-center">15</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            % Provision of quarterly DB/CBA capacity report.
-                          </div>
-                          <div className="col-lg-2 text-center">100%</div>
-                          <div className="col-lg-2 text-center">5</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            Maintain 95% success rate for changes in line with
-                            IT Governance and quarterly capacity report of
-                            DB/CBA.
-                          </div>
-                          <div className="col-lg-2 text-center">95%</div>
-                          <div className="col-lg-2 text-center">5</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            Ensure database performance tuning / CBA ugrade is
-                            done quarterly for improved performance across the
-                            Bank's CBA and all databases.
-                          </div>
-                          <div className="col-lg-2 text-center">100%</div>
-                          <div className="col-lg-2 text-center">10</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            Generation of RCA within 24 hours of incident
-                            occurrence for which root cause was determined.
-                          </div>
-                          <div className="col-lg-2 text-center">24hrs</div>
-                          <div className="col-lg-2 text-center">5</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            "System Uptime. % DB/CBA availability"
-                          </div>
-                          <div className="col-lg-2 text-center">98%</div>
-                          <div className="col-lg-2 text-center">8</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">% Audit Rating</div>
-                          <div className="col-lg-2 text-center">100%</div>
-                          <div className="col-lg-2 text-center">5</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="col-md-12 m-b-20 m-t-20">
+                    <h4
+                      className="user-name"
+                      style={{
+                        fontWeight: "bolder",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      Process
+                    </h4>
                   </div>
-                  {/* Process Review Ends Here */}
+                  {allProcess?.map((kpi) => {
+                    return <KpiComponent kpi={kpi} />;
+                  })}
 
-                  {/* Customer Review Starts Here */}
-                  <div className="row m-t-50">
-                    <div className="col-md-12 m-b-20">
-                      <h4
-                        className="user-name"
-                        style={{
-                          fontWeight: "bolder",
-                          textDecoration: "underline",
-                        }}
-                      >
-                        CUSTOMER
-                      </h4>
-                    </div>
-
-                    <div className="col-lg-12">
-                      <div className="row">
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            % Customer satisfaction
-                          </div>
-                          <div className="col-lg-2 text-center">80%</div>
-                          <div className="col-lg-2 text-center">5</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            Service Desk Time to Resolve
-                          </div>
-                          <div className="col-lg-2 text-center">8 hours</div>
-                          <div className="col-lg-2 text-center">5</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="col-md-12 m-b-20 m-t-20">
+                    <h4
+                      className="user-name"
+                      style={{
+                        fontWeight: "bolder",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      Customer
+                    </h4>
                   </div>
-                  {/* Customer Review Ends Here */}
+                  {allCustomer?.map((kpi) => {
+                    return <KpiComponent kpi={kpi} />;
+                  })}
 
-                  {/* Financial Review Starts Here */}
-                  <div className="row m-t-50">
-                    <div className="col-md-12 m-b-20">
-                      <h4
-                        className="user-name"
-                        style={{
-                          fontWeight: "bolder",
-                          textDecoration: "underline",
-                        }}
-                      >
-                        FINANCIAL
-                      </h4>
-                    </div>
-
-                    <div className="col-lg-12">
-                      <div className="row">
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            Value of deposit target.
-                          </div>
-                          <div className="col-lg-2 text-center">
-                            N150 million
-                          </div>
-                          <div className="col-lg-2 text-center">10</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            Value of operational losses.
-                          </div>
-                          <div className="col-lg-2 text-center">N0</div>
-                          <div className="col-lg-2 text-center">3</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            % Implementation of OpEx budget.
-                          </div>
-                          <div className="col-lg-2 text-center">100%</div>
-                          <div className="col-lg-2 text-center">3</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            % Implementation of CapEx budget.
-                          </div>
-                          <div className="col-lg-2 text-center">&gt; 80%</div>
-                          <div className="col-lg-2 text-center">3</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            % Cost savings on Budget.
-                          </div>
-                          <div className="col-lg-2 text-center">&gt; 5%</div>
-                          <div className="col-lg-2 text-center">10</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="col-md-12 m-b-20 m-t-20">
+                    <h4
+                      className="user-name"
+                      style={{
+                        fontWeight: "bolder",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      Financial
+                    </h4>
                   </div>
-                  {/* Financial Review Ends Here */}
+                  {allFinancial?.map((kpi) => {
+                    return <KpiComponent kpi={kpi} />;
+                  })}
 
-                  {/* Capacity Development Review Starts Here */}
-                  <div className="row m-t-50 m-b-50">
-                    <div className="col-md-12 m-b-20">
-                      <h4
-                        className="user-name"
-                        style={{
-                          fontWeight: "bolder",
-                          textDecoration: "underline",
-                        }}
-                      >
-                        CAPACITY DEVELOPMENT
-                      </h4>
-                    </div>
-
-                    <div className="col-lg-12">
-                      <div className="row">
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            # Relevant Professional Certifications/Trainings
-                          </div>
-                          <div className="col-lg-2 text-center">&gt; 1</div>
-                          <div className="col-lg-2 text-center">5</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div className="col-lg-4">
-                            # Completed Courses on SunTrust Academy.
-                          </div>
-                          <div className="col-lg-2 text-center">&gt; 36</div>
-                          <div className="col-lg-2 text-center">5</div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "#139b23", fontWeight: "bolder" }}
-                          >
-                            35
-                          </div>
-                          <div
-                            className="col-lg-2 text-center"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            10
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                  <div className="col-md-12 m-b-20 m-t-20">
+                    <h4
+                      className="user-name"
+                      style={{
+                        fontWeight: "bolder",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      Capacity Development
+                    </h4>
                   </div>
-                  {/* Capacity Development Review Ends Here */}
+                  {allCapacityDevelopment?.map((kpi) => {
+                    return <KpiComponent kpi={kpi} />;
+                  })}
 
                   {/* Total Scores Review Starts Here */}
                   <div className="row m-t-50" style={{ fontSize: "1.3em" }}>
@@ -515,7 +227,7 @@ const Staff_Appraisal_Review = () => {
                             className="col-lg-2 text-center text-success"
                             style={{ color: "red", fontWeight: "bolder" }}
                           >
-                            80%
+                            {Number(kpiResult)?.toFixed()}
                           </div>
                         </div>
                       </div>
@@ -528,8 +240,9 @@ const Staff_Appraisal_Review = () => {
                     <div className="d-flex align-items-center justify-content-center">
                       <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
                         <a
-                          href=""
+                          href="#"
                           className="btn btn-block btn-primary font-weight-700"
+                          onClick={() => submitAppraisal()}
                         >
                           SUBMIT
                         </a>
@@ -546,4 +259,4 @@ const Staff_Appraisal_Review = () => {
     </div>
   );
 };
-export default Staff_Appraisal_Review;
+export default StaffAppraisalReview;

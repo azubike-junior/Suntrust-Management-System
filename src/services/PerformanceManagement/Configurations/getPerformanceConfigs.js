@@ -1,17 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseUrl } from "../../../utils/helper";
+import { performanceManagementConfigUrl } from "./../../../utils/helper";
 
 export const getPerformanceConfigQuery = createApi({
   reducerPath: "getCodeConfigQuery",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${baseUrl}/`,
+    baseUrl: `${performanceManagementConfigUrl}/`,
   }),
   endpoints: (build) => ({
     getCategories: build.query({
-      query: () => `categoryTypes`,
+      query: () => `GetAllCategoryTypes`,
     }),
     getOrganizationalGoals: build.query({
-      query: () => `organizationalGoals`,
+      query: () => `GetAllOrganizationalGoals`,
     }),
     getTeamGoals: build.query({
       query: () => `teamGoals`,
@@ -19,26 +20,11 @@ export const getPerformanceConfigQuery = createApi({
     getIndividualKpis: build.query({
       query: () => `individualKpis`,
     }),
-    postCategoryType: build.mutation({
-      // note: an optional `queryFn` may be used in place of `query`
-      query: (category) => ({
-        url: `categoryTypes`,
-        method: "POST",
-        body: category,
-      }),
-      // Pick out data and prevent nested properties in a hook or selector
-      transformResponse: (response, meta, arg) => response.data,
-      invalidatesTags: ["Post"],
+    getRateTypeMetrics: build.query({
+      query: () => `GetRateTypeMetrics`,
     }),
-    deleteCategoryType: build.mutation({
-      // note: an optional `queryFn` may be used in place of `query`
-      query: (id) => ({
-        url: `categoryTypes/${id}`,
-        method: "DELETE",
-      }),
-      // Pick out data and prevent nested properties in a hook or selector
-      transformResponse: (response, meta, arg) => response.data,
-      invalidatesTags: ["Post"],
+    getTargetSources: build.query({
+      query: () => `GetTargetSources`,
     }),
   }),
 });
@@ -48,6 +34,6 @@ export const {
   useGetIndividualKpisQuery,
   useGetOrganizationalGoalsQuery,
   useGetTeamGoalsQuery,
-  usePostCategoryTypeMutation,
-  useDeleteCategoryTypeMutation
+  useGetRateTypeMetricsQuery,
+  useGetTargetSourcesQuery,
 } = getPerformanceConfigQuery;
