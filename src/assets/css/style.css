@@ -8825,3 +8825,37 @@ ul.comment-list li ul.children {
 .result-style {
 
 }
+
+
+
+
+.panel {
+    width: 100%;
+    height: fit-content;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgb(0 0 0 / 5%);
+}
+
+.panel-default {
+    border-color: #DDD;
+}
+
+.panel-default>.panel-heading {
+    color: #333;
+    background-color: #ccc;
+    border-color: #DDD;
+}
+
+.panel-heading {
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.panel-body {
+    padding: 20px;
+}

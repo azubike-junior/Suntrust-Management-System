@@ -44,6 +44,9 @@ import getKpiByCategoryIdReducer from "./../PerformanceManagement/StaffAppraisal
 import getAppraisalsByStaffIdReducer from "./../PerformanceManagement/StaffAppraisal/getAppraisalsByStaffId";
 import getAppraisalsBySupervisorIdReducer from "./../PerformanceManagement/StaffAppraisal/getAppraisalsBySupervisorId";
 import getAppraisalByReferenceReducer from "../PerformanceManagement/StaffAppraisal/getAppraisalByReference";
+import getTechnicalTrainingReducer from "./../PerformanceManagement/StaffAppraisal/getTechnicalTraining";
+import getBehaviouralTrainingReducer from "./../PerformanceManagement/StaffAppraisal/getBehaviouralTraining";
+import getStrengthsReducer from "./../PerformanceManagement/StaffAppraisal/getStrengths";
 
 
 import {
@@ -66,7 +69,10 @@ const performanceManagement = combineReducers({
   getKpiByCategoryIdReducer,
   getAppraisalsByStaffIdReducer,
   getAppraisalsBySupervisorIdReducer,
-  getAppraisalByReferenceReducer
+  getAppraisalByReferenceReducer,
+  getBehaviouralTrainingReducer,
+  getTechnicalTrainingReducer,
+  getStrengthsReducer
 });
 
 export const store = configureStore({

@@ -37,6 +37,8 @@ const StaffAppraisalDetail = () => {
     (state) => state.performanceManagement.getAppraisalByReferenceReducer
   );
 
+  console.log(">>>>>details", details)
+
   const updateValues = (e, id, kpi) => {
     let { value, min, max } = e.target;
     if ((value > Number(max)) | (value < Number(min))) {

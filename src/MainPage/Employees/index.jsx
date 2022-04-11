@@ -67,7 +67,7 @@ const EmployeeRoute = ({ match }) => (
       <Route path={`${match.url}/super_self_Appraisal`} component={Supervisor_Self_Appraisal} />
       <Route path={`${match.url}/my_staff_Appraisal`} component={MyStaffAppraisals} />
       <Route path={`${match.url}/staff_Appraisal_review`} component={Staff_Appraisal_Review} />
-      <Route path={`${match.url}/staff_Appraisal_detail`} component={Staff_Appraisal_Detail} />
+      <Route path={`${match.url}/staff_Appraisal_detail/:appraisalReference`} component={Staff_Appraisal_Detail} />
       <Route path={`${match.url}/super_self_review`} component={Super_Self_Review} />
 
    </Switch>

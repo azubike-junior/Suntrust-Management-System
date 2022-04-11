@@ -17,8 +17,10 @@ export const getAppraisalByReferenceId = createAsyncThunk(
   async (appraisalReference) => {
     try {
       const response = await axios.get(
-        `${performanceManagementAppraisalUrl}/GetAppraisalByRefrenceId?Id=${appraisalReference}`
+        `${performanceManagementAppraisalUrl}/GetAppraisalByReferenceId?Id=${appraisalReference}`
       );
+
+      console.log(">>>>>>>>>response", response)
 
       if (response.status === 200) {
         return response.data;

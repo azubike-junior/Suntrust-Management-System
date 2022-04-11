@@ -1,22 +1,11 @@
-/**
- * TermsCondition Page
- */
-import React, { Component, useState, useEffect } from "react";
-import { Helmet } from "react-helmet";
+import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Table } from "antd";
-import "antd/dist/antd.css";
-import { updateName } from "../../../utils/helper";
-import {
-  createStore,
-  useStateMachine,
-  StateMachineProvider,
-  GlobalState,
-} from "little-state-machine";
-import "../../antdstyle.css";
-import { useDispatch } from "react-redux";
-import { submitStaffAppraisal } from "./../../../services/PerformanceManagement/StaffAppraisal/submitStaffAppraisal";
-import KpiComponent from "../KpiComponent";
+import { Helmet } from "react-helmet";
+import { useDispatch, useSelector } from "react-redux";
+import { useStateMachine } from "little-state-machine";
+import { submitStaffAppraisal } from './../../../services/PerformanceManagement/StaffAppraisal/submitStaffAppraisal';
+import { NewKpiReviewComponent } from './../KpiComponent/index';
+import { updateName } from './../../../utils/helper';
 
 const StaffAppraisalReview = () => {
   const { state: allData, actions } = useStateMachine({ updateName });
@@ -25,7 +14,7 @@ const StaffAppraisalReview = () => {
   const [kpiResult, setKpiResult] = useState("");
   const history = useHistory();
 
-  console.log(">>>>.state", allData);
+  // console.log(">>>>.state", allData);
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -43,219 +32,291 @@ const StaffAppraisalReview = () => {
     actions.update(allData.data);
   };
 
-  const allProcess = allData?.data.KPIs.filter(
-    (kpi) => kpi.category === "Process"
+  const allProcess = allData?.data?.KPIs.filter(
+    (kpi) => kpi.categoryId === 1
   );
-  const allCustomer = allData?.data.KPIs.filter(
-    (kpi) => kpi.category === "Customer"
+  const allCustomer = allData?.data?.KPIs.filter(
+    (kpi) => kpi.categoryId === 2
   );
-  const allFinancial = allData?.data.KPIs.filter(
-    (kpi) => kpi.category === "Financial"
+  const allFinancial = allData?.data?.KPIs.filter(
+    (kpi) => kpi.categoryId === 3
   );
-  const allCapacityDevelopment = allData?.data.KPIs.filter(
-    (kpi) => kpi.category === "Capacity Development"
+  const allCapacityDevelopment = allData?.data?.KPIs.filter(
+    (kpi) => kpi.categoryId === 4
   );
 
-  console.log(">>>>>>allKPIs", allProcess);
+  // console.log(">>>>>>allProcess", allProcess);
 
   const submitAppraisal = () => {
-    const appraisals = KPIs?.map((kpi) => {
+    const appraise = KPIs?.map((kpi) => {
       return {
-        staffId: kpi.staffId,
         supervisorRate: kpi.supervisorRate,
-        appraiseeComment: kpi.appraiseeComment,
-        supervisorComment: kpi.supervisorComment,
+        key: kpi.kpiId,
         supervisorResult: kpi.supervisorResult,
         kpiId: Number(kpi.kpiId),
         categoryId: Number(kpi.categoryId),
-        measurableTarget: kpi.measurableTarget,
-        weightedScore: kpi.weightedScore,
         appraiseeResult: kpi.appraiseeResult,
         appraiseeRate: kpi.appraiseeRate,
       };
     });
+
+    const {
+      staffId,
+      supervisorId,
+      supervisorName,
+      secondSupervisorName,
+      appraiseeName,
+      exceptionalAchievement,
+      appraiseeComment,
+    } = allData?.data;
+
+    const appraisals = {
+      staffId,
+      supervisorId,
+      supervisorName,
+      appraiseeName,
+      exceptionalAchievement,
+      secondSupervisorName,
+      appraiseeComment,
+      kpis: appraise,
+    };
 
     const data = {
       appraisals,
       history,
       clearKPIs,
     };
-
+    console.log(">>>>>>appraisals", appraisals)
     dispatch(submitStaffAppraisal(data));
   };
 
-  const result = KPIs.reduce((acc, kpi) => {
+  const result = KPIs?.reduce((acc, kpi) => {
     const allResults = kpi.appraiseeResult.split("%");
-    console.log(">>>>acc", allResults[0]);
-
     return Number(acc) + Number(allResults[0]);
   }, 0);
 
   useEffect(() => {
-    console.log(">>>>allData", allData?.data.KPIs);
-    setKPIs(allData?.data.KPIs);
+    // console.log(">>>>allData", allData?.data);
+    setKPIs(allData?.data?.KPIs);
     setKpiResult(result);
   });
 
-  console.log(">>>>>>result", result);
+  // console.log(">>>>>>allData", allData)
+
+  const processPerspective = allProcess?.map((kpi, index) => {
+    if (index === 0) {
+      return { ...kpi, category: kpi.category };
+    }
+    return { ...kpi, category: "" };
+  });
+
+  const customerPerspective = allCustomer?.map((kpi, index) => {
+    if (index === 0) {
+      return { ...kpi, category: kpi.category };
+    }
+    return { ...kpi, category: "" };
+  });
+
+  const financialPerspective = allFinancial?.map((kpi, index) => {
+    if (index === 0) {
+      return { ...kpi, category: kpi.category };
+    }
+    return { ...kpi, category: "" };
+  });
+
+  const capacityPerspective = allCapacityDevelopment?.map((kpi, index) => {
+    if (index === 0) {
+      return { ...kpi, category: kpi.category };
+    }
+    return { ...kpi, category: "" };
+  });
+
+  console.log(">>>customer", customerPerspective)
 
   return (
-    <div className="page-wrapper">
-      <Helmet>
-        <title>Client Profile - HRMS admin Template</title>
-        <meta name="description" content="Reactify Blank Page" />
-      </Helmet>
-      {/* Page Content */}
-      <div className="content container-fluid">
-        {/* Page Header */}
-        <div className="page-header">
-          <div className="row">
-            <div className="col-sm-12">
-              <h3 className="page-title">Appraisal Review</h3>
-              <ul className="breadcrumb">
-                <li className="breadcrumb-item" onClick={() => clearKPIs()}>
-                  <Link to="/app/performanceManagement/staffAppraisal">
-                    Back to Appraisal Page
-                  </Link>
-                </li>
-                <li className="breadcrumb-item active">Review</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        {/* /Page Header */}
+    <div>
+      {/* Page Wrapper */}
+      <div className="page-wrapper">
+        <Helmet>
+          <title>User Dashboard - HRMS Admin Template</title>
+          <meta name="description" content="Login page" />
+        </Helmet>
+        {/* Page Content */}
+        <div className="content container-fluid">
+          {/* Page Header */}
+          <div className="page-header">
+            <div className="card">
+              <div className="card-body">
+                <label className="font-18 font-weight-bold m-b-20">
+                  APPRAISAL
+                </label>
 
-        <div className="card m-b-50">
-          <div className="card-body">
-            <div className="row">
-              <div className="col-md-12">
                 <div className="profile-view">
-                  {/* Table Header  Starts Here */}
+                  <div
+                    className="row d-flex border-bottom pt-2 pb-2 font-weight-bolder"
+                    style={{ backgroundColor: "#cccccc", marginBottom: "10px" }}
+                  >
+                    <div className="col-lg-12">
+                      <div
+                        className="user-name"
+                        style={{ fontWeight: "bolder" }}
+                      >
+                        SCORECARD
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="row">
+                    {/* Table Header  Starts Here */}
                     <div
                       className="col-lg-12 d-flex border-bottom pt-2 pb-2 font-weight-bolder"
-                      style={{ backgroundColor: "#DADADA" }}
+                      style={{ backgroundColor: "#efefef" }}
                     >
-                      <div className="col-lg-4">KPI</div>
-                      <div className="col-lg-2 text-center">
-                        MEASURABLE TARGET
-                      </div>
+                      <div className="col-lg-2">PERSPECTIVE</div>
+                      <div className="col-lg-3">KPI</div>
+                      <div className="col-lg-1 text-center">TARGET</div>
                       <div className="col-lg-2 text-center">WEIGHT</div>
-                      <div className="col-lg-2 text-center">APPRAISEE RATE</div>
+                      <div className="col-lg-2 text-center">APP. RATE</div>
+                      <div className="col-lg-2 text-center">APP. RESULT</div>
+                    </div>
+                    {/* Table Header Ends Here */}
+
+                    {allProcess?.map((kpi) => {
+                      return <NewKpiReviewComponent kpi={kpi} />;
+                    })}
+
+                    {allCustomer?.map((kpi) => {
+                      return <NewKpiReviewComponent kpi={kpi} />;
+                    })}
+
+                    {allFinancial?.map((kpi) => {
+                      return <NewKpiReviewComponent kpi={kpi} />;
+                    })}
+
+                    {allCapacityDevelopment?.map((kpi) => {
+                      return <NewKpiReviewComponent kpi={kpi} />;
+                    })}
+
+                    {/* Financial Review Starts Here */}
+                    <div
+                      className="col-lg-12 d-flex border-bottom pt-3 pb-3"
+                      style={{
+                        fontWeight: "bolder",
+                        backgroundColor: "#efefef",
+                      }}
+                    >
+                      <div className="col-lg-2">TOTAL</div>
+                      <div className="col-lg-3"></div>
+                      <div className="col-lg-1 text-center"></div>
+                      <div className="col-lg-2 text-center"></div>
+                      <div className="col-lg-2 text-center"></div>
                       <div className="col-lg-2 text-center">
-                        APPRAISEE RESULT
+                        {" "}
+                        {Number(kpiResult)?.toFixed()}
                       </div>
                     </div>
                   </div>
-                  {/* Table Header Ends Here */}
 
-                  <div className="col-md-12 m-b-20 m-t-20">
-                    <h4
-                      className="user-name"
-                      style={{
-                        fontWeight: "bolder",
-                        textDecoration: "underline",
-                      }}
+                  <div
+                    className="col-lg-12"
+                    style={{ marginTop: "50px", marginBottom: "20px" }}
+                  >
+                    <div
+                      className="font-weight-bolder"
+                      style={{ textDecoration: "underline" }}
                     >
-                      Process
-                    </h4>
-                  </div>
-                  {allProcess?.map((kpi) => {
-                    return <KpiComponent kpi={kpi} />;
-                  })}
+                      EXCEPTIONAL ACHIEVEMENTS
+                    </div>
 
-                  <div className="col-md-12 m-b-20 m-t-20">
-                    <h4
-                      className="user-name"
-                      style={{
-                        fontWeight: "bolder",
-                        textDecoration: "underline",
-                      }}
+                    <div className="mt-3" style={{ marginBottom: "30px" }}>
+                      <label>
+                        If you have any exceptional achievements, provide it in
+                        the field below:
+                      </label>
+                    </div>
+
+                    <div className="form-group mb-5">
+                      <div
+                        className="mb-3 font-weight-bold"
+                        style={{
+                          marginBottom: "30px",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        ACHIEVEMENT(S)
+                      </div>
+                      {allData?.data?.exceptionalAchievement}
+                    </div>
+
+                    <div
+                      className="form-group"
+                      style={{ marginBottom: "30px" }}
                     >
-                      Customer
-                    </h4>
-                  </div>
-                  {allCustomer?.map((kpi) => {
-                    return <KpiComponent kpi={kpi} />;
-                  })}
-
-                  <div className="col-md-12 m-b-20 m-t-20">
-                    <h4
-                      className="user-name"
-                      style={{
-                        fontWeight: "bolder",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      Financial
-                    </h4>
-                  </div>
-                  {allFinancial?.map((kpi) => {
-                    return <KpiComponent kpi={kpi} />;
-                  })}
-
-                  <div className="col-md-12 m-b-20 m-t-20">
-                    <h4
-                      className="user-name"
-                      style={{
-                        fontWeight: "bolder",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      Capacity Development
-                    </h4>
-                  </div>
-                  {allCapacityDevelopment?.map((kpi) => {
-                    return <KpiComponent kpi={kpi} />;
-                  })}
-
-                  {/* Total Scores Review Starts Here */}
-                  <div className="row m-t-50" style={{ fontSize: "1.3em" }}>
-                    <div className="col-lg-12">
-                      <div className="row">
-                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                          <div
-                            className="col-lg-4"
-                            style={{ fontWeight: "bolder" }}
-                          >
-                            TOTAL
-                          </div>
-                          <div className="col-lg-2 text-center">&nbsp;</div>
-                          <div className="col-lg-2 text-center">&nbsp;</div>
-                          <div className="col-lg-2 text-center">&nbsp;</div>
-                          <div
-                            className="col-lg-2 text-center text-success"
-                            style={{ color: "red", fontWeight: "bolder" }}
-                          >
-                            {Number(kpiResult)?.toFixed()}
-                          </div>
-                        </div>
+                      <div
+                        className="mb-3 font-weight-bold"
+                        style={{
+                          marginBottom: "20px",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        SUPERVISOR'S COMMENT
+                      </div>
+                      <div className="mb-3">
+                        Own yo' ipsizzle pimpin' sizzle amizzle, consectetizzle
+                        bizzle elit. Nullam dawg velit, mammasay mammasa mamma
+                        oo sa volutpat, ma nizzle mah nizzle, gravida vel, arcu.
+                        Pellentesque shizznit tortizzle. Shiz erizzle. Fusce
+                        izzle shit dapibizzle turpis tempizzle dope. Maurizzle
+                        pellentesque nibh et sizzle. Things fo shizzle my nizzle
+                        tortor. Sheezy izzle rhoncizzle nisi. In hac habitasse
+                        platea dictumst. Uhuh ... yih! dapibizzle.
                       </div>
                     </div>
-                  </div>
-                  {/* Total Scores Review Ends Here */}
 
-                  {/* Submit Appraisal Button */}
-                  <div className="form-group col-lg-12 col-md-12 col-sm-12 m-t-50 m-b-20">
-                    <div className="d-flex align-items-center justify-content-center">
-                      <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
-                        <a
-                          href="#"
-                          className="btn btn-block btn-primary font-weight-700"
-                          onClick={() => submitAppraisal()}
-                        >
-                          SUBMIT
-                        </a>
+                    <div className="form-group">
+                      <div
+                        className="mb-3 font-weight-bold"
+                        style={{
+                          marginBottom: "20px",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        STAFF'S COMMENT
+                      </div>
+                      <div className="mb-3">
+                        <textarea
+                          className="form-control mb-3 "
+                          defaultValue={""}
+                        />
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            <div
+              className="form-group col-lg-12 col-md-12 col-sm-12"
+              style={{ marginTop: "50px" }}
+            >
+              <div className="d-flex align-items-center justify-content-center">
+                <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
+                  <a
+                    href="#"
+                    className="btn btn-block btn-primary font-weight-700"
+                    onClick={() => submitAppraisal()}
+                  >
+                    SUBMIT
+                  </a>
+                </div>
+              </div>
+            </div>
           </div>
+          {/* /Page Header */}
         </div>
       </div>
       {/* /Page Content */}
+      {/* /Page Wrapper */}
     </div>
   );
 };

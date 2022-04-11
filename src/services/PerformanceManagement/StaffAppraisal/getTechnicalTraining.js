@@ -8,33 +8,22 @@ const initialState = {
   error: "",
   loading: false,
   error2: "",
-  data: {},
+  data: [],
   isSuccessful: false,
 };
 
-export const submitStaffAppraisal = createAsyncThunk(
-  "submitStaffAppraisal",
-  async (data, { rejectWithValue }) => {
-  
-    const { appraisals, history, clearKPIs } = data;
-    console.log("appppp", appraisals)
+export const getTechnicalTraining = createAsyncThunk(
+  "getTechnicalTraining",
+  async () => {
     try {
-      const response = await axios.post(
-        `${performanceManagementAppraisalUrl}/SubmitAppraisal`,
-        appraisals
+      const response = await axios.get(
+        `${performanceManagementAppraisalUrl}/GetTechnicalTrainings`
       );
-      console.log(">>>>individu", response);
+
       if (response.status === 200) {
-        Swal.fire(
-          `Appraisal has been submitted`,
-          "Successful!",
-          "success"
-        ).then(() => {
-          history.push("/app/performanceManagement/staffAppraisal");
-          clearKPIs()
-        });
         return response.data;
       }
+
       return response.data;
     } catch (e) {
       return rejectWithValue(e.response.data);
@@ -42,25 +31,25 @@ export const submitStaffAppraisal = createAsyncThunk(
   }
 );
 
-const submitStaffAppraisalSlice = createSlice({
-  name: "submitStaffAppraisal",
+const getTechnicalTrainingSlice = createSlice({
+  name: "getTechnicalTraining",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(submitStaffAppraisal.rejected, (state, action) => {
+    builder.addCase(getTechnicalTraining.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(submitStaffAppraisal.fulfilled, (state, action) => {
+    builder.addCase(getTechnicalTraining.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(submitStaffAppraisal.pending, (state, action) => {
+    builder.addCase(getTechnicalTraining.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -68,4 +57,4 @@ const submitStaffAppraisalSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default submitStaffAppraisalSlice.reducer;
+export default getTechnicalTrainingSlice.reducer;

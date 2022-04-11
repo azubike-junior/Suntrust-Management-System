@@ -69,11 +69,15 @@ const Staff_Appraisal_Detail = () => {
     setAppraiseeResults({ ...appraiseeResults, [id]: result });
 
     const eachKPI = {
-      key:kpi.kpiId,
+      staffId: "265",
       supervisorRate: e.target.value,
       supervisorResult: result.toFixed(),
+      description: kpi.kpiDescription,
       kpiId: kpi.kpiId,
       categoryId: kpi.categoryId,
+      measurableTarget: kpi.measurableTarget,
+      weightedScore: kpi.weightedScore,
+      category: kpi.categoryDescription,
       appraiseeResult: kpi.appraiseeResult,
       appraiseeRate: kpi.appraiseeRate,
     };
@@ -85,19 +89,11 @@ const Staff_Appraisal_Detail = () => {
 
   const addKPIsToState = () => {
     state.data = {
-      recommendation,
-      appraisalReference,
-      behaviouralTrainings,
-      functionalTrainings: technicalTrainings,
+      supervisorRecommendation: recommendation,
       supervisorComment,
-      secondSupervisorComment: "",
-      secondLevelSupervisorComment: "",
-      strengthScore: Number(strengthResult),
+      appraiseeComment: "",
       KPIs: allKPIs,
     };
-
-    console.log(">>>>>>addKpi", state.data)
-    
     actions.updateName(state.data);
   };
 
@@ -136,6 +132,8 @@ const Staff_Appraisal_Detail = () => {
       }
       return { ...kpi, categoryDescription: "" };
     });
+
+  console.log(">>>>>>allProcess", allProcess);
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -870,9 +868,6 @@ const Staff_Appraisal_Detail = () => {
                           <textarea
                             className="form-control mb-3 "
                             defaultValue={""}
-                            onChange={(e) =>
-                              setSupervisorComment(e.target.value)
-                            }
                           />
                         </div>
 
@@ -913,15 +908,12 @@ const Staff_Appraisal_Detail = () => {
 
                         <div className="form-group ">
                           {/* <label>Suggest a Behavioural Training:</label> */}
-                          <select
-                            className="select"
-                            onChange={(e) => setRecommendation(e.target.value)}
-                          >
-                            <option value="maintainStatus">Maintain Status</option>
-                            <option value="promote">Promote</option>
-                            <option value="watchPerformance">Watch Performance</option>
-                            <option value="reassign">Reassign </option>
-                            <option value="exit">Exit </option>
+                          <select className="select">
+                            <option value={1}>Maintain Status</option>
+                            <option value={2}>Promote</option>
+                            <option value={3}>Watch Performance</option>
+                            <option value={4}>Reassign </option>
+                            <option value={5}>Exit </option>
                           </select>
                         </div>
                       </div>

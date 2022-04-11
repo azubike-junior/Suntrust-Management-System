@@ -1,347 +1,331 @@
-/**
- * TermsCondition Page
- */
-import React, { Component, useState, useEffect } from 'react';
+import React, { useEffect, useState } from "react";
+import { Link, useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { Link } from 'react-router-dom';
-import { Avatar_01, Avatar_02, Avatar_05, Avatar_09, Avatar_10, Avatar_11, Avatar_12, Avatar_13, Avatar_16, Avatar_19 } from '../../Entryfile/imagepath'
-
-import { Table } from 'antd';
-import 'antd/dist/antd.css';
-import { itemRender, onShowSizeChange } from "../paginationfunction"
-import "../antdstyle.css"
-import Staff_Appraisal from './staff_Appraisal';
+import { useDispatch, useSelector } from "react-redux";
+import { useStateMachine } from "little-state-machine";
+import { getUniqueValues, updateName } from "./../../utils/helper";
+import { getIndividualKpis } from "./../../services/PerformanceManagement/Configurations/individualKpi/getIndividualKpi";
+import { getCategoryTypes } from "./../../services/PerformanceManagement/Configurations/categoryType/getCategoryTypes";
+import {
+  NewKpiComponent,
+  NewKpiInputComponent,
+  NewKpiReviewComponent,
+} from "../PerformanceManagement/KpiComponent";
+import { submitStaffAppraisal } from "../../services/PerformanceManagement/StaffAppraisal/submitStaffAppraisal";
 
 const Staff_Appraisal_Review = () => {
+  const { state: allData, actions } = useStateMachine({ updateName });
+  const dispatch = useDispatch();
+  const [KPIs, setKPIs] = useState([]);
+  const [kpiResult, setKpiResult] = useState("");
+  const history = useHistory();
 
-    useEffect(() => {
-        if ($('.select').length > 0) {
-            $('.select').select2({
-                minimumResultsForSearch: -1,
-                width: '100%'
-            });
-        }
+  // console.log(">>>>.state", allData);
+
+  useEffect(() => {
+    if ($(".select").length > 0) {
+      $(".select").select2({
+        minimumResultsForSearch: -1,
+        width: "100%",
+      });
+    }
+  });
+
+  const clearKPIs = () => {
+    allData.data = {
+      KPIs: [],
+    };
+    actions.update(allData.data);
+  };
+
+  const allProcess = allData?.data.KPIs.filter(
+    (kpi) => kpi.category === "Process"
+  );
+  const allCustomer = allData?.data.KPIs.filter(
+    (kpi) => kpi.category === "Customer"
+  );
+  const allFinancial = allData?.data.KPIs.filter(
+    (kpi) => kpi.category === "Financial"
+  );
+  const allCapacityDevelopment = allData?.data.KPIs.filter(
+    (kpi) => kpi.category === "Capacity Development"
+  );
+
+  // console.log(">>>>>>allKPIs", allProcess);
+
+  const submitAppraisal = () => {
+    const appraise = KPIs?.map((kpi) => {
+      return {
+        supervisorRate: "10",
+        key: kpi.key,
+        supervisorResult: "20",
+        kpiId: Number(kpi.kpiId),
+        categoryId: Number(kpi.categoryId),
+        // measurableTarget: kpi.measurableTarget,
+        // weightedScore: kpi.weightedScore,
+        appraiseeResult: kpi.appraiseeResult,
+        appraiseeRate: kpi.appraiseeRate,
+      };
     });
 
-    return (
-        <div className="page-wrapper">
-            <Helmet>
-                <title>Client Profile - HRMS admin Template</title>
-                <meta name="description" content="Reactify Blank Page" />
-            </Helmet>
-            {/* Page Content */}
-            <div className="content container-fluid">
+    const {
+      staffId,
+      supervisorId,
+      supervisorName,
+      secondSupervisorName,
+      appraiseeName,
+      exceptionalAchievement,
+      appraiseeComment,
+    } = allData?.data;
 
-                {/* Page Header */}
-                <div className="page-header">
-                    <div className="row">
-                        <div className="col-sm-12">
-                            <h3 className="page-title">Appraisal Review</h3>
-                            <ul className="breadcrumb">
-                                <li className="breadcrumb-item">
-                                    <Link to="/app/employees/staff_Appraisal">Back to Appraisal Page</Link>
-                                </li>
-                                <li className="breadcrumb-item active">Review</li>
-                            </ul>
-                        </div>
+    const appraisals = {
+      staffId,
+      supervisorId,
+      supervisorName,
+      appraiseeName,
+      exceptionalAchievement,
+      secondSupervisorName,
+      appraiseeComment,
+      kpis: appraise,
+    };
+
+    const data = {
+      appraisals,
+      history,
+      clearKPIs,
+    };
+
+    console.log(">>>>>>>KPIsSub,mit", data);
+
+    dispatch(submitStaffAppraisal(data));
+  };
+
+  const result = KPIs.reduce((acc, kpi) => {
+    const allResults = kpi.appraiseeResult.split("%");
+    // console.log(">>>>acc", allResults[0]);
+
+    return Number(acc) + Number(allResults[0]);
+  }, 0);
+
+  useEffect(() => {
+    console.log(">>>>allData", allData?.data);
+    setKPIs(allData?.data.KPIs);
+    setKpiResult(result);
+  });
+
+  const processPerspective = allProcess?.map((kpi, index) => {
+    if (index === 0) {
+      return { ...kpi, category: kpi.category };
+    }
+    return { ...kpi, category: "" };
+  });
+
+  const customerPerspective = allCustomer?.map((kpi, index) => {
+    if (index === 0) {
+      return { ...kpi, category: kpi.category };
+    }
+    return { ...kpi, category: "" };
+  });
+
+  const financialPerspective = allFinancial?.map((kpi, index) => {
+    if (index === 0) {
+      return { ...kpi, category: kpi.category };
+    }
+    return { ...kpi, category: "" };
+  });
+
+  const capacityPerspective = allCapacityDevelopment?.map((kpi, index) => {
+    if (index === 0) {
+      return { ...kpi, category: kpi.category };
+    }
+    return { ...kpi, category: "" };
+  });
+
+  return (
+    <div>
+      {/* Page Wrapper */}
+      <div className="page-wrapper">
+        <Helmet>
+          <title>User Dashboard - HRMS Admin Template</title>
+          <meta name="description" content="Login page" />
+        </Helmet>
+        {/* Page Content */}
+        <div className="content container-fluid">
+          {/* Page Header */}
+          <div className="page-header">
+            <div className="card">
+              <div className="card-body">
+                <label className="font-18 font-weight-bold m-b-20">
+                  APPRAISAL
+                </label>
+
+                <div className="profile-view">
+                  <div
+                    className="row d-flex border-bottom pt-2 pb-2 font-weight-bolder"
+                    style={{ backgroundColor: "#cccccc", marginBottom: "10px" }}
+                  >
+                    <div className="col-lg-12">
+                      <div
+                        className="user-name"
+                        style={{ fontWeight: "bolder" }}
+                      >
+                        SCORECARD
+                      </div>
                     </div>
-                </div>
-                {/* /Page Header */}
+                  </div>
 
-                <div className="card m-b-50">
-                    <div className="card-body">
-                        <div className="row">
-                            <div className="col-md-12">
-                                <div className="profile-view">
-
-                                    {/* Table Header  Starts Here */}
-                                    <div className="row">
-                                        <div className="col-lg-12 d-flex border-bottom pt-2 pb-2 font-weight-bolder" style={{ backgroundColor: '#DADADA' }}>
-                                            <div className="col-lg-4">KPI</div>
-                                            <div className="col-lg-2 text-center">
-                                                MEASURABLE TARGET
-                                            </div>
-                                            <div className="col-lg-2 text-center">
-                                                WEIGHT
-                                            </div>
-                                            <div className="col-lg-2 text-center">
-                                                APPRAISEE RATE
-                                            </div>
-                                            <div className="col-lg-2 text-center">
-                                                APPRAISEE RESULT
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* Table Header Ends Here */}
-
-
-                                    {/* Process Review Starts Here */}
-                                    <div className="row m-t-20">
-                                        <div className="col-md-12 m-b-20">
-                                            <h4 className="user-name" style={{ fontWeight: 'bolder', textDecoration: 'underline' }}>PROCESS</h4>
-                                        </div>
-
-                                        <div className='col-lg-12'>
-                                            <div className="row">
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        # Self-help reports built for internal customers within a period.
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">40</div>
-                                                    <div className="col-lg-2 text-center">10</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        % Completion of all projects committed to for delivery.
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">90%</div>
-                                                    <div className="col-lg-2 text-center">15</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        % Provision of quarterly DB/CBA capacity report.
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">100%</div>
-                                                    <div className="col-lg-2 text-center">5</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        Maintain 95% success rate for changes in line with IT Governance  and quarterly capacity report of DB/CBA.
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">95%</div>
-                                                    <div className="col-lg-2 text-center">5</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        Ensure database performance tuning / CBA ugrade is done quarterly for improved performance across the Bank's CBA and all databases.
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">100%</div>
-                                                    <div className="col-lg-2 text-center">10</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        Generation of RCA within 24 hours of incident occurrence  for which root cause was determined.
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">24hrs</div>
-                                                    <div className="col-lg-2 text-center">5</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        "System Uptime. % DB/CBA availability"
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">98%</div>
-                                                    <div className="col-lg-2 text-center">8</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        % Audit Rating
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">100%</div>
-                                                    <div className="col-lg-2 text-center">5</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    {/* Process Review Ends Here */}
-
-
-                                    {/* Customer Review Starts Here */}
-                                    <div className="row m-t-50">
-                                        <div className="col-md-12 m-b-20">
-                                            <h4 className="user-name" style={{ fontWeight: 'bolder', textDecoration: 'underline' }}>CUSTOMER</h4>
-                                        </div>
-
-                                        <div className='col-lg-12'>
-                                            <div className="row">
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        % Customer satisfaction
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">80%</div>
-                                                    <div className="col-lg-2 text-center">5</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        Service Desk Time to Resolve
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">8 hours</div>
-                                                    <div className="col-lg-2 text-center">5</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    {/* Customer Review Ends Here */}
-
-
-                                    {/* Financial Review Starts Here */}
-                                    <div className="row m-t-50">
-                                        <div className="col-md-12 m-b-20">
-                                            <h4 className="user-name" style={{ fontWeight: 'bolder', textDecoration: 'underline' }}>FINANCIAL</h4>
-                                        </div>
-
-                                        <div className='col-lg-12'>
-                                            <div className="row">
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        Value of deposit target.
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">N150 million</div>
-                                                    <div className="col-lg-2 text-center">10</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        Value of operational losses.
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">N0</div>
-                                                    <div className="col-lg-2 text-center">3</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        % Implementation of OpEx budget.
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">100%</div>
-                                                    <div className="col-lg-2 text-center">3</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        % Implementation of CapEx budget.
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">&gt; 80%</div>
-                                                    <div className="col-lg-2 text-center">3</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        % Cost savings on Budget.
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">&gt; 5%</div>
-                                                    <div className="col-lg-2 text-center">10</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    {/* Financial Review Ends Here */}
-
-
-                                    {/* Capacity Development Review Starts Here */}
-                                    <div className="row m-t-50 m-b-50">
-                                        <div className="col-md-12 m-b-20">
-                                            <h4 className="user-name" style={{ fontWeight: 'bolder', textDecoration: 'underline' }}>CAPACITY DEVELOPMENT</h4>
-                                        </div>
-
-                                        <div className='col-lg-12'>
-                                            <div className="row">
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        # Relevant Professional Certifications/Trainings
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">&gt; 1</div>
-                                                    <div className="col-lg-2 text-center">5</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4">
-                                                        # Completed Courses on SunTrust Academy.
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">&gt; 36</div>
-                                                    <div className="col-lg-2 text-center">5</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "#139b23", fontWeight: 'bolder' }}>35</div>
-                                                    <div className="col-lg-2 text-center" style={{ color: "red", fontWeight: 'bolder' }}>10</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    {/* Capacity Development Review Ends Here */}
-
-
-                                    {/* Total Scores Review Starts Here */}
-                                    <div className="row m-t-50" style={{ fontSize: '1.3em' }}>
-                                        <div className='col-lg-12'>
-                                            <div className="row">
-                                                <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
-                                                    <div className="col-lg-4" style={{ fontWeight: 'bolder' }}>
-                                                        TOTAL
-                                                    </div>
-                                                    <div className="col-lg-2 text-center">&nbsp;</div>
-                                                    <div className="col-lg-2 text-center">&nbsp;</div>
-                                                    <div className="col-lg-2 text-center">&nbsp;</div>
-                                                    <div className="col-lg-2 text-center text-success" style={{ color: "red", fontWeight: 'bolder' }}>80%</div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    {/* Total Scores Review Ends Here */}
-
-                                    {/* Submit Appraisal Button */}
-                                    <div className="form-group col-lg-12 col-md-12 col-sm-12 m-t-50 m-b-20">
-                                        <div className="d-flex align-items-center justify-content-center">
-                                            <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
-                                                <a href="" className="btn btn-block btn-primary font-weight-700">SUBMIT</a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
+                  <div className="row">
+                    {/* Table Header  Starts Here */}
+                    <div
+                      className="col-lg-12 d-flex border-bottom pt-2 pb-2 font-weight-bolder"
+                      style={{ backgroundColor: "#efefef" }}
+                    >
+                      <div className="col-lg-2">PERSPECTIVE</div>
+                      <div className="col-lg-3">KPI</div>
+                      <div className="col-lg-1 text-center">TARGET</div>
+                      <div className="col-lg-2 text-center">WEIGHT</div>
+                      <div className="col-lg-2 text-center">APP. RATE</div>
+                      <div className="col-lg-2 text-center">APP. RESULT</div>
                     </div>
-                </div>
+                    {/* Table Header Ends Here */}
 
+                    {processPerspective?.map((kpi) => {
+                      return <NewKpiReviewComponent kpi={kpi} />;
+                    })}
+
+                    {customerPerspective?.map((kpi) => {
+                      return <NewKpiReviewComponent kpi={kpi} />;
+                    })}
+
+                    {financialPerspective?.map((kpi) => {
+                      return <NewKpiReviewComponent kpi={kpi} />;
+                    })}
+
+                    {capacityPerspective?.map((kpi) => {
+                      return <NewKpiReviewComponent kpi={kpi} />;
+                    })}
+
+                    {/* Financial Review Starts Here */}
+                    <div
+                      className="col-lg-12 d-flex border-bottom pt-3 pb-3"
+                      style={{
+                        fontWeight: "bolder",
+                        backgroundColor: "#efefef",
+                      }}
+                    >
+                      <div className="col-lg-2">TOTAL</div>
+                      <div className="col-lg-3"></div>
+                      <div className="col-lg-1 text-center"></div>
+                      <div className="col-lg-2 text-center"></div>
+                      <div className="col-lg-2 text-center"></div>
+                      <div className="col-lg-2 text-center">
+                        {" "}
+                        {Number(kpiResult)?.toFixed()}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    className="col-lg-12"
+                    style={{ marginTop: "50px", marginBottom: "20px" }}
+                  >
+                    <div
+                      className="font-weight-bolder"
+                      style={{ textDecoration: "underline" }}
+                    >
+                      EXCEPTIONAL ACHIEVEMENTS
+                    </div>
+
+                    <div className="mt-3" style={{ marginBottom: "30px" }}>
+                      <label>
+                        If you have any exceptional achievements, provide it in
+                        the field below:
+                      </label>
+                    </div>
+
+                    <div className="form-group mb-5">
+                      <div
+                        className="mb-3 font-weight-bold"
+                        style={{
+                          marginBottom: "30px",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        ACHIEVEMENT(S)
+                      </div>
+                      {allData?.data.exceptionalAchievement}
+                    </div>
+
+                    <div
+                      className="form-group"
+                      style={{ marginBottom: "30px" }}
+                    >
+                      <div
+                        className="mb-3 font-weight-bold"
+                        style={{
+                          marginBottom: "20px",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        SUPERVISOR'S COMMENT
+                      </div>
+                      <div className="mb-3">
+                        Own yo' ipsizzle pimpin' sizzle amizzle, consectetizzle
+                        bizzle elit. Nullam dawg velit, mammasay mammasa mamma
+                        oo sa volutpat, ma nizzle mah nizzle, gravida vel, arcu.
+                        Pellentesque shizznit tortizzle. Shiz erizzle. Fusce
+                        izzle shit dapibizzle turpis tempizzle dope. Maurizzle
+                        pellentesque nibh et sizzle. Things fo shizzle my nizzle
+                        tortor. Sheezy izzle rhoncizzle nisi. In hac habitasse
+                        platea dictumst. Uhuh ... yih! dapibizzle.
+                      </div>
+                    </div>
+
+                    <div className="form-group">
+                      <div
+                        className="mb-3 font-weight-bold"
+                        style={{
+                          marginBottom: "20px",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        STAFF'S COMMENT
+                      </div>
+                      <div className="mb-3">
+                        <textarea
+                          className="form-control mb-3 "
+                          defaultValue={""}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            {/* /Page Content */}
 
+            <div
+              className="form-group col-lg-12 col-md-12 col-sm-12"
+              style={{ marginTop: "50px" }}
+            >
+              <div className="d-flex align-items-center justify-content-center">
+                <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
+                  <a
+                    href="#"
+                    className="btn btn-block btn-primary font-weight-700"
+                    onClick={() => submitAppraisal()}
+                  >
+                    SUBMIT
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* /Page Header */}
         </div>
-
-    );
-}
+      </div>
+      {/* /Page Content */}
+      {/* /Page Wrapper */}
+    </div>
+  );
+};
 export default Staff_Appraisal_Review;

@@ -11,14 +11,15 @@ import Loader from './../../UIinterface/Loader/index';
 
 const StaffsAppraisals = () => {
   const dispatch = useDispatch();
-  const [data, setData] = useState([
-    {
-      id: 1,
-      staff_id: "ST-0019",
-      staff_name: "James McAvoy",
-      tot_app_result: "87%",
-    },
-  ]);
+  // const [data, setData] = useState([
+  //   {
+  //     id: 1,
+  //     staffId: "ST-0019",
+  //     staffName: "James McAvoy",
+  //     status: "Submitted",
+  //     reference: "6BD0E3D0-3AF3-41DA-7568-08DA1BAAD9FF",
+  //   },
+  // ]);
 
   const { data: supervisorAppraisals, loading: appraisalsLoading } = useSelector(
     (state) => state.performanceManagement.getAppraisalsBySupervisorIdReducer
@@ -48,25 +49,21 @@ const StaffsAppraisals = () => {
     },
     {
       title: "Staff Name",
-      dataIndex: "staffName",
+      dataIndex: "appraiseeName",
       render: (text, record) => <h2 className="table-avatar">{text}</h2>,
       sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Status",
       dataIndex: "status",
-      render: (text, record) => (
-        <h2 className="table-avatar">
-          {text}
-        </h2>
-      ),
+      render: (text, record) => <h2 className="table-avatar">{text}</h2>,
     },
     {
       title: "",
       render: (text, record) => (
         <Link
           onClick={() => console.log("text", text)}
-          to={`/app/performanceManagement/staffAppraisalDetail/${text.appraisalReference}`}
+          to={`/app/employees/staff_Appraisal_detail/${text.appraisalReference}`}
           className="btn btn-sm btn-outline-primary m-r-10"
         >
           <i className="fa fa-eye m-r-5" />
