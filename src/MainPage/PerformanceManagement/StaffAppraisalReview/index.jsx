@@ -78,6 +78,7 @@ const StaffAppraisalReview = () => {
       exceptionalAchievement,
       secondSupervisorName,
       appraiseeComment,
+      totalAppraiseeResult: kpiResult,
       kpis: appraise,
     };
 

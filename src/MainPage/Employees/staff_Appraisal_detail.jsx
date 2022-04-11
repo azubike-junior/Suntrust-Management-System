@@ -9,6 +9,12 @@ import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../paginationfunction";
 import "../antdstyle.css";
 import Staff_Appraisal from "./staff_Appraisal";
+import {
+  createStore,
+  useStateMachine,
+  StateMachineProvider,
+  GlobalState,
+} from "little-state-machine";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { getBehaviouralTraining } from "./../../services/PerformanceManagement/StaffAppraisal/getBehaviouralTraining";
@@ -19,6 +25,7 @@ import { RadioInput } from "../../components/RadioInput";
 import { getAppraisalByReferenceId } from "./../../services/PerformanceManagement/StaffAppraisal/getAppraisalByReference";
 import { useParams } from "react-router-dom";
 import { NewSupervisorKpiInputComponent } from "../PerformanceManagement/KpiComponent";
+import { updateName } from './../../utils/helper';
 
 const Staff_Appraisal_Detail = () => {
   const dispatch = useDispatch();
@@ -28,6 +35,15 @@ const Staff_Appraisal_Detail = () => {
   const [professionalScore, setProfessionalScore] = useState(0);
   const [communicationScore, setCommunicationScore] = useState(0);
   const [strengthResult, setStrengthResult] = useState(0);
+  const [technic, setTechnic] = useState("")
+  const [behavior, setBehavior] = useState("")
+  const [values, setValues] = useState({});
+  const [appraiseeResults, setAppraiseeResults] = useState({});
+  const [allKPIs, setAllKPIs] = useState([]);
+  const [supervisorComment, setSupervisorComment] = useState("");
+  const [recommendation, setRecommendation] = useState("");
+  const { state, actions } = useStateMachine({ updateName });
+
 
   const { appraisalReference } = useParams();
 
@@ -46,11 +62,6 @@ const Staff_Appraisal_Detail = () => {
     (state) => state.performanceManagement.getAppraisalByReferenceReducer
   );
 
-  const [values, setValues] = useState({});
-  const [appraiseeResults, setAppraiseeResults] = useState({});
-  const [allKPIs, setAllKPIs] = useState([]);
-  const [supervisorComment, setSupervisorComment] = useState("");
-  const [recommendation, setRecommendation] = useState("");
 
   console.log(">>>>>details", details);
 
@@ -87,8 +98,8 @@ const Staff_Appraisal_Detail = () => {
     state.data = {
       recommendation,
       appraisalReference,
-      behaviouralTrainings,
-      functionalTrainings: technicalTrainings,
+      behaviouralTrainings: behavior,
+      functionalTrainings: technic,
       supervisorComment,
       secondSupervisorComment: "",
       secondLevelSupervisorComment: "",
@@ -197,6 +208,7 @@ const Staff_Appraisal_Detail = () => {
     dateSubmitted,
     staffId,
     lastPromotionDate,
+    totalAppraiseeResult,
     kpis,
   } = details;
 
@@ -438,7 +450,7 @@ const Staff_Appraisal_Detail = () => {
                                 );
                               })}
 
-                              {allProcess?.map((kpi) => {
+                              {allCapacityDevelopment?.map((kpi) => {
                                 return (
                                   <NewSupervisorKpiInputComponent
                                     kpi={kpi}
@@ -466,9 +478,11 @@ const Staff_Appraisal_Detail = () => {
                         <div className="col-lg-1 text-center"></div>
                         <div className="col-lg-1 text-center"></div>
                         <div className="col-lg-1 text-center"></div>
-                        <div className="col-lg-2 text-center">80%</div>
+                        <div className="col-lg-2 text-center">
+                          {totalAppraiseeResult}
+                        </div>
                         <div className="col-lg-1 text-center"></div>
-                        <div className="col-lg-1 text-center">87%</div>
+                        <div className="col-lg-1 text-center"></div>
                       </div>
                     </div>
                   </div>
@@ -781,7 +795,12 @@ const Staff_Appraisal_Detail = () => {
                               <div className="m-3">
                                 <div className="form-group">
                                   <label>Suggest a Behavioural Training:</label>
-                                  <select className="select">
+                                  <select
+                                    className="select"
+                                    onChange={(e) =>
+                                      setBehavior(e.target.value)
+                                    }
+                                  >
                                     {allBehaviourals?.map((behaviour) => {
                                       return (
                                         <option
@@ -817,7 +836,12 @@ const Staff_Appraisal_Detail = () => {
                               <div className="m-3">
                                 <div className="form-group">
                                   <label>Suggest a Functional Training:</label>
-                                  <select className="select">
+                                  <select
+                                    className="select"
+                                    onChange={(e) =>
+                                      setTechnic(e.target.value)
+                                    }
+                                  >
                                     {allTechnicals?.map((technical) => {
                                       return (
                                         <option
@@ -917,9 +941,13 @@ const Staff_Appraisal_Detail = () => {
                             className="select"
                             onChange={(e) => setRecommendation(e.target.value)}
                           >
-                            <option value="maintainStatus">Maintain Status</option>
+                            <option value="maintainStatus">
+                              Maintain Status
+                            </option>
                             <option value="promote">Promote</option>
-                            <option value="watchPerformance">Watch Performance</option>
+                            <option value="watchPerformance">
+                              Watch Performance
+                            </option>
                             <option value="reassign">Reassign </option>
                             <option value="exit">Exit </option>
                           </select>
@@ -938,8 +966,9 @@ const Staff_Appraisal_Detail = () => {
                   <div className="d-flex align-items-center justify-content-center">
                     <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
                       <a
-                        href=""
+                        href="#"
                         className="btn btn-block btn-primary font-weight-700"
+                        onClick={() => addKPIsToState()}
                       >
                         SUBMIT
                       </a>
