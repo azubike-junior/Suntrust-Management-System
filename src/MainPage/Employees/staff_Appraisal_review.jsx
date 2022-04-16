@@ -326,7 +326,7 @@ const Staff_Appraisal_Review = () => {
                                     <div className="form-group col-lg-12 col-md-12 col-sm-12 m-t-50 m-b-20">
                                         <div className="d-flex align-items-center justify-content-center">
                                             <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
-                                                <a href="" className="btn btn-block btn-primary font-weight-700">SUBMIT</a>
+                                                <a href="" className="btn btn-block btn-suntrust font-weight-700">SUBMIT</a>
                                             </div>
                                         </div>
                                     </div>

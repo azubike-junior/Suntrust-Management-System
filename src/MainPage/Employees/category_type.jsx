@@ -119,7 +119,7 @@ const Category_Type = () => {
               <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
                 <a
                   href=""
-                  className="btn btn-block btn-primary font-weight-700"
+                  className="btn btn-block btn-suntrust font-weight-700"
                 >
                   ADD
                 </a>
@@ -158,7 +158,7 @@ const Category_Type = () => {
                 <div className="col-lg-5 col-md-6 col-sm-12 m-b-10">
                   <a
                     href=""
-                    className="btn btn-block btn-primary font-weight-700"
+                    className="btn btn-block btn-suntrust font-weight-700"
                   >
                     SUBMIT
                   </a>
@@ -186,7 +186,7 @@ const Category_Type = () => {
               <div className="modal-btn delete-action">
                 <div className="row">
                   <div className="col-6">
-                    <a href="" className="btn btn-primary continue-btn">
+                    <a href="" className="btn btn-danger continue-btn">
                       Delete
                     </a>
                   </div>
@@ -194,7 +194,7 @@ const Category_Type = () => {
                     <a
                       href=""
                       data-dismiss="modal"
-                      className="btn btn-primary cancel-btn"
+                      className="btn btn-outline-danger cancel-btn"
                     >
                       Cancel
                     </a>

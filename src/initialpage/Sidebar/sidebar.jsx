@@ -69,6 +69,7 @@ const Sidebar = (props) => {
                   <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/employees/team_goal">Team Goal</Link></li>
                   <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/employees/unit_kpi">Unit KPI</Link></li>
                   <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/employees/individual_kpi">Individual KPI</Link></li>
+                  <li><Link onClick={()=>localStorage.setItem("minheight","true")} to="/app/employees/trainings">Trainings</Link></li>
                 </ul>
               </li>
 
@@ -81,7 +82,11 @@ const Sidebar = (props) => {
               </li> */}
 
               <li className={pathname.includes('clients') ?"active" :""}> 
-                <Link to = "/app/employees/my_staff_Appraisal"><i className="la la-comment"/> <span>My Staff Appraisals</span></Link>
+                <Link to = "/app/employees/my_staff_Appraisal"><i className="la la-users"/> <span>My Staff Appraisals</span></Link>
+              </li>
+
+              <li className={pathname.includes('clients') ?"active" :""}> 
+                <Link to = "/app/employees/hr_reports"><i className="la la-file-invoice"/> <span>HR Reports</span></Link>
               </li>
 
               <li className="menu-title"> 

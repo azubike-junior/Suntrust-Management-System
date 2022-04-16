@@ -398,7 +398,7 @@ const Individual_KPI = () => {
               <div className="col-lg-3 col-md-6 col-sm-12 m-t-30 m-b-10">
                 <a
                   href=""
-                  className="btn btn-block btn-primary font-weight-700"
+                  className="btn btn-block btn-suntrust font-weight-700"
                 >
                   ADD
                 </a>
@@ -437,7 +437,7 @@ const Individual_KPI = () => {
                 <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
                   <a
                     href=""
-                    className="btn btn-block btn-primary font-weight-700"
+                    className="btn btn-block btn-suntrust font-weight-700"
                   >
                     SUBMIT
                   </a>
@@ -459,13 +459,13 @@ const Individual_KPI = () => {
           <div className="modal-content">
             <div className="modal-body">
               <div className="form-header">
-                <h3>Delete Category</h3>
+                <h3>Delete Individual KPI</h3>
                 <p>Are you sure want to delete?</p>
               </div>
               <div className="modal-btn delete-action">
                 <div className="row">
                   <div className="col-6">
-                    <a href="" className="btn btn-primary continue-btn">
+                    <a href="" className="btn btn-danger continue-btn">
                       Delete
                     </a>
                   </div>
@@ -473,7 +473,7 @@ const Individual_KPI = () => {
                     <a
                       href=""
                       data-dismiss="modal"
-                      className="btn btn-primary cancel-btn"
+                      className="btn btn-outline-danger cancel-btn"
                     >
                       Cancel
                     </a>

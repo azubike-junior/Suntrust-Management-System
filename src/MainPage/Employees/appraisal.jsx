@@ -204,7 +204,7 @@ const Appraisal = () => {
 
                             <div className="col-lg-3 m-b-10">
                                 <div className="form-group">
-                                    <a href="" className="btn btn-block btn-primary font-weight-700">SUBMIT</a>
+                                    <a href="" className="btn btn-block btn-suntrust font-weight-700">SUBMIT</a>
                                 </div>
                             </div>
 

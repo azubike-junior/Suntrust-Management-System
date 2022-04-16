@@ -38,6 +38,8 @@ import MyStaffAppraisals from './my_staff_Appraisal';
 import Staff_Appraisal_Review from './staff_Appraisal_review';
 import Staff_Appraisal_Detail from './staff_Appraisal_detail';
 import Super_Self_Review from './super_self_review';
+import Trainings from './trainings';
+import HR_Report from './hr_reports';
 
 const EmployeeRoute = ({ match }) => (
    <Switch>
@@ -75,6 +77,9 @@ const EmployeeRoute = ({ match }) => (
       <Route path={`${match.url}/staff_Appraisal_review`} component={Staff_Appraisal_Review} />
       <Route path={`${match.url}/staff_Appraisal_detail`} component={Staff_Appraisal_Detail} />
       <Route path={`${match.url}/super_self_review`} component={Super_Self_Review} />
+      <Route path={`${match.url}/super_self_review`} component={Super_Self_Review} />
+      <Route path={`${match.url}/trainings`} component={Trainings} />
+      <Route path={`${match.url}/hr_reports`} component={HR_Report} />
 
    </Switch>
 );
