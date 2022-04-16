@@ -1,21 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { useStateMachine } from "little-state-machine";
-import { getCategoryTypes } from "./../../../services/PerformanceManagement/Configurations/categoryType/getCategoryTypes";
+import { getCategoryTypes } from "../../../services/PerformanceManagement/Configurations/categoryType/getCategoryTypes";
 // import { NewKpiInputComponent } from "../PerformanceManagement/KpiComponent";
-import { getIndividualKpis } from "./../../../services/PerformanceManagement/Configurations/individualKpi/getIndividualKpi";
-import { getUniqueValues, updateName } from "./../../../utils/helper";
+import { getIndividualKpis } from "../../../services/PerformanceManagement/Configurations/individualKpi/getIndividualKpi";
+import { getUniqueValues, updateName } from "../../../utils/helper";
 import { NewKpiInputComponent } from "../KpiComponent";
 
 const StaffAppraisal = (props) => {
   const dispatch = useDispatch();
   const [cat, setCategory] = useState("");
   const [values, setValues] = useState({});
+  const [stuffs, setStuff] = useState({});
   const [appraiseeResults, setAppraiseeResults] = useState({});
   const [allKPIs, setAllKPIs] = useState([]);
   const [exceptionalAch, setExceptionalAch] = useState("");
+  const [errors, setErrors] = useState({});
+  const history = useHistory()
+
+  const errorValues = Object.values(errors);
+  const allValues = Object.values(values).filter((el) => el !== "");
+
 
   const { state, actions } = useStateMachine({ updateName });
 
@@ -23,11 +30,13 @@ const StaffAppraisal = (props) => {
     (state) => state.performanceManagement.getIndividualKpisReducer
   );
 
+  console.log(">>>>>>KPIs", KPIs);
+
+  console.log(">>>>>valuesKeys", allValues);
+
   const { data: categories } = useSelector(
     (state) => state.performanceManagement.getCategoryTypesReducer
   );
-
-  const uniqueCategories = getUniqueValues(KPIs, "category");
 
   let results = [];
 
@@ -38,37 +47,32 @@ const StaffAppraisal = (props) => {
   }
 
   const updateValues = (e, id, kpi, index) => {
+    console.log("Kpi", kpi.id, id);
     let { value, min, max } = e.target;
-    if ((value > Number(max)) | (value < Number(min))) {
-      value = 0;
+    // if ((value > Number(max)) | (value < Number(min))) {
+    //   value = 0;
+    //   setError(true);
+    // }
+    // setError(false);
+
+    if (value > Number(kpi.measurableTarget) && kpi.id === id) {
+      value = "";
+      setErrors({ ...errors, [id]: true });
+    } else {
+      setErrors({ ...errors, [id]: false });
     }
-
-    console.log(value, min, max);
-
-    setValues({ ...values, [id]: value });
 
     const result = ((value / kpi.measurableTarget) * kpi.weightedScore) / 1;
 
+    setValues({ ...values, [id]: value });
+
+    setStuff({ ...stuffs, [id]: result });
+
     setAppraiseeResults({ ...appraiseeResults, [id]: result });
-
-    const eachKPI = {
-      description: kpi.description,
-      kpiId: kpi.id,
-      categoryId: kpi.categoryId,
-      measurableTarget: kpi.measurableTarget,
-      weightedScore: kpi.weightedScore,
-      category: kpi.category,
-      appraiseeResult: result.toFixed(),
-      appraiseeRate: e.target.value,
-      supervisorRate: "0",
-      supervisorResult: "0",
-      key: 0,
-    };
-
-    if (value.length >= 2) {
-      setAllKPIs((prev) => [...prev, eachKPI]);
-    }
   };
+
+  // console.log(">>>vbalues", values);
+  // console.log(">>>stuff", stuffs);
 
   const myResult = results[0]?.map((result) => {
     return {
@@ -82,14 +86,9 @@ const StaffAppraisal = (props) => {
 
   const addKPIsToState = () => {
     state.data = {
-      staffId: "256",
-      supervisorId: "328",
-      appraiseeName: "shola",
+      appraisalRates: values,
+      appraisalResults: stuffs,
       exceptionalAchievement: exceptionalAch,
-      appraiseeComment: "",
-      secondSupervisorName: "Mr Ola",
-      supervisorName: "Mr kojo",
-      KPIs: allKPIs,
     };
     actions.updateName(state.data);
   };
@@ -102,7 +101,7 @@ const StaffAppraisal = (props) => {
     dispatch(getCategoryTypes());
   }, []);
 
-  console.log(">>>>>allKPIs", allKPIs);
+  // console.log(">>>>>allKPIs", allKPIs);
 
   const processPerspective = results[0]?.map((kpi, index) => {
     if (index === 0) {
@@ -183,6 +182,7 @@ const StaffAppraisal = (props) => {
                     {processPerspective?.map((kpi) => {
                       return (
                         <NewKpiInputComponent
+                          errors={errors}
                           kpi={kpi}
                           values={values}
                           appraiseeResults={appraiseeResults}
@@ -194,6 +194,7 @@ const StaffAppraisal = (props) => {
                     {customerPerspective?.map((kpi) => {
                       return (
                         <NewKpiInputComponent
+                          errors={errors}
                           kpi={kpi}
                           values={values}
                           appraiseeResults={appraiseeResults}
@@ -205,6 +206,7 @@ const StaffAppraisal = (props) => {
                     {financialPerspective?.map((kpi) => {
                       return (
                         <NewKpiInputComponent
+                          errors={errors}
                           kpi={kpi}
                           values={values}
                           appraiseeResults={appraiseeResults}
@@ -216,6 +218,7 @@ const StaffAppraisal = (props) => {
                     {capacityPerspective?.map((kpi) => {
                       return (
                         <NewKpiInputComponent
+                          errors={errors}
                           kpi={kpi}
                           values={values}
                           appraiseeResults={appraiseeResults}
@@ -244,15 +247,6 @@ const StaffAppraisal = (props) => {
                     </div>
 
                     <div className="form-group mb-5">
-                      <div
-                        className="mb-3 font-weight-bold"
-                        style={{
-                          marginBottom: "30px",
-                          textDecoration: "underline",
-                        }}
-                      >
-                        ACHIEVEMENT(S)
-                      </div>
                       <textarea
                         onChange={(e) => setExceptionalAch(e.target.value)}
                         className="form-control mb-3 "
@@ -313,13 +307,22 @@ const StaffAppraisal = (props) => {
             >
               <div className="d-flex align-items-center justify-content-center">
                 <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
-                  <Link
+                  <button
+                    disabled={
+                      errorValues.includes(true) ||
+                      KPIs.length !== allValues.length
+                    }
                     to="/app/performanceManagement/staffAppraisalReview"
                     className="btn btn-block btn-primary font-weight-700"
-                    onClick={() => addKPIsToState()}
+                    onClick={() => {
+                      addKPIsToState();
+                      history.push(
+                        "/app/performanceManagement/staffAppraisalReview"
+                      );
+                    }}
                   >
                     PREVIEW
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>

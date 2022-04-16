@@ -47,6 +47,7 @@ import getAppraisalByReferenceReducer from "../PerformanceManagement/StaffApprai
 import getTechnicalTrainingReducer from "./../PerformanceManagement/StaffAppraisal/getTechnicalTraining";
 import getBehaviouralTrainingReducer from "./../PerformanceManagement/StaffAppraisal/getBehaviouralTraining";
 import getStrengthsReducer from "./../PerformanceManagement/StaffAppraisal/getStrengths";
+import updateAppraisalByReferenceReducer from "./../PerformanceManagement/StaffAppraisal/updateAppraisalByReference";
 
 
 import {
@@ -72,7 +73,8 @@ const performanceManagement = combineReducers({
   getAppraisalByReferenceReducer,
   getBehaviouralTrainingReducer,
   getTechnicalTrainingReducer,
-  getStrengthsReducer
+  getStrengthsReducer,
+  updateAppraisalByReferenceReducer
 });
 
 export const store = configureStore({

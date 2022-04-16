@@ -8816,16 +8816,24 @@ ul.comment-list li ul.children {
 }
 
 .rate-input {
-  border: 1.5px #ccc solid;
+  border: 1px #ccc solid;
   border-radius: 2px;
   height: 30px;
   cursor: pointer;
 }
 
-.result-style {
-
+.error-input {
+  border: 1px red solid;
+  border-radius: 2px;
+  height: 30px;
+  cursor: pointer;
 }
 
+.error-color {
+  color: red;
+  padding-top: 4px;
+  font-size: 12px;
+}
 
 
 

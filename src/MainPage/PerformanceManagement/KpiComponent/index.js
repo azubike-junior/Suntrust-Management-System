@@ -195,7 +195,9 @@ export const NewKpiInputComponent = ({
   values,
   appraiseeResults,
   updateValues,
+  errors,
 }) => {
+  console.log(">>>>error", errors);
   return (
     <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
       <div className="col-lg-2" style={{ fontWeight: "bolder" }}>
@@ -211,12 +213,12 @@ export const NewKpiInputComponent = ({
           value={values?.id}
           min={1}
           max={kpi.measurableTarget}
-          className="rate-input"
+          className={errors[kpi.id] ? "error-input" : "rate-input"}
           onChange={(e) => updateValues(e, kpi.id, kpi)}
         />
       </div>
       <div className="col-lg-2 text-center">
-        {appraiseeResults[kpi.id]?.toFixed()}
+        {errors[kpi.id] ? <p className="error-color">value can not exceed target</p> : appraiseeResults[kpi.id]?.toFixed()}
       </div>
     </div>
   );
@@ -235,9 +237,7 @@ export const NewKpiReviewComponent = ({ kpi }) => {
         {/* <input type="text" className="form-control" /> */}
         {kpi.appraiseeRate}
       </div>
-      <div className="col-lg-2 text-center">
-        {kpi.appraiseeResult}
-      </div>
+      <div className="col-lg-2 text-center">{kpi.appraiseeResult}</div>
     </div>
   );
 };
@@ -276,6 +276,24 @@ export const NewSupervisorKpiInputComponent = ({
   );
 };
 
-
+export const NewSupervisorKpiReviewComponent = ({ kpi }) => {
+  return (
+    <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
+      <div className="col-lg-2" style={{ fontWeight: "bolder" }}>
+        {kpi.categoryDescription.toUpperCase()}
+      </div>
+      <div className="col-lg-3">{kpi.kpiDescription}</div>
+      <div className="col-lg-1 text-center">{kpi.measurableTarget}</div>
+      <div className="col-lg-1 text-center">{kpi.weightedScore}</div>
+      <div className="col-lg-1 text-center">{kpi.appraiseeRate}</div>
+      <div className="col-lg-2 text-center">{kpi.appraiseeResult}</div>
+      <div className="col-lg-1 text-center">
+        {/* <input type="text" className="form-control" /> */}
+        {kpi.supervisorRate}
+      </div>
+      <div className="col-lg-1 text-center">{kpi.supervisorResult}</div>
+    </div>
+  );
+};
 
 export default KpiComponent;

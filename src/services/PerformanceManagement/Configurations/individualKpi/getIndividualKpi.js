@@ -17,6 +17,7 @@ export const getIndividualKpis = createAsyncThunk(
   async () => {
     try {
       const response = await axios.get(`${performanceManagementConfigUrl}/GetAllKpi`);
+      // console.log(">>>>.response", response)
       if (response.status === 200) {
         return response.data;
       }

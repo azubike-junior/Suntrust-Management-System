@@ -17,113 +17,24 @@ import {
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getBehaviouralTraining } from "./../../../services/PerformanceManagement/StaffAppraisal/getBehaviouralTraining";
-import { getTechnicalTraining } from "./../../../services/PerformanceManagement/StaffAppraisal/getTechnicalTraining";
-import { getStrengths } from "./../../../services/PerformanceManagement/StaffAppraisal/getStrengths";
-import { RadioInput } from "./../../../components/RadioInput/index";
 import { getAppraisalByReferenceId } from "./../../../services/PerformanceManagement/StaffAppraisal/getAppraisalByReference";
 import { addSelect, updateName } from "./../../../utils/helper";
-import {
-  NewSupervisorKpiInputComponent,
-  NewSupervisorKpiReviewComponent,
-} from "../KpiComponent";
+import { NewSupervisorKpiReviewComponent } from "../KpiComponent";
 import { updateAppraisalByReference } from "./../../../services/PerformanceManagement/StaffAppraisal/updateAppraisalByReference";
 import Loader from "./../../UIinterface/Loader/index";
+import { updateCommentSection } from "./../../../services/PerformanceManagement/StaffAppraisal/updateCommentSection";
 
-const SupervisorAppraisalReview2 = () => {
+const PreProcessAppraisal = () => {
   const dispatch = useDispatch();
-  const { state: allData, actions } = useStateMachine({ updateName });
   const [kpiResult, setKpiResult] = useState("");
   const history = useHistory();
-
-  // console.log(">>>>.state", allData);
-
-  const clearKPIs = () => {
-    allData.data = {
-      KPIs: [],
-    };
-    actions.update(allData.data);
-  };
-
-  const {
-    recommendation,
-    behaviouralTrainings,
-    functionalTrainings,
-    supervisorComment,
-    secondSupervisorComment,
-    strengthScore,
-    secondLevelSupervisorComment,
-  } = allData?.data;
-
+  const [recommend, setRecommendation] = useState("");
+  const [groupHeadComment, setGroupHeadComment] = useState("");
   const { appraisalReference } = useParams();
 
   const { data: details } = useSelector(
     (state) => state.performanceManagement.getAppraisalByReferenceReducer
   );
-
-  const { loading: updateAppraiseLoading } = useSelector(
-    (state) => state.performanceManagement.updateAppraisalByReferenceReducer
-  );
-
-  console.log(">>>>>details", details);
-
-  useEffect(() => {
-    if ($(".select").length > 0) {
-      $(".select").select2({
-        minimumResultsForSearch: -1,
-        width: "100%",
-      });
-    }
-  });
-
-  const submitAppraisal = () => {
-    const appraise = details?.kpis.map((kpi) => {
-      return {
-        supervisorRate: allData.data.supervisorRates[kpi.kpiId],
-        key: kpi.key,
-        supervisorResult: allData.data.supervisorResults[kpi.kpiId].toFixed(),
-        kpiId: Number(kpi.kpiId),
-        categoryId: Number(kpi.categoryId),
-        appraiseeResult: kpi.appraiseeResult,
-        appraiseeRate: kpi.appraiseeRate,
-      };
-    });
-
-    const appraisals = {
-      appraisalReference,
-      recommendation:"",
-      behaviouralTrainings,
-      functionalTrainings,
-      supervisorComment,
-      secondSupervisorComment:"",
-      strengthScore,
-      secondLevelSupervisorComment:"",
-      totalSupervisorResult: kpiResult,
-      kpis: appraise,
-    };
-
-    const data = {
-      appraisals,
-      history,
-      clearKPIs,
-    };
-    console.log(">>>>>>appraisals", appraisals);
-    dispatch(updateAppraisalByReference(data));
-  };
-
-   const resultValues = Object.values(allData.data.supervisorResults);
-
-  const result = resultValues.reduce((acc, num) => {
-    return Number(acc) + Number(num);
-  }, 0).toFixed(1);
-
-  useEffect(() => {
-    setKpiResult(result);
-  });
-
-  useEffect(() => {
-    dispatch(getAppraisalByReferenceId(appraisalReference));
-  }, []);
 
   const {
     appraisalPeriodStatus,
@@ -136,6 +47,14 @@ const SupervisorAppraisalReview2 = () => {
     staffId,
     lastPromotionDate,
     totalAppraiseeResult,
+    totalSupervisorResult,
+    functionalTrainings,
+    behaviouralTrainings,
+    strengthScore,
+    supervisorComment,
+    appraiseeComment,
+    recommendation,
+    status,
     kpis,
   } = details;
 
@@ -143,77 +62,88 @@ const SupervisorAppraisalReview2 = () => {
     ?.filter((kpi) => kpi.categoryDescription === "Process")
     .map((kpi, index) => {
       if (index === 0) {
-        return {
-          ...kpi,
-          categoryDescription: kpi.categoryDescription,
-          supervisorRate: allData.data.supervisorRates[kpi.kpiId],
-          supervisorResult: allData.data.supervisorResults[kpi.kpiId].toFixed(),
-        };
+        return { ...kpi, categoryDescription: kpi.categoryDescription };
       }
-      return {
-        ...kpi,
-        categoryDescription: "",
-        supervisorRate: allData.data.supervisorRates[kpi.kpiId],
-        supervisorResult: allData.data.supervisorResults[kpi.kpiId].toFixed(),
-      };
+      return { ...kpi, categoryDescription: "" };
     });
 
   const allCustomer = details?.kpis
     ?.filter((kpi) => kpi.categoryDescription === "Customer")
     .map((kpi, index) => {
       if (index === 0) {
-        return {
-          ...kpi,
-          categoryDescription: kpi.categoryDescription,
-          supervisorRate: allData.data.supervisorRates[kpi.kpiId],
-          supervisorResult: allData.data.supervisorResults[kpi.kpiId].toFixed(),
-        };
+        return { ...kpi, categoryDescription: kpi.categoryDescription };
       }
-      return {
-        ...kpi,
-        categoryDescription: "",
-        supervisorRate: allData.data.supervisorRates[kpi.kpiId],
-        supervisorResult: allData.data.supervisorResults[kpi.kpiId].toFixed(),
-      };
+      return { ...kpi, categoryDescription: "" };
     });
 
   const allFinancial = details?.kpis
     ?.filter((kpi) => kpi.categoryDescription === "Financial")
     .map((kpi, index) => {
       if (index === 0) {
-        return {
-          ...kpi,
-          categoryDescription: kpi.categoryDescription,
-          supervisorRate: allData.data.supervisorRates[kpi.kpiId],
-          supervisorResult: allData.data.supervisorResults[kpi.kpiId].toFixed(),
-        };
+        return { ...kpi, categoryDescription: kpi.categoryDescription };
       }
-      return {
-        ...kpi,
-        categoryDescription: "",
-        supervisorRate: allData.data.supervisorRates[kpi.kpiId],
-        supervisorResult: allData.data.supervisorResults[kpi.kpiId].toFixed(),
-      };
+      return { ...kpi, categoryDescription: "" };
     });
 
   const allCapacityDevelopment = details?.kpis
     ?.filter((kpi) => kpi.categoryDescription === "Capacity Development")
     .map((kpi, index) => {
       if (index === 0) {
-        return {
-          ...kpi,
-          categoryDescription: kpi.categoryDescription,
-          supervisorRate: allData.data.supervisorRates[kpi.kpiId],
-          supervisorResult: allData.data.supervisorResults[kpi.kpiId].toFixed(),
-        };
+        return { ...kpi, categoryDescription: kpi.categoryDescription };
       }
-      return {
-        ...kpi,
-        categoryDescription: "",
-        supervisorRate: allData.data.supervisorRates[kpi.kpiId],
-        supervisorResult: allData.data.supervisorResults[kpi.kpiId].toFixed(),
-      };
+      return { ...kpi, categoryDescription: "" };
     });
+
+  const { loading: updateAppraiseLoading } = useSelector(
+    (state) => state.performanceManagement.updateAppraisalByReferenceReducer
+  );
+
+  const submitRecommendation = () => {
+    const payload = {
+      staffComment: "",
+      status,
+      appraisalReference,
+      recommendation: recommend,
+      secondLevelSupervisorComment: "",
+    };
+    const data = {
+      payload,
+      history,
+      name: "Recommendation",
+    };
+    console.log(">>>>>>comment", payload);
+    dispatch(updateCommentSection(data));
+  };
+
+  const submitSecondLevelComment = () => {
+    const payload = {
+      staffComment: "",
+      status,
+      appraisalReference,
+      recommendation: "",
+      secondLevelSupervisorComment: groupHeadComment,
+    };
+    const data = {
+      payload,
+      history,
+      name: "Group Head Comment",
+    };
+    console.log(">>>>>>comment", payload);
+    dispatch(updateCommentSection(data));
+  };
+
+  useEffect(() => {
+    if ($(".select").length > 0) {
+      $(".select").select2({
+        minimumResultsForSearch: -1,
+        width: "100%",
+      });
+    }
+  });
+
+  useEffect(() => {
+    dispatch(getAppraisalByReferenceId(appraisalReference));
+  }, []);
 
   return (
     <div className="page-wrapper">
@@ -465,7 +395,9 @@ const SupervisorAppraisalReview2 = () => {
                           {totalAppraiseeResult}
                         </div>
                         <div className="col-lg-1 text-center"></div>
-                        <div className="col-lg-1 text-center">{kpiResult}</div>
+                        <div className="col-lg-1 text-center">
+                          {totalSupervisorResult}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -478,7 +410,7 @@ const SupervisorAppraisalReview2 = () => {
                       backgroundColor: "#cccccc",
                     }}
                   >
-                    <div className="col-lg-12  user-name">STRENGTHS</div>
+                    <div className="col-lg-12  user-name">STRENGTHS RATING</div>
                   </div>
 
                   <div className="d-flex m-b-50 ">
@@ -487,12 +419,12 @@ const SupervisorAppraisalReview2 = () => {
                         {/* <div className="row"> */}
                         <div className="profile-view">
                           {/* Staff Details Starts Here */}
-                          <div className="d-flex mb-2 border-bottom">
+                          {/* <div className="d-flex mb-2 border-bottom">
                             <div className="col-lg-12 d-flex">
                               <h4 className="col-lg-4">Skills</h4>
                               <h4 className="col-lg-8">Ratings</h4>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                         {/* </div> */}
                         <div className="d-flex border-bottom">
@@ -556,7 +488,7 @@ const SupervisorAppraisalReview2 = () => {
                       backgroundColor: "#cccccc",
                     }}
                   >
-                    <div className="col-lg-12  user-name">TRAINING</div>
+                    <div className="col-lg-12  user-name">Comments</div>
                   </div>
 
                   <div className="card">
@@ -599,7 +531,7 @@ const SupervisorAppraisalReview2 = () => {
                         className="col-lg-12"
                         style={{ marginTop: "30px", marginBottom: "20px" }}
                       >
-                        <div
+                        {/* <div
                           className="font-weight-bolder"
                           style={{
                             marginBottom: "30px",
@@ -607,6 +539,19 @@ const SupervisorAppraisalReview2 = () => {
                           }}
                         >
                           COMMENTS
+                        </div> */}
+
+                        <div className="form-group mb-5">
+                          <div
+                            className="mb-3 font-weight-bold"
+                            style={{
+                              marginBottom: "30px",
+                              textDecoration: "underline",
+                            }}
+                          >
+                            EXCEPTIONAL ACHIEVEMENTS
+                          </div>
+                          {exceptionalAchievement}
                         </div>
 
                         <div className="form-group mb-5">
@@ -622,7 +567,7 @@ const SupervisorAppraisalReview2 = () => {
                           {supervisorComment}
                         </div>
 
-                        {/* <div className="form-group">
+                        <div className="form-group">
                           <div
                             className="mb-3 font-weight-bold"
                             style={{
@@ -633,36 +578,106 @@ const SupervisorAppraisalReview2 = () => {
                             STAFF'S COMMENT
                           </div>
                           <div className="mb-3">
-                            Own yo' ipsizzle pimpin' sizzle amizzle,
-                            consectetizzle bizzle elit. Nullam dawg velit,
-                            mammasay mammasa mamma oo sa volutpat, ma nizzle mah
-                            nizzle, gravida vel, arcu. Pellentesque shizznit
-                            tortizzle. Shiz erizzle. Fusce izzle shit dapibizzle
-                            turpis tempizzle dope. Maurizzle pellentesque nibh
-                            et sizzle. Things fo shizzle my nizzle tortor.
-                            Sheezy izzle rhoncizzle nisi. In hac habitasse
-                            platea dictumst. Uhuh ... yih! dapibizzle.
+                            {appraiseeComment
+                              ? appraiseeComment
+                              : "No appraisee Comment yet"}
                           </div>
-                        </div> */}
+                        </div>
                       </div>
 
-                      {/* <div className="col-lg-4" style={{ marginTop: "50px" }}>
-                        <div
-                          className="font-weight-bolder"
-                          style={{
-                            marginBottom: "20px",
-                            textDecoration: "underline",
-                          }}
-                        >
-                          RECOMMENDATION
-                        </div>
+                      {status === "PROCESSING" && (
+                        <div className="col-lg-4" style={{ marginTop: "50px" }}>
+                          <div
+                            className="font-weight-bolder"
+                            style={{
+                              marginBottom: "20px",
+                              textDecoration: "underline",
+                            }}
+                          >
+                            RECOMMENDATION
+                          </div>
 
-                        <div className="form-group ">
-                         {recommendation}
+                          <div className="form-group ">
+                            <select
+                              className="form-control"
+                              value={recommend}
+                              onChange={(e) =>
+                                setRecommendation(e.target.value)
+                              }
+                            >
+                              <option value="">-Select-</option>
+                              <option value="maintainStatus">
+                                Maintain Status
+                              </option>
+                              <option value="promote">Promote</option>
+                              <option value="watchPerformance">
+                                Watch Performance
+                              </option>
+                              <option value="reassign">Reassign </option>
+                              <option value="exit">Exit </option>
+                            </select>
+                          </div>
                         </div>
-                      </div> */}
+                      )}
+
+                      {status === "COMPLETE" && (
+                        <div className="col-lg-4" style={{ marginTop: "50px" }}>
+                          <div
+                            className="font-weight-bolder"
+                            style={{
+                              marginBottom: "20px",
+                              textDecoration: "underline",
+                            }}
+                          >
+                            RECOMMENDATION
+                          </div>
+
+                          <div className="form-group ">{recommendation}</div>
+                        </div>
+                      )}
+
+                      {status === "INPROGRESS" && (
+                        <div className="col-lg-4" style={{ marginTop: "50px" }}>
+                          <div
+                            className="font-weight-bolder"
+                            style={{
+                              marginBottom: "20px",
+                              textDecoration: "underline",
+                            }}
+                          >
+                            RECOMMENDATION
+                          </div>
+
+                          <div className="form-group ">{recommendation}</div>
+                        </div>
+                      )}
+
+                      {status === "INPROGRESS" && (
+                        <div className="form-group">
+                          <div
+                            className="mb-3 font-weight-bold"
+                            style={{
+                              marginBottom: "20px",
+                              textDecoration: "underline",
+                            }}
+                          >
+                            GROUP HEAD COMMENT
+                          </div>
+                          <div className="mb-3">
+                            <textarea
+                              value={groupHeadComment}
+                              onChange={(e) =>
+                                setGroupHeadComment(e.target.value)
+                              }
+                              className="form-control mb-3 "
+                              defaultValue={""}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
+
                   {/* Supervisor's Comments Ends Here */}
                 </div>
 
@@ -673,13 +688,21 @@ const SupervisorAppraisalReview2 = () => {
                 >
                   <div className="d-flex align-items-center justify-content-center">
                     <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
-                      <a
+                      <button
                         href="#"
+                        disabled={
+                          status === "PRE-PROCESS" ||
+                          (recommend === "" && groupHeadComment === "")
+                        }
                         className="btn btn-block btn-primary font-weight-700"
-                        onClick={() => submitAppraisal()}
+                        onClick={() => {
+                          recommend
+                            ? submitRecommendation()
+                            : submitSecondLevelComment();
+                        }}
                       >
                         {updateAppraiseLoading ? <Loader /> : "Submit"}
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -693,4 +716,4 @@ const SupervisorAppraisalReview2 = () => {
   );
 };
 
-export default SupervisorAppraisalReview2;
+export default PreProcessAppraisal;

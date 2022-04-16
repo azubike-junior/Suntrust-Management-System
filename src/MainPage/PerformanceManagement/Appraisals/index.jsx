@@ -6,26 +6,18 @@ import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../paginationfunction";
 import "../../antdstyle.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getAppraisalsBySupervisorId } from "./../../../services/PerformanceManagement/StaffAppraisal/getAppraisalsBySupervisorId";
-import Loader from './../../UIinterface/Loader/index';
+import Loader from "./../../UIinterface/Loader/index";
+import { getAppraisalsByStaffId } from './../../../services/PerformanceManagement/StaffAppraisal/getAppraisalsByStaffId';
 
-const StaffsAppraisals = () => {
+const Appraisals = () => {
   const dispatch = useDispatch();
-  // const [data, setData] = useState([
-  //   {
-  //     id: 1,
-  //     staffId: "ST-0019",
-  //     staffName: "James McAvoy",
-  //     status: "Submitted",
-  //     reference: "6BD0E3D0-3AF3-41DA-7568-08DA1BAAD9FF",
-  //   },
-  // ]);
 
-  const { data: supervisorAppraisals, loading: appraisalsLoading } = useSelector(
-    (state) => state.performanceManagement.getAppraisalsBySupervisorIdReducer
-  );
+  const { data: appraisals, loading: appraisalsLoading } =
+    useSelector(
+      (state) => state.performanceManagement.getAppraisalsByStaffIdReducer
+    );
 
-  console.log(">>>>>data", supervisorAppraisals);
+  console.log(">>>>>data", appraisals);
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -37,7 +29,7 @@ const StaffsAppraisals = () => {
   });
 
   useEffect(() => {
-    dispatch(getAppraisalsBySupervisorId("328"));
+    dispatch(getAppraisalsByStaffId("256"));
   }, []);
 
   // Table displayed on Expense Page
@@ -59,15 +51,20 @@ const StaffsAppraisals = () => {
       render: (text, record) => <h2 className="table-avatar">{text}</h2>,
     },
     {
+      title: "Submitted Date",
+      dataIndex: "dateSubmitted",
+      
+    },
+    {
       title: "",
       render: (text, record) => (
         <Link
           onClick={() => console.log("text", text)}
-          to={`/app/employees/staff_Appraisal_detail/${text.appraisalReference}`}
+          to={`/app/performanceManagement/appraiseeUpdatedReview/${text.appraisalReference}`}
           className="btn btn-sm btn-outline-primary m-r-10"
         >
           <i className="fa fa-eye m-r-5" />
-          View Staff
+          VIEW
         </Link>
       ),
     },
@@ -76,7 +73,7 @@ const StaffsAppraisals = () => {
   return (
     <div className="page-wrapper">
       <Helmet>
-        <title>Expense Management | My Requests</title>
+        <title>Performance Management | Appraisals</title>
         <meta name="description" content="Login page" />
       </Helmet>
 
@@ -87,7 +84,7 @@ const StaffsAppraisals = () => {
         <div className="page-header">
           <div className="row align-items-center">
             <div className="col">
-              <h3 className="page-title">Supervisor Appraisals</h3>
+              <h3 className="page-title">Appraisals</h3>
             </div>
           </div>
         </div>
@@ -119,7 +116,7 @@ const StaffsAppraisals = () => {
               <Table
                 className="table-striped"
                 pagination={{
-                  total: supervisorAppraisals.length,
+                  total: appraisals.length,
                   showTotal: (total, range) =>
                     `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                   showSizeChanger: true,
@@ -130,7 +127,7 @@ const StaffsAppraisals = () => {
                 style={{ overflowX: "auto" }}
                 columns={columns}
                 // bordered
-                dataSource={supervisorAppraisals}
+                dataSource={appraisals}
                 rowKey={(record) => record.id}
                 // onChange={console.log("change")}
               />
@@ -144,4 +141,4 @@ const StaffsAppraisals = () => {
   );
 };
 
-export default StaffsAppraisals;
+export default Appraisals;

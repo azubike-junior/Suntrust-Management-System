@@ -192,23 +192,19 @@ const Sidebar = (props) => {
 
             <li className={pathname.includes("clients") ? "active" : ""}>
               <Link to="/app/performanceManagement/staffAppraisal">
-                <i className="la la-comment" /> <span>Staff Appraisal</span>
+                <i className="la la-comment" /> <span>New Appraisal</span>
               </Link>
             </li>
 
-            {/* <li className={pathname.includes('clients') ?"active" :""}> 
-                <Link to = "/app/employees/super_self_Appraisal"><i className="la la-comment"/> <span>Supervisor Self Appraisal</span></Link>
-              </li> */}
-
-            <li className={pathname.includes("clients") ? "active" : ""}>
-              <Link to="/app/employees/my_staff_Appraisal">
-                <i className="la la-comment" /> <span>My Staff Appraisals</span>
+              <li className={pathname.includes("clients") ? "active" : ""}>
+              <Link to="/app/performanceManagement/Appraisals">
+                <i className="la la-comment" /> <span>Appraisals</span>
               </Link>
             </li>
 
             <li className={pathname.includes("clients") ? "active" : ""}>
               <Link to="/app/performanceManagement/allStaffAppraisals">
-                <i className="la la-comment" /> <span>My Staff Appraisalsss</span>
+                <i className="la la-comment" /> <span>My Staff Appraisals</span>
               </Link>
             </li>
 

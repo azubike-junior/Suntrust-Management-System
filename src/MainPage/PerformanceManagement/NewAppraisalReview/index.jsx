@@ -3,18 +3,19 @@ import { Link, useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { useDispatch, useSelector } from "react-redux";
 import { useStateMachine } from "little-state-machine";
-import { submitStaffAppraisal } from './../../../services/PerformanceManagement/StaffAppraisal/submitStaffAppraisal';
-import { NewKpiReviewComponent } from './../KpiComponent/index';
-import { updateName } from './../../../utils/helper';
+import { submitStaffAppraisal } from "./../../../services/PerformanceManagement/StaffAppraisal/submitStaffAppraisal";
+import { NewKpiReviewComponent } from "./../KpiComponent/index";
+import { updateName } from "./../../../utils/helper";
+import { getIndividualKpis } from "./../../../services/PerformanceManagement/Configurations/individualKpi/getIndividualKpi";
+import { getCategoryTypes } from "./../../../services/PerformanceManagement/Configurations/categoryType/getCategoryTypes";
+import Modal from "react-bootstrap/Modal";
 
 const StaffAppraisalReview = () => {
   const { state: allData, actions } = useStateMachine({ updateName });
   const dispatch = useDispatch();
-  const [KPIs, setKPIs] = useState([]);
   const [kpiResult, setKpiResult] = useState("");
   const history = useHistory();
-
-  // console.log(">>>>.state", allData);
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -25,59 +26,55 @@ const StaffAppraisalReview = () => {
     }
   });
 
-  const clearKPIs = () => {
-    allData.data = {
-      KPIs: [],
-    };
-    actions.update(allData.data);
+  const { data: KPIs } = useSelector(
+    (state) => state.performanceManagement.getIndividualKpisReducer
+  );
+
+  const { data: categories } = useSelector(
+    (state) => state.performanceManagement.getCategoryTypesReducer
+  );
+
+  let results = [];
+
+  for (let category = 0; category < categories.length; category++) {
+    results.push(
+      KPIs.filter((kpi) => kpi.category == categories[category].description)
+    );
+  }
+
+  const toggleModal = () => {
+    setOpenModal(!openModal);
   };
 
-  const allProcess = allData?.data?.KPIs.filter(
-    (kpi) => kpi.categoryId === 1
-  );
-  const allCustomer = allData?.data?.KPIs.filter(
-    (kpi) => kpi.categoryId === 2
-  );
-  const allFinancial = allData?.data?.KPIs.filter(
-    (kpi) => kpi.categoryId === 3
-  );
-  const allCapacityDevelopment = allData?.data?.KPIs.filter(
-    (kpi) => kpi.categoryId === 4
-  );
+  useEffect(() => {
+    dispatch(getIndividualKpis());
+  }, []);
 
-  // console.log(">>>>>>allProcess", allProcess);
+  useEffect(() => {
+    dispatch(getCategoryTypes());
+  }, []);
 
   const submitAppraisal = () => {
     const appraise = KPIs?.map((kpi) => {
       return {
-        supervisorRate: kpi.supervisorRate,
-        key: kpi.kpiId,
-        supervisorResult: kpi.supervisorResult,
-        kpiId: Number(kpi.kpiId),
+        supervisorRate: "",
+        key: 0,
+        supervisorResult: "",
+        kpiId: Number(kpi.id),
         categoryId: Number(kpi.categoryId),
-        appraiseeResult: kpi.appraiseeResult,
-        appraiseeRate: kpi.appraiseeRate,
+        appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+        appraiseeRate: allData.data.appraisalRates[kpi.id],
       };
     });
 
-    const {
-      staffId,
-      supervisorId,
-      supervisorName,
-      secondSupervisorName,
-      appraiseeName,
-      exceptionalAchievement,
-      appraiseeComment,
-    } = allData?.data;
-
     const appraisals = {
-      staffId,
-      supervisorId,
-      supervisorName,
-      appraiseeName,
-      exceptionalAchievement,
-      secondSupervisorName,
-      appraiseeComment,
+      staffId: "256",
+      supervisorId: "328",
+      supervisorName: "Mr Abobade",
+      appraiseeName: "Junaid",
+      exceptionalAchievement: allData.data.exceptionalAchievement,
+      secondSupervisorName: "Mr Shola",
+      appraiseeComment: "",
       totalAppraiseeResult: kpiResult,
       kpis: appraise,
     };
@@ -85,54 +82,95 @@ const StaffAppraisalReview = () => {
     const data = {
       appraisals,
       history,
-      clearKPIs,
+      toggleModal
     };
-    console.log(">>>>>>appraisals", appraisals)
+    // console.log(">>>>>>appraisals", appraisals);
     dispatch(submitStaffAppraisal(data));
   };
 
-  const result = KPIs?.reduce((acc, kpi) => {
-    const allResults = kpi.appraiseeResult.split("%");
-    return Number(acc) + Number(allResults[0]);
-  }, 0);
+  console.log(">>>>>>>results", Object.values(allData.data.appraisalResults));
+
+  const resultValues = Object.values(allData.data.appraisalResults);
+
+  const result = resultValues
+    ?.reduce((acc, num) => {
+      return Number(acc) + Number(num);
+    }, 0)
+    .toFixed(1);
 
   useEffect(() => {
-    // console.log(">>>>allData", allData?.data);
-    setKPIs(allData?.data?.KPIs);
     setKpiResult(result);
   });
 
-  // console.log(">>>>>>allData", allData)
-
-  const processPerspective = allProcess?.map((kpi, index) => {
+  const processPerspective = results[0]?.map((kpi, index) => {
     if (index === 0) {
-      return { ...kpi, category: kpi.category };
+      return {
+        ...kpi,
+        category: kpi.category,
+        appraiseeRate: allData.data.appraisalRates[kpi.id],
+        appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+      };
     }
-    return { ...kpi, category: "" };
+    return {
+      ...kpi,
+      category: "",
+      appraiseeRate: allData.data.appraisalRates[kpi.id],
+      appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+    };
   });
 
-  const customerPerspective = allCustomer?.map((kpi, index) => {
+  const customerPerspective = results[1]?.map((kpi, index) => {
     if (index === 0) {
-      return { ...kpi, category: kpi.category };
+      return {
+        ...kpi,
+        category: kpi.category,
+        appraiseeRate: allData.data.appraisalRates[kpi.id],
+        appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+      };
     }
-    return { ...kpi, category: "" };
+    return {
+      ...kpi,
+      category: "",
+      appraiseeRate: allData.data.appraisalRates[kpi.id],
+      appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+    };
   });
 
-  const financialPerspective = allFinancial?.map((kpi, index) => {
+  const financialPerspective = results[2]?.map((kpi, index) => {
     if (index === 0) {
-      return { ...kpi, category: kpi.category };
+      return {
+        ...kpi,
+        category: kpi.category,
+        appraiseeRate: allData.data.appraisalRates[kpi.id],
+        appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+      };
     }
-    return { ...kpi, category: "" };
+    return {
+      ...kpi,
+      category: "",
+      appraiseeRate: allData.data.appraisalRates[kpi.id],
+      appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+    };
   });
 
-  const capacityPerspective = allCapacityDevelopment?.map((kpi, index) => {
+  const capacityPerspective = results[3]?.map((kpi, index) => {
     if (index === 0) {
-      return { ...kpi, category: kpi.category };
+      return {
+        ...kpi,
+        category: kpi.category,
+        appraiseeRate: allData.data.appraisalRates[kpi.id],
+        appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+      };
     }
-    return { ...kpi, category: "" };
+    return {
+      ...kpi,
+      category: "",
+      appraiseeRate: allData.data.appraisalRates[kpi.id],
+      appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+    };
   });
 
-  console.log(">>>customer", customerPerspective)
+  // console.log(">>>customer", customerPerspective);
 
   return (
     <div>
@@ -182,19 +220,19 @@ const StaffAppraisalReview = () => {
                     </div>
                     {/* Table Header Ends Here */}
 
-                    {allProcess?.map((kpi) => {
+                    {processPerspective?.map((kpi) => {
                       return <NewKpiReviewComponent kpi={kpi} />;
                     })}
 
-                    {allCustomer?.map((kpi) => {
+                    {customerPerspective?.map((kpi) => {
                       return <NewKpiReviewComponent kpi={kpi} />;
                     })}
 
-                    {allFinancial?.map((kpi) => {
+                    {financialPerspective?.map((kpi) => {
                       return <NewKpiReviewComponent kpi={kpi} />;
                     })}
 
-                    {allCapacityDevelopment?.map((kpi) => {
+                    {capacityPerspective?.map((kpi) => {
                       return <NewKpiReviewComponent kpi={kpi} />;
                     })}
 
@@ -222,20 +260,6 @@ const StaffAppraisalReview = () => {
                     className="col-lg-12"
                     style={{ marginTop: "50px", marginBottom: "20px" }}
                   >
-                    <div
-                      className="font-weight-bolder"
-                      style={{ textDecoration: "underline" }}
-                    >
-                      EXCEPTIONAL ACHIEVEMENTS
-                    </div>
-
-                    <div className="mt-3" style={{ marginBottom: "30px" }}>
-                      <label>
-                        If you have any exceptional achievements, provide it in
-                        the field below:
-                      </label>
-                    </div>
-
                     <div className="form-group mb-5">
                       <div
                         className="mb-3 font-weight-bold"
@@ -249,32 +273,7 @@ const StaffAppraisalReview = () => {
                       {allData?.data?.exceptionalAchievement}
                     </div>
 
-                    <div
-                      className="form-group"
-                      style={{ marginBottom: "30px" }}
-                    >
-                      <div
-                        className="mb-3 font-weight-bold"
-                        style={{
-                          marginBottom: "20px",
-                          textDecoration: "underline",
-                        }}
-                      >
-                        SUPERVISOR'S COMMENT
-                      </div>
-                      <div className="mb-3">
-                        Own yo' ipsizzle pimpin' sizzle amizzle, consectetizzle
-                        bizzle elit. Nullam dawg velit, mammasay mammasa mamma
-                        oo sa volutpat, ma nizzle mah nizzle, gravida vel, arcu.
-                        Pellentesque shizznit tortizzle. Shiz erizzle. Fusce
-                        izzle shit dapibizzle turpis tempizzle dope. Maurizzle
-                        pellentesque nibh et sizzle. Things fo shizzle my nizzle
-                        tortor. Sheezy izzle rhoncizzle nisi. In hac habitasse
-                        platea dictumst. Uhuh ... yih! dapibizzle.
-                      </div>
-                    </div>
-
-                    <div className="form-group">
+                    {/* <div className="form-group">
                       <div
                         className="mb-3 font-weight-bold"
                         style={{
@@ -290,7 +289,7 @@ const StaffAppraisalReview = () => {
                           defaultValue={""}
                         />
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
@@ -305,9 +304,9 @@ const StaffAppraisalReview = () => {
                   <a
                     href="#"
                     className="btn btn-block btn-primary font-weight-700"
-                    onClick={() => submitAppraisal()}
+                    onClick={() => toggleModal()}
                   >
-                    SUBMIT
+                    Confirm
                   </a>
                 </div>
               </div>
@@ -316,8 +315,42 @@ const StaffAppraisalReview = () => {
           {/* /Page Header */}
         </div>
       </div>
-      {/* /Page Content */}
-      {/* /Page Wrapper */}
+
+      <Modal show={openModal} centered backdrop="static" keyboard={false}>
+        <div className="modal-90w  modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body">
+              <div className="form-header">
+                <h3>Appraisal Rating</h3>
+                <p>Are you sure you want to proceed</p>
+              </div>
+              <div className="modal-btn delete-action">
+                <div className="row">
+                  <div className="col-6">
+                    <a
+                      className="btn btn-primary continue-btn"
+                      onClick={() => {
+                        submitAppraisal();
+                        toggleModal()
+                      }}
+                    >
+                      Yes
+                    </a>
+                  </div>
+                  <div className="col-6">
+                    <a
+                      onClick={() => toggleModal()}
+                      className="btn btn-primary cancel-btn"
+                    >
+                      Cancel
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
