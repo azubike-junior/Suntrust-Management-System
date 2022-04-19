@@ -125,13 +125,9 @@ const Sidebar = (props) => {
               </ul>
             </li>
 
-            {/* <li className="menu-title"> 
-                <span>PAYROLL MANAGEMENT</span>
-              </li> */}
-
-            <li className="menu-title">
-              <span>PERFORMANCE MANAGEMENT</span>
-            </li>
+            <li className="menu-title"> 
+                <span>HR MANAGEMENT</span>
+              </li>
 
             <li className="submenu">
               <a href="#">
@@ -153,6 +149,14 @@ const Sidebar = (props) => {
                     to="/app/performanceManagement/config/categoryType"
                   >
                     Perspectives
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    onClick={() => localStorage.setItem("minheight", "true")}
+                    to="/app/performanceManagement/config/trainings"
+                  >
+                    Trainings
                   </Link>
                 </li>
                 <li>
@@ -196,9 +200,15 @@ const Sidebar = (props) => {
               </Link>
             </li>
 
-              <li className={pathname.includes("clients") ? "active" : ""}>
+            <li className={pathname.includes("clients") ? "active" : ""}>
               <Link to="/app/performanceManagement/Appraisals">
                 <i className="la la-comment" /> <span>Appraisals</span>
+              </Link>
+            </li>
+
+            <li className={pathname.includes("clients") ? "active" : ""}>
+              <Link to="/app/employees/hr_reports">
+                <i className="la la-file-invoice" /> <span>HR Reports</span>
               </Link>
             </li>
 

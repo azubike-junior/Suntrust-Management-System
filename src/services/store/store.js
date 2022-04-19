@@ -48,7 +48,11 @@ import getTechnicalTrainingReducer from "./../PerformanceManagement/StaffApprais
 import getBehaviouralTrainingReducer from "./../PerformanceManagement/StaffAppraisal/getBehaviouralTraining";
 import getStrengthsReducer from "./../PerformanceManagement/StaffAppraisal/getStrengths";
 import updateAppraisalByReferenceReducer from "./../PerformanceManagement/StaffAppraisal/updateAppraisalByReference";
-
+import getBehavioralMetricsReducer from './../PerformanceManagement/Configurations/behavioralMetric/getBehavioralMetric';
+import addBehavioralMetricReducer from "./../PerformanceManagement/Configurations/behavioralMetric/addBehavioralMetric";
+import getRecommendationsReducer from "./../PerformanceManagement/Configurations/recommendation/getRecommendation";
+import addRecommendationReducer from "./../PerformanceManagement/Configurations/recommendation/addRecommendation";
+import loginReducer from "./../Authentication/login";
 
 import {
   getCodeConfigQuery,
@@ -74,8 +78,16 @@ const performanceManagement = combineReducers({
   getBehaviouralTrainingReducer,
   getTechnicalTrainingReducer,
   getStrengthsReducer,
-  updateAppraisalByReferenceReducer
+  updateAppraisalByReferenceReducer,
+  getBehavioralMetricsReducer,
+  addBehavioralMetricReducer,
+  getRecommendationsReducer,
+  addRecommendationReducer,
 });
+
+const authenticationManager = combineReducers({
+  loginReducer
+})
 
 export const store = configureStore({
   reducer: {
@@ -111,6 +123,7 @@ export const store = configureStore({
     deleteExpenseReducer,
     getExpenseByReferenceReducer,
     performanceManagement,
+    authenticationManager
   },
   middleware: (gdm) =>
     gdm({

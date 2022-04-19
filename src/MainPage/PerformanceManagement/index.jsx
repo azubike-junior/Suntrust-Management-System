@@ -12,7 +12,6 @@ import IndividualKPI from "./Configurations/IndividualKpi";
 import OrganizationalGoal from "./Configurations/organizationalGoal/index";
 import TeamGoal from "./Configurations/teamGoal";
 import UnitKPI from "./Configurations/unitKpi";
-// import StaffAppraisalDetail from "./StaffAppraisalDetail";
 import StaffAppraisalReview from "./NewAppraisalReview";
 import StaffsAppraisals from "./MyStaffsAppraisals";
 import StaffAppraisal from "./NewAppraisal";
@@ -20,6 +19,8 @@ import SupervisorAppraisalReview2 from './SupervisorReview2/index';
 import Appraisals from './Appraisals/index';
 import AppraiseeUpdatedReview from './AppraiseeUpdatedReview/index';
 import PreProcessAppraisal from './PreProcessAppraisal/index';
+import Trainings from "./Configurations/Trainings";
+import StaffAppraisalDetail from './StaffAppraisalDetails/index';
 
 const PerformanceManagementRoute = ({ match }) => (
   <Switch>
@@ -29,6 +30,7 @@ const PerformanceManagementRoute = ({ match }) => (
       to={`${match.url}/performanceManagement`}
     />
     <Route path={`${match.url}/config/setupAppraisal`} component={SetupAppraisal} />
+     <Route path={`${match.url}/config/Trainings`} component={Trainings} />
     <Route path={`${match.url}/config/categoryType`} component={CategoryType} />
     <Route
       path={`${match.url}/config/departmentGoal`}
@@ -52,7 +54,7 @@ const PerformanceManagementRoute = ({ match }) => (
     <Route path={`${match.url}/staffAppraisalReview`} component={StaffAppraisalReview}/>
     <Route path={`${match.url}/supervisorAppraisalReview2/:appraisalReference`} component={SupervisorAppraisalReview2} />
     <Route path={`${match.url}/preprocessAppraisal/:appraisalReference`} component={PreProcessAppraisal} />
-
+   <Route path={`${match.url}/staffAppraisalDetail/:appraisalReference`} component={StaffAppraisalDetail} />
     <Route path={`${match.url}/appraiseeUpdatedReview/:appraisalReference`} component={AppraiseeUpdatedReview} />
     <Route path={`${match.url}/staffAppraisal`} component={StaffAppraisal} />
     <Route path={`${match.url}/allStaffAppraisals`} component={StaffsAppraisals} />

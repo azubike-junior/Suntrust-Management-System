@@ -23,6 +23,7 @@ import { getStrengths } from "./../../../services/PerformanceManagement/StaffApp
 import { RadioInput } from "./../../../components/RadioInput/index";
 import { getAppraisalByReferenceId } from "./../../../services/PerformanceManagement/StaffAppraisal/getAppraisalByReference";
 import { addSelect, updateName } from "./../../../utils/helper";
+import Modal from "react-bootstrap/Modal";
 import {
   NewSupervisorKpiInputComponent,
   NewSupervisorKpiReviewComponent,
@@ -35,8 +36,16 @@ const SupervisorAppraisalReview2 = () => {
   const { state: allData, actions } = useStateMachine({ updateName });
   const [kpiResult, setKpiResult] = useState("");
   const history = useHistory();
+  const [openModal, setOpenModal] = useState(false);
 
-  // console.log(">>>>.state", allData);
+  const toggleModal = () => {
+    setOpenModal(!openModal);
+  };
+
+  const staffData = JSON.parse(localStorage.getItem("cachedData"));
+
+  const { departmentName, gradeName, secondLevelSupervisorStaffId, unitName } =
+    staffData;
 
   const clearKPIs = () => {
     allData.data = {
@@ -65,8 +74,6 @@ const SupervisorAppraisalReview2 = () => {
     (state) => state.performanceManagement.updateAppraisalByReferenceReducer
   );
 
-  console.log(">>>>>details", details);
-
   useEffect(() => {
     if ($(".select").length > 0) {
       $(".select").select2({
@@ -91,13 +98,13 @@ const SupervisorAppraisalReview2 = () => {
 
     const appraisals = {
       appraisalReference,
-      recommendation:"",
+      recommendation: "",
       behaviouralTrainings,
       functionalTrainings,
       supervisorComment,
-      secondSupervisorComment:"",
+      secondSupervisorComment: "",
       strengthScore,
-      secondLevelSupervisorComment:"",
+      secondLevelSupervisorComment: "",
       totalSupervisorResult: kpiResult,
       kpis: appraise,
     };
@@ -107,15 +114,17 @@ const SupervisorAppraisalReview2 = () => {
       history,
       clearKPIs,
     };
-    console.log(">>>>>>appraisals", appraisals);
+    // console.log(">>>>>>appraisals", appraisals);
     dispatch(updateAppraisalByReference(data));
   };
 
-   const resultValues = Object.values(allData.data.supervisorResults);
+  const resultValues = Object.values(allData.data.supervisorResults);
 
-  const result = resultValues.reduce((acc, num) => {
-    return Number(acc) + Number(num);
-  }, 0).toFixed(1);
+  const result = resultValues
+    .reduce((acc, num) => {
+      return Number(acc) + Number(num);
+    }, 0)
+    .toFixed(1);
 
   useEffect(() => {
     setKpiResult(result);
@@ -130,8 +139,6 @@ const SupervisorAppraisalReview2 = () => {
     appraiseeName,
     supervisorId,
     supervisorName,
-    secondSupervisorName,
-    exceptionalAchievement,
     dateSubmitted,
     staffId,
     lastPromotionDate,
@@ -308,25 +315,34 @@ const SupervisorAppraisalReview2 = () => {
                                   </div>
                                 </div>
 
-                                {/* <div className="d-flex m-b-10 font_size">
+                                <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
                                     DEPARTMENT:
                                   </div>
                                   <div className="col-lg-7 col-md-6 col-sm-12">
-                                    Human Capital Management
+                                    {departmentName}
                                   </div>
-                                </div> */}
+                                </div>
                               </div>
 
                               <div className="col-lg-6">
-                                {/* <div className="d-flex m-b-10 font_size">
+                                <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
-                                    GROUP:
+                                    GRADE:
                                   </div>
                                   <div className="col-lg-7 col-md-6 col-sm-12">
-                                    HR & Strategy Group
+                                    {gradeName}
                                   </div>
-                                </div> */}
+                                </div>
+
+                                <div className="d-flex m-b-10 font_size">
+                                  <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
+                                    UNIT:
+                                  </div>
+                                  <div className="col-lg-7 col-md-6 col-sm-12">
+                                    {unitName}
+                                  </div>
+                                </div>
 
                                 <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
@@ -348,10 +364,10 @@ const SupervisorAppraisalReview2 = () => {
 
                                 <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
-                                    GROUP HEAD:
+                                    SECOND SUPERVISOR ID:
                                   </div>
                                   <div className="col-lg-7 col-md-6 col-sm-12">
-                                    {secondSupervisorName}
+                                    {secondLevelSupervisorStaffId}
                                   </div>
                                 </div>
 
@@ -461,11 +477,27 @@ const SupervisorAppraisalReview2 = () => {
                         <div className="col-lg-1 text-center"></div>
                         <div className="col-lg-1 text-center"></div>
                         <div className="col-lg-1 text-center"></div>
-                        <div className="col-lg-2 text-center">
+                        <div
+                          className="col-lg-2 text-center total-style"
+                          style={{
+                            color: "#DAA520",
+                            fontSize: "18px",
+                            fontWeight: "bolder",
+                          }}
+                        >
                           {totalAppraiseeResult}
                         </div>
                         <div className="col-lg-1 text-center"></div>
-                        <div className="col-lg-1 text-center">{kpiResult}</div>
+                        <div
+                          className="col-lg-1 text-center total-style"
+                          style={{
+                            color: "#DAA520",
+                            fontSize: "18px",
+                            fontWeight: "bolder",
+                          }}
+                        >
+                          {kpiResult}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -599,7 +631,7 @@ const SupervisorAppraisalReview2 = () => {
                         className="col-lg-12"
                         style={{ marginTop: "30px", marginBottom: "20px" }}
                       >
-                        <div
+                        {/* <div
                           className="font-weight-bolder"
                           style={{
                             marginBottom: "30px",
@@ -607,7 +639,7 @@ const SupervisorAppraisalReview2 = () => {
                           }}
                         >
                           COMMENTS
-                        </div>
+                        </div> */}
 
                         <div className="form-group mb-5">
                           <div
@@ -675,10 +707,10 @@ const SupervisorAppraisalReview2 = () => {
                     <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
                       <a
                         href="#"
-                        className="btn btn-block btn-primary font-weight-700"
-                        onClick={() => submitAppraisal()}
+                        className="btn btn-block btn-suntrust font-weight-700"
+                        onClick={() => toggleModal()}
                       >
-                        {updateAppraiseLoading ? <Loader /> : "Submit"}
+                        Confirm
                       </a>
                     </div>
                   </div>
@@ -689,6 +721,41 @@ const SupervisorAppraisalReview2 = () => {
           </div>
         </div>
       </div>
+      <Modal show={openModal} centered backdrop="static" keyboard={false}>
+        <div className="modal-90w  modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body">
+              <div className="form-header">
+                <h3>Supervisor Rating</h3>
+                <p>Are you sure you want to proceed</p>
+              </div>
+              <div className="modal-btn delete-action">
+                <div className="row">
+                  <div className="col-6">
+                    <a
+                      className="btn btn-primary continue-btn"
+                      onClick={() => {
+                        submitAppraisal();
+                        toggleModal();
+                      }}
+                    >
+                      Yes
+                    </a>
+                  </div>
+                  <div className="col-6">
+                    <a
+                      onClick={() => toggleModal()}
+                      className="btn btn-primary cancel-btn"
+                    >
+                      Cancel
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

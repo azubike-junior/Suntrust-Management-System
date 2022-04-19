@@ -54,6 +54,10 @@ const StaffAppraisalReview = () => {
     dispatch(getCategoryTypes());
   }, []);
 
+  const staffData = JSON.parse(localStorage.getItem("cachedData"));
+
+  console.log(">>>>>>staffData", staffData);
+
   const submitAppraisal = () => {
     const appraise = KPIs?.map((kpi) => {
       return {
@@ -67,13 +71,26 @@ const StaffAppraisalReview = () => {
       };
     });
 
+    const {
+      staffId,
+      supervisorStaffId,
+      superVisorFistName,
+      supervisorLastName,
+      firstName,
+      lastName,
+      secondLevelSupervisorStaffId,
+    } = staffData;
+
+    // console.log(">>>>staffID", staffId, superVisorFistName)
+
     const appraisals = {
-      staffId: "256",
-      supervisorId: "328",
-      supervisorName: "Mr Abobade",
-      appraiseeName: "Junaid",
+      staffId,
+      secondLevelSupervisorId: secondLevelSupervisorStaffId,
+      supervisorId: supervisorStaffId,
+      supervisorName: `${superVisorFistName} ${supervisorLastName}`,
+      appraiseeName: `${firstName} ${lastName}`,
       exceptionalAchievement: allData.data.exceptionalAchievement,
-      secondSupervisorName: "Mr Shola",
+      secondSupervisorName: "",
       appraiseeComment: "",
       totalAppraiseeResult: kpiResult,
       kpis: appraise,
@@ -82,13 +99,11 @@ const StaffAppraisalReview = () => {
     const data = {
       appraisals,
       history,
-      toggleModal
+      toggleModal,
     };
     // console.log(">>>>>>appraisals", appraisals);
     dispatch(submitStaffAppraisal(data));
   };
-
-  console.log(">>>>>>>results", Object.values(allData.data.appraisalResults));
 
   const resultValues = Object.values(allData.data.appraisalResults);
 
@@ -170,8 +185,6 @@ const StaffAppraisalReview = () => {
     };
   });
 
-  // console.log(">>>customer", customerPerspective);
-
   return (
     <div>
       {/* Page Wrapper */}
@@ -249,7 +262,14 @@ const StaffAppraisalReview = () => {
                       <div className="col-lg-1 text-center"></div>
                       <div className="col-lg-2 text-center"></div>
                       <div className="col-lg-2 text-center"></div>
-                      <div className="col-lg-2 text-center">
+                      <div
+                        className="col-lg-2 text-center"
+                        style={{
+                          color: "#DAA520",
+                          fontSize: "18px",
+                          fontWeight: "bolder",
+                        }}
+                      >
                         {" "}
                         {Number(kpiResult)?.toFixed()}
                       </div>
@@ -303,7 +323,7 @@ const StaffAppraisalReview = () => {
                 <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
                   <a
                     href="#"
-                    className="btn btn-block btn-primary font-weight-700"
+                    className="btn btn-block btn-suntrust font-weight-700"
                     onClick={() => toggleModal()}
                   >
                     Confirm
@@ -331,7 +351,7 @@ const StaffAppraisalReview = () => {
                       className="btn btn-primary continue-btn"
                       onClick={() => {
                         submitAppraisal();
-                        toggleModal()
+                        toggleModal();
                       }}
                     >
                       Yes

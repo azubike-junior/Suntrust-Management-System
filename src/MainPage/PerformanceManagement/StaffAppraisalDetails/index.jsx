@@ -3,12 +3,11 @@
  */
 import React, { Component, useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Table } from "antd";
 import "antd/dist/antd.css";
-import { itemRender, onShowSizeChange } from "../paginationfunction";
-import "../antdstyle.css";
-import Staff_Appraisal from "./staff_Appraisal";
+import { itemRender, onShowSizeChange } from "../../paginationfunction";
+import "../../antdstyle.css";
 import {
   createStore,
   useStateMachine,
@@ -17,17 +16,18 @@ import {
 } from "little-state-machine";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { getBehaviouralTraining } from "./../../services/PerformanceManagement/StaffAppraisal/getBehaviouralTraining";
-import { getTechnicalTraining } from "./../../services/PerformanceManagement/StaffAppraisal/getTechnicalTraining";
-import { addSelect } from "../../utils/helper";
-import { getStrengths } from "./../../services/PerformanceManagement/StaffAppraisal/getStrengths";
-import { RadioInput } from "../../components/RadioInput";
-import { getAppraisalByReferenceId } from "./../../services/PerformanceManagement/StaffAppraisal/getAppraisalByReference";
+import { addSelect } from "../../../utils/helper";
 import { useParams } from "react-router-dom";
-import { NewSupervisorKpiInputComponent } from "../PerformanceManagement/KpiComponent";
-import { updateName } from "./../../utils/helper";
+import { NewSupervisorKpiInputComponent } from "../../PerformanceManagement/KpiComponent";
+import { getStrengths } from "./../../../services/PerformanceManagement/StaffAppraisal/getStrengths";
+import { RadioInput } from "./../../../components/RadioInput/index";
+import { getAppraisalByReferenceId } from "./../../../services/PerformanceManagement/StaffAppraisal/getAppraisalByReference";
+import { updateName } from "./../../../utils/helper";
+import { getTechnicalTraining } from "./../../../services/PerformanceManagement/StaffAppraisal/getTechnicalTraining";
+import { getBehaviouralTraining } from "./../../../services/PerformanceManagement/StaffAppraisal/getBehaviouralTraining";
+import { getIndividualKpis } from "./../../../services/PerformanceManagement/Configurations/individualKpi/getIndividualKpi";
 
-const Staff_Appraisal_Detail = () => {
+const StaffAppraisalDetail = () => {
   const dispatch = useDispatch();
   const [timeManagementScore, setTimeManagementScore] = useState(0);
   const [punctualityScore, setPunctualityScore] = useState(0);
@@ -43,12 +43,22 @@ const Staff_Appraisal_Detail = () => {
   const [supervisorComment, setSupervisorComment] = useState("");
   const [allSupervisorResults, setAllSupervisorResults] = useState({});
   const { state, actions } = useStateMachine({ updateName });
+  const [errors, setErrors] = useState({});
+  const history = useHistory();
   const [selectedBehavioralTrainings, setSelectedBehavioralTraining] = useState(
     []
   );
   const [selectedTechnicalTrainings, setSelectedTechnicalTraining] = useState(
     []
   );
+
+  const staffData = JSON.parse(localStorage.getItem("cachedData"));
+
+  const { departmentName, gradeName, secondLevelSupervisorStaffId, unitName } =
+    staffData;
+
+  const errorValues = Object.values(errors);
+  const allValues = Object.values(values).filter((el) => el !== "");
 
   const handleBehaviorChange = (e) => {
     setSelectedBehavioralTraining((prev) => [...prev, e.target.value]);
@@ -57,8 +67,6 @@ const Staff_Appraisal_Detail = () => {
   const handleTechnicalChange = (e) => {
     setSelectedTechnicalTraining((prev) => [...prev, e.target.value]);
   };
-
-  console.log(">>>>>>>selected", selectedBehavioralTrainings);
 
   const { appraisalReference } = useParams();
 
@@ -77,7 +85,9 @@ const Staff_Appraisal_Detail = () => {
     (state) => state.performanceManagement.getAppraisalByReferenceReducer
   );
 
-  // console.log(">>>>>details", details);
+  const { data: KPIs } = useSelector(
+    (state) => state.performanceManagement.getIndividualKpisReducer
+  );
 
   const {
     appraisalPeriodStatus,
@@ -95,8 +105,15 @@ const Staff_Appraisal_Detail = () => {
 
   const updateValues = (e, id, kpi) => {
     let { value, min, max } = e.target;
-    if ((value > Number(max)) | (value < Number(min))) {
-      value = 0;
+    // if ((value > Number(max)) | (value < Number(min))) {
+    //   value = 0;
+    // }
+
+    if (value > Number(kpi.measurableTarget) && kpi.kpiId === id) {
+      value = "";
+      setErrors({ ...errors, [id]: true });
+    } else {
+      setErrors({ ...errors, [id]: false });
     }
 
     //computation of target and weightScore
@@ -223,6 +240,10 @@ const Staff_Appraisal_Detail = () => {
     dispatch(getAppraisalByReferenceId(appraisalReference));
   }, []);
 
+  useEffect(() => {
+    dispatch(getIndividualKpis());
+  }, []);
+
   return (
     <div className="page-wrapper">
       <Helmet>
@@ -316,25 +337,34 @@ const Staff_Appraisal_Detail = () => {
                                   </div>
                                 </div>
 
-                                {/* <div className="d-flex m-b-10 font_size">
+                                <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
                                     DEPARTMENT:
                                   </div>
                                   <div className="col-lg-7 col-md-6 col-sm-12">
-                                    Human Capital Management
+                                    {departmentName}
                                   </div>
-                                </div> */}
+                                </div>
                               </div>
 
                               <div className="col-lg-6">
-                                {/* <div className="d-flex m-b-10 font_size">
+                                <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
-                                    GROUP:
+                                    GRADE:
                                   </div>
                                   <div className="col-lg-7 col-md-6 col-sm-12">
-                                    HR & Strategy Group
+                                    {gradeName}
                                   </div>
-                                </div> */}
+                                </div>
+
+                                <div className="d-flex m-b-10 font_size">
+                                  <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
+                                    UNIT:
+                                  </div>
+                                  <div className="col-lg-7 col-md-6 col-sm-12">
+                                    {unitName}
+                                  </div>
+                                </div>
 
                                 <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
@@ -356,10 +386,10 @@ const Staff_Appraisal_Detail = () => {
 
                                 <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
-                                    GROUP HEAD:
+                                    SECOND SUPERVISOR ID:
                                   </div>
                                   <div className="col-lg-7 col-md-6 col-sm-12">
-                                    {secondSupervisorName}
+                                    {secondLevelSupervisorStaffId}
                                   </div>
                                 </div>
 
@@ -425,6 +455,7 @@ const Staff_Appraisal_Detail = () => {
                               {allProcess?.map((kpi) => {
                                 return (
                                   <NewSupervisorKpiInputComponent
+                                    errors={errors}
                                     kpi={kpi}
                                     values={values}
                                     appraiseeResults={appraiseeResults}
@@ -439,6 +470,7 @@ const Staff_Appraisal_Detail = () => {
                               {allCustomer?.map((kpi) => {
                                 return (
                                   <NewSupervisorKpiInputComponent
+                                    errors={errors}
                                     kpi={kpi}
                                     values={values}
                                     appraiseeResults={appraiseeResults}
@@ -453,6 +485,7 @@ const Staff_Appraisal_Detail = () => {
                               {allFinancial?.map((kpi) => {
                                 return (
                                   <NewSupervisorKpiInputComponent
+                                    errors={errors}
                                     kpi={kpi}
                                     values={values}
                                     appraiseeResults={appraiseeResults}
@@ -464,6 +497,7 @@ const Staff_Appraisal_Detail = () => {
                               {allCapacityDevelopment?.map((kpi) => {
                                 return (
                                   <NewSupervisorKpiInputComponent
+                                    errors={errors}
                                     kpi={kpi}
                                     values={values}
                                     appraiseeResults={appraiseeResults}
@@ -851,7 +885,7 @@ const Staff_Appraisal_Detail = () => {
                                       (training) => {
                                         return (
                                           <ul>
-                                            <li className="">{training}</li>
+                                            <li className="">{training},</li>
                                           </ul>
                                         );
                                       }
@@ -868,7 +902,7 @@ const Staff_Appraisal_Detail = () => {
                         className="col-lg-12"
                         style={{ marginTop: "30px", marginBottom: "20px" }}
                       >
-                        <div
+                        {/* <div
                           className="font-weight-bolder"
                           style={{
                             marginBottom: "30px",
@@ -876,7 +910,7 @@ const Staff_Appraisal_Detail = () => {
                           }}
                         >
                           COMMENTS
-                        </div>
+                        </div> */}
 
                         <div className="form-group mb-5">
                           <div
@@ -896,61 +930,12 @@ const Staff_Appraisal_Detail = () => {
                             }
                           />
                         </div>
-
-                        {/* <div className="form-group">
-                          <div
-                            className="mb-3 font-weight-bold"
-                            style={{
-                              marginBottom: "20px",
-                              textDecoration: "underline",
-                            }}
-                          >
-                            STAFF'S COMMENT
-                          </div>
-                          <div className="mb-3">
-                            Own yo' ipsizzle pimpin' sizzle amizzle,
-                            consectetizzle bizzle elit. Nullam dawg velit,
-                            mammasay mammasa mamma oo sa volutpat, ma nizzle mah
-                            nizzle, gravida vel, arcu. Pellentesque shizznit
-                            tortizzle. Shiz erizzle. Fusce izzle shit dapibizzle
-                            turpis tempizzle dope. Maurizzle pellentesque nibh
-                            et sizzle. Things fo shizzle my nizzle tortor.
-                            Sheezy izzle rhoncizzle nisi. In hac habitasse
-                            platea dictumst. Uhuh ... yih! dapibizzle.
-                          </div>
-                        </div> */}
                       </div>
 
-                      <div className="col-lg-4" style={{ marginTop: "50px" }}>
-                        {/* <div
-                          className="font-weight-bolder"
-                          style={{
-                            marginBottom: "20px",
-                            textDecoration: "underline",
-                          }}
-                        >
-                          RECOMMENDATION
-                        </div> */}
-
-                        {/* <div className="form-group ">
-                        
-                          <select
-                            className="form-control"
-                            value={recommendation}
-                            onChange={(e) => setRecommendation(e.target.value)}
-                          >
-                            <option value="maintainStatus">
-                              Maintain Status
-                            </option>
-                            <option value="promote">Promote</option>
-                            <option value="watchPerformance">
-                              Watch Performance
-                            </option>
-                            <option value="reassign">Reassign </option>
-                            <option value="exit">Exit </option>
-                          </select>
-                        </div> */}
-                      </div>
+                      <div
+                        className="col-lg-4"
+                        style={{ marginTop: "50px" }}
+                      ></div>
                     </div>
                   </div>
                   {/* Supervisor's Comments Ends Here */}
@@ -963,13 +948,22 @@ const Staff_Appraisal_Detail = () => {
                 >
                   <div className="d-flex align-items-center justify-content-center">
                     <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
-                      <Link
-                        to={`/app/performanceManagement/SupervisorAppraisalReview2/${appraisalReference}`}
-                        className="btn btn-block btn-primary font-weight-700"
-                        onClick={() => addKPIsToState()}
+                      <button
+                        className="btn btn-block btn-suntrust font-weight-700"
+                        disabled={
+                          errorValues.includes(true) ||
+                          KPIs.length !== allValues.length ||
+                          !supervisorComment
+                        }
+                        onClick={() => {
+                          addKPIsToState();
+                          history.push(
+                            `/app/performanceManagement/SupervisorAppraisalReview2/${appraisalReference}`
+                          );
+                        }}
                       >
                         PREVIEW
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -983,4 +977,4 @@ const Staff_Appraisal_Detail = () => {
   );
 };
 
-export default Staff_Appraisal_Detail;
+export default StaffAppraisalDetail;

@@ -25,13 +25,24 @@ import {
 } from "../KpiComponent";
 import { updateAppraisalByReference } from "./../../../services/PerformanceManagement/StaffAppraisal/updateAppraisalByReference";
 import Loader from "./../../UIinterface/Loader/index";
-import { updateCommentSection } from './../../../services/PerformanceManagement/StaffAppraisal/updateCommentSection';
+import Modal from "react-bootstrap/Modal";
+import { updateCommentSection } from "./../../../services/PerformanceManagement/StaffAppraisal/updateCommentSection";
 
 const AppraiseeUpdatedReview = () => {
   const dispatch = useDispatch();
   const { appraisalReference } = useParams();
-  const [comment, setComment] = useState("")
-  const history = useHistory()
+  const [comment, setComment] = useState("");
+  const history = useHistory();
+  const [openModal, setOpenModal] = useState(false);
+
+  const toggleModal = () => {
+    setOpenModal(!openModal);
+  };
+
+  const staffData = JSON.parse(localStorage.getItem("cachedData"));
+
+  const { departmentName, gradeName, secondLevelSupervisorStaffId, unitName } =
+    staffData;
 
   const { data: details } = useSelector(
     (state) => state.performanceManagement.getAppraisalByReferenceReducer
@@ -55,6 +66,7 @@ const AppraiseeUpdatedReview = () => {
     supervisorComment,
     recommendation,
     status,
+    appraiseeComment,
     kpis,
   } = details;
 
@@ -99,22 +111,21 @@ const AppraiseeUpdatedReview = () => {
   );
 
   const submitComment = () => {
-      const payload = {
-          staffComment: comment, 
-          status,
-          appraisalReference,
-          recommendation:"",
-          secondLevelSupervisorComment:""
-      }
-      const data = {
-          payload,
-          history,
-          name: "comment"
-      }
-      console.log(">>>>>>comment", payload)
-      dispatch(updateCommentSection(data))
-  }
-
+    const payload = {
+      staffComment: comment,
+      status,
+      appraisalReference,
+      recommendation: "",
+      secondLevelSupervisorComment: "",
+    };
+    const data = {
+      payload,
+      history,
+      name: "comment",
+    };
+    console.log(">>>>>>comment", payload);
+    dispatch(updateCommentSection(data));
+  };
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -222,25 +233,34 @@ const AppraiseeUpdatedReview = () => {
                                   </div>
                                 </div>
 
-                                {/* <div className="d-flex m-b-10 font_size">
+                                <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
                                     DEPARTMENT:
                                   </div>
                                   <div className="col-lg-7 col-md-6 col-sm-12">
-                                    Human Capital Management
+                                    {departmentName}
                                   </div>
-                                </div> */}
+                                </div>
                               </div>
 
                               <div className="col-lg-6">
-                                {/* <div className="d-flex m-b-10 font_size">
+                                <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
-                                    GROUP:
+                                    GRADE:
                                   </div>
                                   <div className="col-lg-7 col-md-6 col-sm-12">
-                                    HR & Strategy Group
+                                    {gradeName}
                                   </div>
-                                </div> */}
+                                </div>
+
+                                <div className="d-flex m-b-10 font_size">
+                                  <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
+                                    UNIT:
+                                  </div>
+                                  <div className="col-lg-7 col-md-6 col-sm-12">
+                                    {unitName}
+                                  </div>
+                                </div>
 
                                 <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
@@ -262,10 +282,10 @@ const AppraiseeUpdatedReview = () => {
 
                                 <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
-                                    GROUP HEAD:
+                                    SECOND SUPERVISOR ID:
                                   </div>
                                   <div className="col-lg-7 col-md-6 col-sm-12">
-                                    {secondSupervisorName}
+                                    {secondLevelSupervisorStaffId}
                                   </div>
                                 </div>
 
@@ -375,11 +395,25 @@ const AppraiseeUpdatedReview = () => {
                         <div className="col-lg-1 text-center"></div>
                         <div className="col-lg-1 text-center"></div>
                         <div className="col-lg-1 text-center"></div>
-                        <div className="col-lg-2 text-center">
+                        <div
+                          className="col-lg-2 text-center"
+                          style={{
+                            color: "#DAA520",
+                            fontSize: "18px",
+                            fontWeight: "bolder",
+                          }}
+                        >
                           {totalAppraiseeResult}
                         </div>
                         <div className="col-lg-1 text-center"></div>
-                        <div className="col-lg-1 text-center">
+                        <div
+                          className="col-lg-1 text-center"
+                          style={{
+                            color: "#DAA520",
+                            fontSize: "18px",
+                            fontWeight: "bolder",
+                          }}
+                        >
                           {totalSupervisorResult}
                         </div>
                       </div>
@@ -548,9 +582,13 @@ const AppraiseeUpdatedReview = () => {
                           >
                             SUPERVISOR'S COMMENT
                           </div>
-                          {supervisorComment
-                            ? supervisorComment
-                            : <p className="error-color">No supervisor comment yet</p>}
+                          {supervisorComment ? (
+                            supervisorComment
+                          ) : (
+                            <p className="error-color">
+                              No supervisor comment yet
+                            </p>
+                          )}
                         </div>
 
                         {status === "PRE-PROCESS" && (
@@ -573,21 +611,52 @@ const AppraiseeUpdatedReview = () => {
                             </div>
                           </div>
                         )}
+
+                        {status === "PROCESSING" && (
+                          <div className="form-group">
+                            <div
+                              className="mb-3 font-weight-bold"
+                              style={{
+                                marginBottom: "20px",
+                                textDecoration: "underline",
+                              }}
+                            >
+                              MY COMMENT
+                            </div>
+                            <div className="mb-3">{appraiseeComment}</div>
+                          </div>
+                        )}
+
+                        {status === "COMPLETE" && (
+                          <div className="form-group">
+                            <div
+                              className="mb-3 font-weight-bold"
+                              style={{
+                                marginBottom: "20px",
+                                textDecoration: "underline",
+                              }}
+                            >
+                              MY COMMENT
+                            </div>
+                            <div className="mb-3">{appraiseeComment}</div>
+                          </div>
+                        )}
+
+                        {status === "INPROGRESS" && (
+                          <div className="form-group">
+                            <div
+                              className="mb-3 font-weight-bold"
+                              style={{
+                                marginBottom: "20px",
+                                textDecoration: "underline",
+                              }}
+                            >
+                              MY COMMENT
+                            </div>
+                            <div className="mb-3">{appraiseeComment}</div>
+                          </div>
+                        )}
                       </div>
-
-                      {/* <div className="col-lg-4" style={{ marginTop: "50px" }}>
-                        <div
-                          className="font-weight-bolder"
-                          style={{
-                            marginBottom: "20px",
-                            textDecoration: "underline",
-                          }}
-                        >
-                          RECOMMENDATION
-                        </div>
-
-                        <div className="form-group ">{recommendation}</div>
-                      </div> */}
                     </div>
                   </div>
                   {/* Supervisor's Comments Ends Here */}
@@ -603,8 +672,8 @@ const AppraiseeUpdatedReview = () => {
                       <button
                         disabled={status === "SUBMITTED" || comment === ""}
                         href="#"
-                        className="btn btn-block btn-primary font-weight-700"
-                        onClick={() => submitComment()}
+                        className="btn btn-block btn-suntrust font-weight-700"
+                        onClick={() => toggleModal()}
                       >
                         {updateAppraiseLoading ? <Loader /> : "Submit"}
                       </button>
@@ -617,6 +686,42 @@ const AppraiseeUpdatedReview = () => {
           </div>
         </div>
       </div>
+
+      <Modal show={openModal} centered backdrop="static" keyboard={false}>
+        <div className="modal-90w  modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body">
+              <div className="form-header">
+                <h3>Appraisal Comment</h3>
+                <p>Are you sure you want to proceed</p>
+              </div>
+              <div className="modal-btn delete-action">
+                <div className="row">
+                  <div className="col-6">
+                    <a
+                      className="btn btn-primary continue-btn"
+                      onClick={() => {
+                        submitComment();
+                        toggleModal();
+                      }}
+                    >
+                      Yes
+                    </a>
+                  </div>
+                  <div className="col-6">
+                    <a
+                      onClick={() => toggleModal()}
+                      className="btn btn-primary cancel-btn"
+                    >
+                      Cancel
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

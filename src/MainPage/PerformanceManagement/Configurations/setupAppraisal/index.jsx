@@ -185,7 +185,7 @@ const SetupAppraisal = () => {
                   <button
                     type="submit"
                     href=""
-                    className="btn btn-block btn-primary font-weight-700"
+                    className="btn btn-block btn-suntrust font-weight-700"
                   >
                     {setupLoading ? <Loader /> : "Submit"}
                   </button>

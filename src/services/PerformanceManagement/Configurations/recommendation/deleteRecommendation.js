@@ -2,35 +2,38 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { performanceManagementAppraisalUrl } from "../../../utils/helper";
+import { getRecommendations } from "./getRecommendation";
+
+import {
+  baseUrl,
+  performanceManagementAppraisalUrl,
+  performanceManagementConfigUrl,
+} from "./../../../../utils/helper";
 
 const initialState = {
   error: "",
   loading: false,
   error2: "",
-  data: {},
+  data: [],
   isSuccessful: false,
 };
 
-export const updateAppraisalByReference = createAsyncThunk(
-  "updateAppraisalByReference",
-  async (data, { rejectWithValue }) => {
-    const { appraisals, history, clearKPIs } = data;
-    console.log("appppp", appraisals);
+export const deleteRecommendation = createAsyncThunk(
+  "deleteRecommendation",
+  async (data) => {
+      const {recommendationId, dispatch} = data
     try {
-      const response = await axios.post(
-        `${performanceManagementAppraisalUrl}/UpdateAppraisalByReference`,
-        appraisals
+      const response = await axios.delete(
+        `${performanceManagementConfigUrl}/DeleteRecommendation/id?Id=${recommendationId}`
       );
-      console.log(">>>>individu", response);
+
       if (response.status === 200) {
         Swal.fire(
-          `Appraisal has been submitted`,
+          `Recommendation has been Deleted`,
           "Successful!",
           "success"
         ).then(() => {
-          history.push("/app/performanceManagement/allStaffAppraisals");
-          clearKPIs();
+          dispatch(getRecommendations());
         });
         return response.data;
       }
@@ -41,25 +44,25 @@ export const updateAppraisalByReference = createAsyncThunk(
   }
 );
 
-const updateAppraisalByReferenceSlice = createSlice({
-  name: "updateAppraisalByReference",
+const deleteRecommendationSlice = createSlice({
+  name: "deleteRecommendation",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(updateAppraisalByReference.rejected, (state, action) => {
+    builder.addCase(deleteRecommendation.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(updateAppraisalByReference.fulfilled, (state, action) => {
+    builder.addCase(deleteRecommendation.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(updateAppraisalByReference.pending, (state, action) => {
+    builder.addCase(deleteRecommendation.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -67,4 +70,4 @@ const updateAppraisalByReferenceSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default updateAppraisalByReferenceSlice.reducer;
+export default deleteRecommendationSlice.reducer;

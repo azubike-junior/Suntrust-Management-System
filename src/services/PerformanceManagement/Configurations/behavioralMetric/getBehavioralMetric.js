@@ -2,36 +2,30 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { performanceManagementAppraisalUrl } from "../../../utils/helper";
+import {
+  baseUrl,
+  performanceManagementAppraisalUrl,
+  performanceManagementConfigUrl,
+} from "./../../../../utils/helper";
 
 const initialState = {
   error: "",
   loading: false,
   error2: "",
-  data: {},
+  data: [],
   isSuccessful: false,
 };
 
-export const updateCommentSection = createAsyncThunk(
-  "updateCommentSection",
-  async (data, { rejectWithValue }) => {
-    const {payload, history, name } = data;
-  
+export const getBehavioralMetrics = createAsyncThunk(
+  "getBehavioralMetrics",
+  async () => {
     try {
-      const response = await axios.post(
-        `${performanceManagementAppraisalUrl}/updateCommentSection`,
-        payload
+      const response = await axios.get(
+        `${performanceManagementAppraisalUrl}/GetBehaviouralTrainings`
       );
-      console.log(">>>>individu", response);
+
+      // console.log(">>>>response", response)
       if (response.status === 200) {
-        Swal.fire(
-          `${name} has been Updated`,
-          "Successful!",
-          "success"
-        ).then(() => {
-          history.push("/app/performanceManagement/Appraisals");
-          clearKPIs();
-        });
         return response.data;
       }
       return response.data;
@@ -41,25 +35,25 @@ export const updateCommentSection = createAsyncThunk(
   }
 );
 
-const updateCommentSectionSlice = createSlice({
-  name: "updateCommentSection",
+const getBehavioralMetricsSlice = createSlice({
+  name: "getBehavioralMetrics",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(updateCommentSection.rejected, (state, action) => {
+    builder.addCase(getBehavioralMetrics.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(updateCommentSection.fulfilled, (state, action) => {
+    builder.addCase(getBehavioralMetrics.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(updateCommentSection.pending, (state, action) => {
+    builder.addCase(getBehavioralMetrics.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -67,4 +61,4 @@ const updateCommentSectionSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default updateCommentSectionSlice.reducer;
+export default getBehavioralMetricsSlice.reducer;

@@ -23,6 +23,7 @@ import { NewSupervisorKpiReviewComponent } from "../KpiComponent";
 import { updateAppraisalByReference } from "./../../../services/PerformanceManagement/StaffAppraisal/updateAppraisalByReference";
 import Loader from "./../../UIinterface/Loader/index";
 import { updateCommentSection } from "./../../../services/PerformanceManagement/StaffAppraisal/updateCommentSection";
+import Modal from "react-bootstrap/Modal";
 
 const PreProcessAppraisal = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,16 @@ const PreProcessAppraisal = () => {
   const [recommend, setRecommendation] = useState("");
   const [groupHeadComment, setGroupHeadComment] = useState("");
   const { appraisalReference } = useParams();
+  const [openModal, setOpenModal] = useState(false);
+
+  const toggleModal = () => {
+    setOpenModal(!openModal);
+  };
+
+  const staffData = JSON.parse(localStorage.getItem("cachedData"));
+
+  const { departmentName, gradeName, secondLevelSupervisorStaffId, unitName } =
+    staffData;
 
   const { data: details } = useSelector(
     (state) => state.performanceManagement.getAppraisalByReferenceReducer
@@ -238,25 +249,34 @@ const PreProcessAppraisal = () => {
                                   </div>
                                 </div>
 
-                                {/* <div className="d-flex m-b-10 font_size">
+                                <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
                                     DEPARTMENT:
                                   </div>
                                   <div className="col-lg-7 col-md-6 col-sm-12">
-                                    Human Capital Management
+                                    {departmentName}
                                   </div>
-                                </div> */}
+                                </div>
                               </div>
 
                               <div className="col-lg-6">
-                                {/* <div className="d-flex m-b-10 font_size">
+                                <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
-                                    GROUP:
+                                    GRADE:
                                   </div>
                                   <div className="col-lg-7 col-md-6 col-sm-12">
-                                    HR & Strategy Group
+                                    {gradeName}
                                   </div>
-                                </div> */}
+                                </div>
+
+                                <div className="d-flex m-b-10 font_size">
+                                  <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
+                                    UNIT:
+                                  </div>
+                                  <div className="col-lg-7 col-md-6 col-sm-12">
+                                    {unitName}
+                                  </div>
+                                </div>
 
                                 <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
@@ -278,10 +298,10 @@ const PreProcessAppraisal = () => {
 
                                 <div className="d-flex m-b-10 font_size">
                                   <div className="col-lg-5 col-md-6 col-sm-12 font-weight-bold">
-                                    GROUP HEAD:
+                                    SECOND SUPERVISOR ID:
                                   </div>
                                   <div className="col-lg-7 col-md-6 col-sm-12">
-                                    {secondSupervisorName}
+                                    {secondLevelSupervisorStaffId}
                                   </div>
                                 </div>
 
@@ -391,11 +411,26 @@ const PreProcessAppraisal = () => {
                         <div className="col-lg-1 text-center"></div>
                         <div className="col-lg-1 text-center"></div>
                         <div className="col-lg-1 text-center"></div>
-                        <div className="col-lg-2 text-center">
+                        <div
+                          className="col-lg-2 text-center"
+                          style={{
+                            color: "#DAA520",
+                            fontSize: "18px",
+                            fontWeight: "bolder",
+                          }}
+                        >
                           {totalAppraiseeResult}
                         </div>
                         <div className="col-lg-1 text-center"></div>
-                        <div className="col-lg-1 text-center">
+
+                        <div
+                          className="col-lg-1 text-center"
+                          style={{
+                            color: "#DAA520",
+                            fontSize: "18px",
+                            fontWeight: "bolder",
+                          }}
+                        >
                           {totalSupervisorResult}
                         </div>
                       </div>
@@ -442,42 +477,6 @@ const PreProcessAppraisal = () => {
                         </div>
                       </div>
                     </div>
-
-                    {/* <div className="card col-lg-4">
-                      <div className="card-body">
-                        <div className="profile-view">
-                          <div className="d-flex mb-5">
-                            <div className="col-lg-12">
-                              <h4 className="card-title">Ratings Key</h4>
-                              <div>
-                                <p>
-                                  <i className="fa fa-dot-circle-o text-purple mr-2" />
-                                  Excellent
-                                  <span className="float-right">5</span>
-                                </p>
-                                <p>
-                                  <i className="fa fa-dot-circle-o text-success mr-2" />
-                                  Very Good{" "}
-                                  <span className="float-right">4</span>
-                                </p>
-                                <p>
-                                  <i className="fa fa-dot-circle-o text-info mr-2" />
-                                  Average<span className="float-right">3</span>
-                                </p>
-                                <p>
-                                  <i className="fa fa-dot-circle-o text-warning mr-2" />
-                                  Fair<span className="float-right">2</span>
-                                </p>
-                                <p>
-                                  <i className="fa fa-dot-circle-o text-danger mr-2" />
-                                  Poor<span className="float-right">1</span>
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div> */}
                   </div>
 
                   <div
@@ -578,9 +577,13 @@ const PreProcessAppraisal = () => {
                             STAFF'S COMMENT
                           </div>
                           <div className="mb-3">
-                            {appraiseeComment
-                              ? appraiseeComment
-                              : "No appraisee Comment yet"}
+                            {appraiseeComment ? (
+                              appraiseeComment
+                            ) : (
+                              <p className="error-color">
+                                No appraisee Comment yet
+                              </p>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -694,11 +697,9 @@ const PreProcessAppraisal = () => {
                           status === "PRE-PROCESS" ||
                           (recommend === "" && groupHeadComment === "")
                         }
-                        className="btn btn-block btn-primary font-weight-700"
+                        className="btn btn-block btn-suntrust font-weight-700"
                         onClick={() => {
-                          recommend
-                            ? submitRecommendation()
-                            : submitSecondLevelComment();
+                          toggleModal();
                         }}
                       >
                         {updateAppraiseLoading ? <Loader /> : "Submit"}
@@ -712,6 +713,44 @@ const PreProcessAppraisal = () => {
           </div>
         </div>
       </div>
+
+      <Modal show={openModal} centered backdrop="static" keyboard={false}>
+        <div className="modal-90w  modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body">
+              <div className="form-header">
+                <h3>Recommendation</h3>
+                <p>Are you sure you want to proceed</p>
+              </div>
+              <div className="modal-btn delete-action">
+                <div className="row">
+                  <div className="col-6">
+                    <a
+                      className="btn btn-primary continue-btn"
+                      onClick={() => {
+                        recommend
+                          ? submitRecommendation()
+                          : submitSecondLevelComment();
+                        toggleModal();
+                      }}
+                    >
+                      Yes
+                    </a>
+                  </div>
+                  <div className="col-6">
+                    <a
+                      onClick={() => toggleModal()}
+                      className="btn btn-primary cancel-btn"
+                    >
+                      Cancel
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

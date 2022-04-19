@@ -2,7 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { performanceManagementAppraisalUrl } from "../../../utils/helper";
+import {
+  baseUrl,
+  performanceManagementConfigUrl,
+} from "./../../../../utils/helper";
+import { getBehavioralMetrics } from "./getBehavioralMetric";
 
 const initialState = {
   error: "",
@@ -12,25 +16,22 @@ const initialState = {
   isSuccessful: false,
 };
 
-export const updateAppraisalByReference = createAsyncThunk(
-  "updateAppraisalByReference",
-  async (data, { rejectWithValue }) => {
-    const { appraisals, history, clearKPIs } = data;
-    console.log("appppp", appraisals);
+export const addBehavioralMetric = createAsyncThunk(
+  "addBehavioralMetric",
+  async ({ data, reset, dispatch }, { rejectWithValue }) => {
+    const { metric } = data;
     try {
       const response = await axios.post(
-        `${performanceManagementAppraisalUrl}/UpdateAppraisalByReference`,
-        appraisals
+        `${performanceManagementConfigUrl}/AddBehaviouralMetric?metric=${metric}`
       );
-      console.log(">>>>individu", response);
       if (response.status === 200) {
         Swal.fire(
-          `Appraisal has been submitted`,
+          `behavioral Metric has been added`,
           "Successful!",
           "success"
         ).then(() => {
-          history.push("/app/performanceManagement/allStaffAppraisals");
-          clearKPIs();
+          dispatch(getBehavioralMetrics());
+          reset();
         });
         return response.data;
       }
@@ -41,25 +42,25 @@ export const updateAppraisalByReference = createAsyncThunk(
   }
 );
 
-const updateAppraisalByReferenceSlice = createSlice({
-  name: "updateAppraisalByReference",
+const addBehavioralMetricSlice = createSlice({
+  name: "addBehavioralMetric",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(updateAppraisalByReference.rejected, (state, action) => {
+    builder.addCase(addBehavioralMetric.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(updateAppraisalByReference.fulfilled, (state, action) => {
+    builder.addCase(addBehavioralMetric.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(updateAppraisalByReference.pending, (state, action) => {
+    builder.addCase(addBehavioralMetric.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -67,4 +68,4 @@ const updateAppraisalByReferenceSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default updateAppraisalByReferenceSlice.reducer;
+export default addBehavioralMetricSlice.reducer;

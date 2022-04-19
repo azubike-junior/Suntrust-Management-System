@@ -93,7 +93,7 @@ const MyStaffAppraisals = () => {
                     </div>
 
                     <div className="col-sm-2 col-md-2">
-                        <a href="#" className="btn btn-success btn-block"> Search </a>
+                        <a href="#" className="btn btn-suntrust btn-block"> Search </a>
                     </div>
                 </div>
                 {/* Search Filter */}

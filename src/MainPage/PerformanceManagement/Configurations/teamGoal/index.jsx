@@ -219,7 +219,7 @@ const TeamGoal = () => {
                   <button
                     href=""
                     type="submit"
-                    className="btn btn-block btn-primary font-weight-700"
+                    className="btn btn-block btn-suntrust font-weight-700"
                   >
                     {addTeamLoading ? <Loader /> : "Submit"}
                   </button>

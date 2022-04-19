@@ -2,12 +2,14 @@ import React, { Component } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 // We will create these two pages in a moment
 //Authendication
-import LoginPage from "./loginpage";
+// import LoginPage from "./loginpage";
 import RegistrationPage from "./RegistrationPage";
 import ForgotPassword from "./forgotpassword";
 import OTP from "./otp";
 import LockScreen from "./lockscreen";
 import ApplyJobs from "./ApplyJob";
+import LoginPage from "../MainPage/Authentication/LoginPage";
+
 
 //Main App
 import DefaultLayout from "./Sidebar/DefaultLayout";

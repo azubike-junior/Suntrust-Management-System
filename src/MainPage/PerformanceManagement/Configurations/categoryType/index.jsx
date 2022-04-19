@@ -140,7 +140,7 @@ const CategoryType = () => {
                 <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
                   <button
                     href=""
-                    className="btn btn-block btn-primary font-weight-700"
+                    className="btn btn-block btn-suntrust font-weight-700"
                     type="submit"
                   >
                     {addCategoryLoading ? <Loader/> : "Submit" }

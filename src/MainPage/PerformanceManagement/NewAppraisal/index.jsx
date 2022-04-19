@@ -18,21 +18,16 @@ const StaffAppraisal = (props) => {
   const [allKPIs, setAllKPIs] = useState([]);
   const [exceptionalAch, setExceptionalAch] = useState("");
   const [errors, setErrors] = useState({});
-  const history = useHistory()
+  const history = useHistory();
 
   const errorValues = Object.values(errors);
   const allValues = Object.values(values).filter((el) => el !== "");
-
 
   const { state, actions } = useStateMachine({ updateName });
 
   const { data: KPIs } = useSelector(
     (state) => state.performanceManagement.getIndividualKpisReducer
   );
-
-  console.log(">>>>>>KPIs", KPIs);
-
-  console.log(">>>>>valuesKeys", allValues);
 
   const { data: categories } = useSelector(
     (state) => state.performanceManagement.getCategoryTypesReducer
@@ -49,12 +44,6 @@ const StaffAppraisal = (props) => {
   const updateValues = (e, id, kpi, index) => {
     console.log("Kpi", kpi.id, id);
     let { value, min, max } = e.target;
-    // if ((value > Number(max)) | (value < Number(min))) {
-    //   value = 0;
-    //   setError(true);
-    // }
-    // setError(false);
-
     if (value > Number(kpi.measurableTarget) && kpi.id === id) {
       value = "";
       setErrors({ ...errors, [id]: true });
@@ -70,19 +59,6 @@ const StaffAppraisal = (props) => {
 
     setAppraiseeResults({ ...appraiseeResults, [id]: result });
   };
-
-  // console.log(">>>vbalues", values);
-  // console.log(">>>stuff", stuffs);
-
-  const myResult = results[0]?.map((result) => {
-    return {
-      weightedScore: result.weightedScore,
-      measurableTarget: result.measurableTarget,
-      categoryId: result.categoryId,
-    };
-  });
-
-  // console.log(">>>>>myResult", myResult);
 
   const addKPIsToState = () => {
     state.data = {
@@ -312,8 +288,7 @@ const StaffAppraisal = (props) => {
                       errorValues.includes(true) ||
                       KPIs.length !== allValues.length
                     }
-                    to="/app/performanceManagement/staffAppraisalReview"
-                    className="btn btn-block btn-primary font-weight-700"
+                    className="btn btn-block btn-suntrust font-weight-700"
                     onClick={() => {
                       addKPIsToState();
                       history.push(

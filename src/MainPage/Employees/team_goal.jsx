@@ -154,7 +154,7 @@ const Team_Goal = () => {
 
                         <div className="row">
                             <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
-                                <a href="" className="btn btn-block btn-primary font-weight-700">ADD</a>
+                                <a href="" className="btn btn-block btn-suntrust font-weight-700">ADD</a>
                             </div>
                         </div>
 
@@ -183,7 +183,7 @@ const Team_Goal = () => {
                         <div className="form-group col-lg-12 col-md-12 col-sm-12 m-b-20">
                             <div className="d-flex align-items-center justify-content-center">
                                 <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
-                                    <a href="" className="btn btn-block btn-primary font-weight-700">SUBMIT</a>
+                                    <a href="" className="btn btn-block btn-suntrust font-weight-700">SUBMIT</a>
                                 </div>
                             </div>
                         </div>
@@ -199,16 +199,16 @@ const Team_Goal = () => {
                     <div className="modal-content">
                         <div className="modal-body">
                             <div className="form-header">
-                                <h3>Delete Category</h3>
+                                <h3>Delete Team Goal</h3>
                                 <p>Are you sure want to delete?</p>
                             </div>
                             <div className="modal-btn delete-action">
                                 <div className="row">
                                     <div className="col-6">
-                                        <a href="" className="btn btn-primary continue-btn">Delete</a>
+                                        <a href="" className="btn btn-danger continue-btn">Delete</a>
                                     </div>
                                     <div className="col-6">
-                                        <a href="" data-dismiss="modal" className="btn btn-primary cancel-btn">Cancel</a>
+                                        <a href="" data-dismiss="modal" className="btn btn-outline-danger cancel-btn">Cancel</a>
                                     </div>
                                 </div>
                             </div>

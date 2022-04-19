@@ -7,17 +7,20 @@ import { itemRender, onShowSizeChange } from "../../paginationfunction";
 import "../../antdstyle.css";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "./../../UIinterface/Loader/index";
-import { getAppraisalsByStaffId } from './../../../services/PerformanceManagement/StaffAppraisal/getAppraisalsByStaffId';
+import { getAppraisalsByStaffId } from "./../../../services/PerformanceManagement/StaffAppraisal/getAppraisalsByStaffId";
 
 const Appraisals = () => {
   const dispatch = useDispatch();
 
-  const { data: appraisals, loading: appraisalsLoading } =
-    useSelector(
-      (state) => state.performanceManagement.getAppraisalsByStaffIdReducer
-    );
+  const { data: appraisals, loading: appraisalsLoading } = useSelector(
+    (state) => state.performanceManagement.getAppraisalsByStaffIdReducer
+  );
 
-  console.log(">>>>>data", appraisals);
+  const staffData = JSON.parse(localStorage.getItem("cachedData"));
+
+  const { staffId } = staffData;
+
+  console.log(">>>>>>staffId", staffId)
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -29,7 +32,7 @@ const Appraisals = () => {
   });
 
   useEffect(() => {
-    dispatch(getAppraisalsByStaffId("256"));
+    dispatch(getAppraisalsByStaffId(staffId));
   }, []);
 
   // Table displayed on Expense Page
@@ -53,7 +56,6 @@ const Appraisals = () => {
     {
       title: "Submitted Date",
       dataIndex: "dateSubmitted",
-      
     },
     {
       title: "",
@@ -102,7 +104,7 @@ const Appraisals = () => {
           </div>
 
           <div className="col-sm-2 col-md-2">
-            <a href="#" className="btn btn-success btn-block">
+            <a href="#" className="btn btn-block btn-suntrust font-weight-700">
               {" "}
               Search{" "}
             </a>

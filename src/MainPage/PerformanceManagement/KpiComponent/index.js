@@ -247,6 +247,7 @@ export const NewSupervisorKpiInputComponent = ({
   values,
   appraiseeResults,
   updateValues,
+  errors
 }) => {
   return (
     <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
@@ -270,7 +271,11 @@ export const NewSupervisorKpiInputComponent = ({
         />
       </div>
       <div className="col-lg-1 text-center">
-        {appraiseeResults[kpi.kpiId]?.toFixed()}
+        {errors[kpi.kpiId] ? (
+          <p className="error-color">value can not exceed target</p>
+        ) : (
+          appraiseeResults[kpi.kpiId]?.toFixed()
+        )}
       </div>
     </div>
   );

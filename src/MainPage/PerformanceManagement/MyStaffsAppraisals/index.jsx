@@ -18,6 +18,9 @@ const StaffsAppraisals = () => {
     );
 
   // console.log(">>>>>data", supervisorAppraisals);
+  const staffData = JSON.parse(localStorage.getItem("cachedData"));
+
+  const { supervisorStaffId } = staffData;
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -29,7 +32,7 @@ const StaffsAppraisals = () => {
   });
 
   useEffect(() => {
-    dispatch(getAppraisalsBySupervisorId("328"));
+    dispatch(getAppraisalsBySupervisorId(supervisorStaffId));
   }, []);
 
   // Table displayed on Expense Page
@@ -63,7 +66,7 @@ const StaffsAppraisals = () => {
           onClick={() => console.log("text", text.status)}
           to={
             text.status === "SUBMITTED"
-              ? `/app/employees/staff_Appraisal_detail/${text.appraisalReference}`
+              ? `/app/performanceManagement/staffAppraisalDetail/${text.appraisalReference}`
               : `/app/performanceManagement/preprocessAppraisal/${text.appraisalReference}`
           }
           className="btn btn-sm btn-outline-primary m-r-10"
@@ -107,7 +110,7 @@ const StaffsAppraisals = () => {
           </div>
 
           <div className="col-sm-2 col-md-2">
-            <a href="#" className="btn btn-success btn-block">
+            <a href="#" className="btn btn-block btn-suntrust font-weight-700">
               {" "}
               Search{" "}
             </a>

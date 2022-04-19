@@ -5,22 +5,22 @@
 import React, { Component, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
-import logo from "../../assets/img/st_logo.png";
+import logo from "../../../assets/img/st_logo.png";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { login } from "./../services/Authentication/login";
+import LoginHeader from "../LoginHeader";
+import { login } from "./../../../services/Authentication/login";
+import Loader from "../../UIinterface/Loader";
 
-const Loginpage = () => {
+const LoginPage = () => {
   const [email, setEmail] = useState("");
   const dispatch = useDispatch();
   const [password, setPassword] = useState("");
   const [inputError, setInputError] = useState("");
   const { response, error, loading } = useSelector(
-    (state) => state.performanceManagement.loginReducer
+    (state) => state.authenticationManager.loginReducer
   );
-
-  console.log("eeeeeeeeeee", response);
 
   const history = useHistory();
 
@@ -32,10 +32,13 @@ const Loginpage = () => {
     const data = {
       email,
       password,
-      history
+      history,
     };
     dispatch(login(data));
+    setInputError("")
   };
+
+  console.log(">>>>>>>response from page", response, error)
   return (
     <>
       <Helmet>
@@ -43,7 +46,7 @@ const Loginpage = () => {
         <meta name="description" content="Login page" />
       </Helmet>
       <div>
-        <Header/>
+        <LoginHeader />
         {response?.status === 200 &&
           history.push("/app/performanceManagement/Appraisals")}
         <div className="vertical-align-wrap">
@@ -61,16 +64,16 @@ const Loginpage = () => {
 
               <div className="card">
                 <div className="header text-center font-weight-700">
-                  <div className="lead">Login to your account</div>
+                  <div className="lead mx-auto">Login to your account</div>
                 </div>
                 <div className="body">
-                  {error?.responseCode === "99" && (
+                  {/* {error?.responseCode === "99" && (
                     <p className="text-danger">Invalid credentials</p>
+                  )} */}
+                  {error && (
+                    <p className="text-danger text-center mx-auto">{error}</p>
                   )}
-                  {error?.responseCode === "96" && (
-                    <p className="text-danger">Unauthorized Staff</p>
-                  )}
-                  <p className="text-danger">{inputError}</p>
+                  <p className="text-danger text-center mx-auto">{inputError}</p>
 
                   <form className="form-auth-small" onSubmit={loginHandler}>
                     <div className="form-group">
@@ -99,7 +102,7 @@ const Loginpage = () => {
                       type="submit"
                       className="btn btn-suntrust btn-lg btn-block"
                     >
-                      LOGIN
+                      {loading ? <Loader /> : "LOGIN"}
                     </button>
                   </form>
                 </div>
@@ -112,4 +115,4 @@ const Loginpage = () => {
   );
 };
 
-export default Loginpage;
+export default LoginPage;
