@@ -3423,9 +3423,10 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
 .dropdown-item {
     display: block;
     width: 100%;
-    padding: .25rem 1.5rem;
+    padding: .50rem 1.5rem;
     clear: both;
     font-weight: 400;
+    font-size: 1.2em;
     color: #212529;
     text-align: inherit;
     white-space: nowrap;

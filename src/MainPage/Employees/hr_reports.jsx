@@ -63,11 +63,10 @@ const HR_Report = () => {
             dataIndex: 'appraisal_status',
             sorter: (a, b) => a.employee_id.length - b.employee_id.length,
             render: (text, record) => (
-                <Link to="#"
-                    className="btn btn-white btn-sm btn-rounded action-label" data-toggle="dropdown" aria-expanded="false">
+                <div className="btn btn-white btn-sm btn-rounded action-label" aria-expanded="false">
                     <i className="fa fa-dot-circle-o text-danger mr-2" />
                     Submitted
-                </Link>
+                </div>
             ),
         },
         {
@@ -104,62 +103,68 @@ const HR_Report = () => {
 
                 {/* Filter Options */}
 
-                <div className="m-b-10 d-flex">
-                    <div className="d-flex">
-                        <div className='drop1 m-b-30 m-r-50'>
-                            <h4 className='mb-3'>Filter by Department</h4>
-                            <button type="button" className="btn btn-grey dropdown-toggle mr-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>
-                            <div className="dropdown-menu">
-                                <a className="dropdown-item" href="#">INFORMATION TECHNOLOGY (I.T)</a>
-                                <a className="dropdown-item" href="#">FINANCE</a>
-                                <a className="dropdown-item" href="#">MARKETING</a>
-                                <a className="dropdown-item" href="#">E-COMMERCE</a>
-                                <a className="dropdown-item" href="#">BRANDS AND COMMUNICATIONS</a>
-                            </div>
-                        </div>
-                        <div className='drop1 flex-column m-l-30'>
-                            <div className='drop1 m-r-30 m-b-10'>
-                                <h4 className='mb-3'>Filter by Status</h4>
-                                <button type="button" className="btn btn-grey dropdown-toggle mr-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>
-                                <div className="dropdown-menu">
-                                    <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-success m-r-5" /> Pending on Staff</a>
-                                    <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-primary m-r-5" /> Pending on Supervisor</a>
-                                    <a className="dropdown-item" href="#"><i className="fa fa-dot-circle-o text-purple m-r-5" /> Pending on Second Supervisor</a>
+                <div className="m-b-10">
+                    <div className='row d-flex'>
+                        <div className='float-left d-flex col-lg-9'>
+                            <div className="dropdown m-r-20 m-b-10">
+                                <button className="btn btn-grey dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Filter By
+                                </button>
+                                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a className="dropdown-item" href="#">Department</a>
+                                    <a className="dropdown-item" href="#">Appraisal Status</a>
                                 </div>
                             </div>
-                            
+
+                            <div className="dropdown m-b-10">
+                                <button className="btn btn-grey dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Select Item
+                                </button>
+                                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a className="action-label dropdown-item" aria-expanded="false">
+                                        <i className="fa fa-dot-circle-o text-danger mr-2" />
+                                        Submitted - Awaiting Supervisor Score
+                                    </a>
+                                    <a className="action-label dropdown-item" aria-expanded="false">
+                                        <i className="fa fa-dot-circle-o text-warning mr-2" />
+                                        Pre-Processing - Awaiting Appraisee Comment
+                                    </a>
+                                    <a className="action-label dropdown-item" aria-expanded="false">
+                                        <i className="fa fa-dot-circle-o text-primary mr-2" />
+                                        Processing - Awaiting Supervisor Recommendation
+                                    </a>
+                                    <a className="action-label dropdown-item" aria-expanded="false">
+                                        <i className="fa fa-dot-circle-o text-purple mr-2" />
+                                        In-Progress - Awaiting 2nd level Supervisor Comment
+                                    </a>
+                                    <a className="action-label dropdown-item" aria-expanded="false">
+                                        <i className="fa fa-dot-circle-o text-success mr-2" />
+                                        Completed - End
+                                    </a>
+                                </div>
+                            </div>
                         </div>
+
+                        <div className='float-right d-flex col-lg-2'>
+                            <div className="dropdown m-r-20 m-b-10">
+                                <button className="btn btn-grey dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Appraisal Month
+                                </button>
+                                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a className="dropdown-item" href="#">January 2022</a>
+                                    <a className="dropdown-item" href="#">February 2022</a>
+                                    <a className="dropdown-item" href="#">March 2022</a>
+                                </div>
+                            </div>
+
+                            <div className="dropdown m-b-10">
+                                <button className="btn btn-primary" type="button" aria-haspopup="true" aria-expanded="false">
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
-
-
-                    {/* <div className="d-flex">
-                        <div className="">
-                            <h4 className='mb-3'>Filter Appraisal Status</h4>
-                            <button type="button" className="btn btn-grey dropdown-toggle mr-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>
-                            <div className="dropdown-menu">
-                                <a className="dropdown-item" href="#">Action</a>
-                                <a className="dropdown-item" href="#">Another action</a>
-                                <div className="dropdown-divider" />
-                                <a className="dropdown-item" href="#">Separated link</a>
-                            </div>
-
-                            <div className="">
-                                <div href="#"><i className="fa fa-dot-circle-o text-danger" /> Inactive</div>
-                            </div>
-                        </div>
-                    </div> */}
-
-
-                    {/* <div className="btn-group flex-column">
-                        <h4 className='mb-2'>Filter Status</h4>
-                        <button type="button" className="btn btn-primary dropdown-toggle mr-1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>
-                        <div className="dropdown-menu">
-                            <a className="dropdown-item" href="#">Action</a>
-                            <a className="dropdown-item" href="#">Another action</a>
-                            <div className="dropdown-divider" />
-                            <a className="dropdown-item" href="#">Separated link</a>
-                        </div>
-                    </div> */}
                 </div>
 
                 {/* Filter Options */}
