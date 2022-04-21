@@ -1,3 +1,5 @@
+import React from "react";
+
 Date.prototype.yyyymmdd = function () {
   var mm = this.getMonth() + 1; // getMonth() is zero-based
   var dd = this.getDate();
@@ -53,8 +55,7 @@ export const codeConfigUrl = `http://10.11.200.97/ExpenseManagement/CodeConfigur
 export const expenseUrl = `http://10.11.200.97/ExpenseManagement/Expenses`;
 export const performanceManagementConfigUrl = `http://10.11.200.97/PerformanceManagement/Configuration`;
 export const performanceManagementAppraisalUrl = `http://10.11.200.97/PerformanceManagement/Appraisals`;
-
-
+export const performanceManagementUrl = `http://10.11.200.97/PerformanceManagement`;
 
 export const percentages = [
   { value: "", percent: "0%" },
@@ -123,3 +124,63 @@ export const getUniqueValues = (data, type) => {
   return [...new Set(unique)];
 };
 
+export const customStyles = {
+  control: (base, state) => ({
+    ...base,
+    color: "black",
+    // match with the menu
+    borderRadius: state.isFocused ? "3px 3px 0 0" : 3,
+    // Overwrittes the different states of border
+    borderColor: "#bbb",
+    // Removes weird border around container
+    boxShadow: state.isFocused ? null : null,
+    backgroundColor: state.isHover ? "red" : null,
+  }),
+  menu: (base) => ({
+    ...base,
+    // override border radius to match the box
+    borderRadius: 0,
+    // kill the gap
+    marginTop: 0,
+    background: "#bbb",
+    "&:hover": {
+      // Overwrittes the different states of border
+      background: "#bbb",
+    },
+  }),
+  menuList: (base) => ({
+    ...base,
+    // kill the white space on first and last option
+    padding: 0,
+    background: "#bbb",
+    "&:hover": {
+      // Overwrittes the different states of border
+      background: "none",
+    },
+  }),
+};
+
+export const customStyles2 = {
+  option: (styles, state) => ({
+    ...styles,
+    color: "black",
+    borderColor: state.isFocused ? null : null,
+    background: "#eee",
+  }),
+  menu: (base) => ({
+    ...base,
+    // override border radius to match the box
+    borderRadius: 0,
+    // kill the gap
+    marginTop: 0,
+  }),
+  menuList: (base) => ({
+    ...base,
+    // kill the white space on first and last option
+    padding: 0,
+    "&:hover": {
+      // Overwrittes the different states of border
+      background: "#bbb",
+    },
+  }),
+};

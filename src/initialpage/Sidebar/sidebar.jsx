@@ -207,7 +207,7 @@ const Sidebar = (props) => {
             </li>
 
             <li className={pathname.includes("clients") ? "active" : ""}>
-              <Link to="/app/employees/hr_reports">
+              <Link to="/app/performanceManagement/HrReports">
                 <i className="la la-file-invoice" /> <span>HR Reports</span>
               </Link>
             </li>

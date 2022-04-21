@@ -101,7 +101,7 @@ const StaffAppraisalReview = () => {
       history,
       toggleModal,
     };
-    // console.log(">>>>>>appraisals", appraisals);
+    console.log(">>>>>>appraisals", appraisals);
     dispatch(submitStaffAppraisal(data));
   };
 

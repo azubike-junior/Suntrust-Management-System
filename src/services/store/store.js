@@ -53,6 +53,7 @@ import addBehavioralMetricReducer from "./../PerformanceManagement/Configuration
 import getRecommendationsReducer from "./../PerformanceManagement/Configurations/recommendation/getRecommendation";
 import addRecommendationReducer from "./../PerformanceManagement/Configurations/recommendation/addRecommendation";
 import loginReducer from "./../Authentication/login";
+import getAllDepartmentsReducer from "./../PerformanceManagement/hrReports/getAllDepartments";
 
 import {
   getCodeConfigQuery,
@@ -83,6 +84,7 @@ const performanceManagement = combineReducers({
   addBehavioralMetricReducer,
   getRecommendationsReducer,
   addRecommendationReducer,
+  getAllDepartmentsReducer
 });
 
 const authenticationManager = combineReducers({
