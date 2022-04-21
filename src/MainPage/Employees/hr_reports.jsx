@@ -103,68 +103,51 @@ const HR_Report = () => {
 
                 {/* Filter Options */}
 
-                <div className="m-b-10">
-                    <div className='row d-flex'>
-                        <div className='float-left d-flex col-lg-9'>
-                            <div className="dropdown m-r-20 m-b-10">
-                                <button className="btn btn-grey dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Filter By
-                                </button>
-                                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a className="dropdown-item" href="#">Department</a>
-                                    <a className="dropdown-item" href="#">Appraisal Status</a>
-                                </div>
-                            </div>
-
-                            <div className="dropdown m-b-10">
-                                <button className="btn btn-grey dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Select Item
-                                </button>
-                                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a className="action-label dropdown-item" aria-expanded="false">
-                                        <i className="fa fa-dot-circle-o text-danger mr-2" />
-                                        Submitted - Awaiting Supervisor Score
-                                    </a>
-                                    <a className="action-label dropdown-item" aria-expanded="false">
-                                        <i className="fa fa-dot-circle-o text-warning mr-2" />
-                                        Pre-Processing - Awaiting Appraisee Comment
-                                    </a>
-                                    <a className="action-label dropdown-item" aria-expanded="false">
-                                        <i className="fa fa-dot-circle-o text-primary mr-2" />
-                                        Processing - Awaiting Supervisor Recommendation
-                                    </a>
-                                    <a className="action-label dropdown-item" aria-expanded="false">
-                                        <i className="fa fa-dot-circle-o text-purple mr-2" />
-                                        In-Progress - Awaiting 2nd level Supervisor Comment
-                                    </a>
-                                    <a className="action-label dropdown-item" aria-expanded="false">
-                                        <i className="fa fa-dot-circle-o text-success mr-2" />
-                                        Completed - End
-                                    </a>
-                                </div>
+                <div className='row d-flex'>
+                    <div className='float-left d-flex col-lg-9'>
+                        <div className="dropdown m-r-20">
+                            <div className="form-group">
+                                <select className="select">
+                                    <option selected>Filter By</option>
+                                    <option>Information Technology</option>
+                                    <option>Finance</option>
+                                    <option>Brands and Communications</option>
+                                </select>
                             </div>
                         </div>
 
-                        <div className='float-right d-flex col-lg-2'>
-                            <div className="dropdown m-r-20 m-b-10">
-                                <button className="btn btn-grey dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Appraisal Month
-                                </button>
-                                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a className="dropdown-item" href="#">January 2022</a>
-                                    <a className="dropdown-item" href="#">February 2022</a>
-                                    <a className="dropdown-item" href="#">March 2022</a>
-                                </div>
-                            </div>
-
-                            <div className="dropdown m-b-10">
-                                <button className="btn btn-primary" type="button" aria-haspopup="true" aria-expanded="false">
-                                    Download
-                                </button>
+                        <div className="dropdown">
+                            <div className="form-group">
+                                <select className="select">
+                                    <option>Submitted - Awaiting Supervisor Score</option>
+                                    <option>Pre-Processing - Awaiting Appraisee Comment</option>
+                                    <option>Processing - Awaiting Supervisor Recommendation</option>
+                                    <option>In-Progress - Awaiting 2nd level Supervisor Comment</option>
+                                    <option>Completed - End</option>
+                                </select>
                             </div>
                         </div>
-
                     </div>
+
+                    <div className='float-right d-flex col-lg-2'>
+                        <div className="dropdown m-r-20">
+                            <div className="form-group">
+                                <select className="select">
+                                    <option selected>Appraisal Period</option>
+                                    <option>January 2021</option>
+                                    <option>February 2021</option>
+                                    <option>March 2021</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="dropdown">
+                            <button className="btn btn-primary" type="button" aria-haspopup="true" aria-expanded="false">
+                                Download
+                            </button>
+                        </div>
+                    </div>
+
                 </div>
 
                 {/* Filter Options */}
