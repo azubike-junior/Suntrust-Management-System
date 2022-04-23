@@ -5,64 +5,79 @@ import { Table } from "antd";
 import "antd/dist/antd.css";
 import { itemRender, onShowSizeChange } from "../../paginationfunction";
 import "../../antdstyle.css";
-import Select from "react-select";
-import { customStyles } from "../../../utils/helper";
-import { customStyles2 } from './../../../utils/helper';
+import { useDispatch, useSelector } from "react-redux";
+import { getAllDepartments } from "../../../services/PerformanceManagement/hrReports/getAllDepartments";
+import { allStatus } from "../../../utils/helper";
+import { getAllAppraisalPeriods } from "./../../../services/PerformanceManagement/hrReports/getAppraisalPeriods";
+import { getAllAppraisals } from "./../../../services/PerformanceManagement/hrReports/getAllAppraisals";
+import Loader from "../../UIinterface/Loader";
+import { switchNumberToMonth } from "./../../../utils/helper";
+import { classNames } from "./../../../utils/classNames";
 
 const HrReport = () => {
-  const [selectedFilter, setSelectedFilter] = useState("");
+  const [selectedFiltered, setSelectedFiltered] = useState("");
+  const [selectedOption, setSelectedOption] = useState("");
 
-  console.log(">>>>>selected", selectedFilter);
+  const { data: appraisals } = useSelector(
+    (state) => state.performanceManagement.getAllAppraisalsReducer
+  );
+  const [allAppraisals, setAllAppraisals] = useState([]);
+  const dispatch = useDispatch();
 
-  const selectStatus = [
-    {
-      value: 1,
-      text: " Submitted - Awaiting Supervisor Score",
-      icon: <i className="fa fa-dot-circle-o text-warning mr-2" />,
-    },
-    {
-      value: 2,
-      text: "Down Arrow",
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          class="bi bi-arrow-down-circle"
-          viewBox="0 0 16 16"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"
-          />
-        </svg>
-      ),
-    },
-  ];
-  const [data, setData] = useState([
-    {
-      id: 1,
-      staff_id: "019",
-      staff_name: "James McAvoy",
-      app_date_submitted: "27-04-2022",
-      supervisor_score: "87%",
-    },
-    {
-      id: 2,
-      staff_id: "022",
-      staff_name: "Michael Jemigbon",
-      app_date_submitted: "27-04-2022",
-      supervisor_score: "83%",
-    },
-    {
-      id: 3,
-      staff_id: "034",
-      staff_name: "Emmanuel Dennis",
-      app_date_submitted: "27-04-2022",
-      supervisor_score: "72%",
-    },
-  ]);
+  const handleSelectChange = (e) => {
+    if (e.target.value === "Department") {
+      dispatch(getAllDepartments());
+      return setSelectedFiltered(e.target.value);
+    }
+    setSelectedFiltered(e.target.value);
+  };
+
+  const handleSelectedOption = (e, option) => {
+    // console.log("status", e.target.value);
+    let tempAppraisals = [...appraisals];
+
+    if (option === "period") {
+      setSelectedOption(e.target.value);
+      const beginningDate = e.target.value.split(" - ")[0];
+      const endDate = e.target.value.split(" - ")[1];
+      tempAppraisals = tempAppraisals?.filter((appraisal) => {
+        const day = appraisal.dateSubmitted.split(" ")[0].split("/")[1];
+        const year = appraisal.dateSubmitted.split(" ")[0].split("/")[2];
+
+        const appraisalDate = `${switchNumberToMonth(day)},${year}`;
+
+        return appraisalDate === beginningDate || appraisalDate === endDate;
+      });
+      if (e.target.value === "all") {
+        tempAppraisals = appraisals;
+      }
+    }
+
+    if (option === "department") {
+      setSelectedOption(e.target.value);
+      tempAppraisals = tempAppraisals?.filter(
+        (appraisal) =>
+          Number(appraisal.departmentCode) === Number(e.target.value)
+      );
+    }
+    if (option === "status") {
+      setSelectedOption(e.target.value);
+      tempAppraisals = tempAppraisals?.filter(
+        (appraisal) => appraisal.status === e.target.value
+      );
+    }
+    return setAllAppraisals(tempAppraisals);
+  };
+
+  const { data: departments } = useSelector(
+    (state) => state.performanceManagement.getAllDepartmentsReducer
+  );
+
+  const { data: appraisalPeriods, loading: appraisalsLoading } = useSelector(
+    (state) => state.performanceManagement.getAllAppraisalPeriodsReducer
+  );
+
+  // console.log(">>>>>>appraisals", allAppraisals, appraisals);
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -77,41 +92,56 @@ const HrReport = () => {
   const columns = [
     {
       title: "Staff ID",
-      dataIndex: "staff_id",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
+      dataIndex: "staffId",
     },
     {
       title: "Staff Name",
-      dataIndex: "staff_name",
+      dataIndex: "appraiseeName",
       render: (text, record) => <h2 className="table-avatar">{text}</h2>,
-      sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Date Submitted",
-      dataIndex: "app_date_submitted",
+      dataIndex: "dateSubmitted",
       render: (text, record) => <h2 className="table-avatar">{text}</h2>,
-      sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Appraisal Status",
-      dataIndex: "appraisal_status",
-      sorter: (a, b) => a.employee_id.length - b.employee_id.length,
+      dataIndex: "status",
       render: (text, record) => (
         <div
           className="btn btn-white btn-sm btn-rounded action-label"
           aria-expanded="false"
         >
-          <i className="fa fa-dot-circle-o text-danger mr-2" />
-          Submitted
+          <i
+            className={classNames(
+              "",
+              text === "COMPLETE" && "text-success",
+              text === "SUBMITTED" && "text-danger",
+              text === "PRE-PROCESSING" && "text-warning",
+              text === "PROCESSING" && "text-purple",
+              text === "INPROGRESS" && "text-primary"
+            )}
+          >
+            <i className="fa fa-dot-circle-o mr-2" />
+          </i>
+          {text}
         </div>
       ),
     },
     {
       title: "Supervisor Score",
-      dataIndex: "supervisor_score",
+      dataIndex: "totalSupervisorResult",
       sorter: (a, b) => a.employee_id.length - b.employee_id.length,
     },
   ];
+
+  useEffect(() => {
+    dispatch(getAllAppraisalPeriods());
+  }, []);
+
+  useEffect(() => {
+    dispatch(getAllAppraisals(setAllAppraisals));
+  }, []);
 
   return (
     <div className="page-wrapper">
@@ -135,148 +165,100 @@ const HrReport = () => {
 
         {/* Filter Options */}
 
-        <div className="m-b-10">
-          <div className="row d-flex">
-            <div className="float-left d-flex col-lg-9">
-              <div className="dropdown m-r-20 m-b-10">
-                <button
-                  className="btn btn-grey dropdown-toggle"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
+        <div className="row d-flex">
+          <div className="float-left d-flex col-lg-9">
+            <div className="dropdown m-r-20">
+              <div className="form-group">
+                <select
+                  onChange={(e) => handleSelectedOption(e, "period")}
+                  className="form-control"
                 >
-                  Filter By
-                </button>
-                <div
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton"
-                >
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={() => setSelectedFilter("Department")}
-                  >
-                    Department
-                  </a>
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={() => setSelectedFilter("Status")}
-                  >
-                    Appraisal Status
-                  </a>
-                </div>
-              </div>
-
-              {/* <Select
-                styles={customStyles2}
-                className=""
-                placeholder="Select Option"
-                value={selectedFilter}
-                options={selectStatus}
-                // onChange={handleChange}
-                getOptionLabel={(e) => (
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    {e.icon}
-                    <span style={{ marginLeft: 5 }}>{e.text}</span>
-                  </div>
-                )}
-              /> */}
-
-              <div className="dropdown m-b-10">
-                <button
-                  className="btn btn-grey dropdown-toggle"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  Select {selectedFilter}
-                </button>
-                <div
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton"
-                >
-                  <a
-                    className="action-label dropdown-item"
-                    aria-expanded="false"
-                  >
-                    <i className="fa fa-dot-circle-o text-danger mr-2" />
-                    Submitted - Awaiting Supervisor Score
-                  </a>
-                  <a
-                    className="action-label dropdown-item"
-                    aria-expanded="false"
-                  >
-                    <i className="fa fa-dot-circle-o text-warning mr-2" />
-                    Pre-Processing - Awaiting Appraisee Comment
-                  </a>
-                  <a
-                    className="action-label dropdown-item"
-                    aria-expanded="false"
-                  >
-                    <i className="fa fa-dot-circle-o text-primary mr-2" />
-                    Processing - Awaiting Supervisor Recommendation
-                  </a>
-                  <a
-                    className="action-label dropdown-item"
-                    aria-expanded="false"
-                  >
-                    <i className="fa fa-dot-circle-o text-purple mr-2" />
-                    In-Progress - Awaiting 2nd level Supervisor Comment
-                  </a>
-                  <a
-                    className="action-label dropdown-item"
-                    aria-expanded="false"
-                  >
-                    <i className="fa fa-dot-circle-o text-success mr-2" />
-                    Completed - End
-                  </a>
-                </div>
+                  <option value="all">All</option>
+                  {appraisalPeriods.map((period) => {
+                    return (
+                      <option value={period.perioId}>{period.date}</option>
+                    );
+                  })}
+                </select>
               </div>
             </div>
 
-            <div className="float-right d-flex col-lg-2">
-              <div className="dropdown m-r-20 m-b-10">
-                <button
-                  className="btn btn-grey dropdown-toggle"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
+            <div className="dropdown m-r-20 col-lg-3">
+              <div className="form-group">
+                <select
+                  className="form-control"
+                  value={selectedFiltered}
+                  onChange={(e) => handleSelectChange(e)}
                 >
-                  Appraisal Month
-                </button>
-                <div
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton"
-                >
-                  <a className="dropdown-item" href="#">
-                    January 2022
-                  </a>
-                  <a className="dropdown-item" href="#">
-                    February 2022
-                  </a>
-                  <a className="dropdown-item" href="#">
-                    March 2022
-                  </a>
+                  <option value="" selected>
+                    Filter By
+                  </option>
+                  <option
+                    value="Department"
+                    onClick={() => dispatch(getAllDepartments())}
+                  >
+                    Departments
+                  </option>
+                  <option value="Status">Status</option>
+                </select>
+              </div>
+            </div>
+
+            {selectedFiltered === "Department" ? (
+              <div className="dropdown col-lg-3">
+                <div className="form-group">
+                  <select
+                    value={selectedOption}
+                    onChange={(e) => handleSelectedOption(e, "department")}
+                    className="form-control"
+                  >
+                    <option value="">Select {selectedFiltered}</option>
+                    {departments?.map((department) => {
+                      return (
+                        <option key={department.id} value={department.id}>
+                          {department.departmentName}
+                        </option>
+                      );
+                    })}
+                  </select>
                 </div>
               </div>
-
-              <div className="dropdown m-b-10">
-                <button
-                  className="btn btn-primary"
-                  type="button"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  Download
-                </button>
+            ) : (
+              <div className="dropdown col-lg-4">
+                <div className="form-group">
+                  <select
+                    value={selectedOption}
+                    onChange={(e) => handleSelectedOption(e, "status")}
+                    className="form-control"
+                  >
+                    <option value="">Select {selectedFiltered}</option>
+                    {allStatus?.map((status) => {
+                      return (
+                        <option key={status.value} value={status.value}>
+                          {status.text}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
               </div>
+            )}
+          </div>
+
+          <div className="float-right d-flex col-lg-3">
+            <div className="dropdown m-r-50">
+              <div className="form-group"></div>
+            </div>
+
+            <div className="dropdown m-l-125">
+              <button
+                className="btn btn-primary"
+                type="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Download
+              </button>
             </div>
           </div>
         </div>
@@ -309,17 +291,18 @@ const HrReport = () => {
               <Table
                 className="table-striped"
                 pagination={{
-                  total: data.length,
+                  total: allAppraisals?.length,
                   showTotal: (total, range) =>
                     `Showing ${range[0]} to ${range[1]} of ${total} entries`,
                   showSizeChanger: true,
                   onShowSizeChange: onShowSizeChange,
                   itemRender: itemRender,
                 }}
+                loading={{ indicator: <Loader />, spinning: appraisalsLoading }}
                 style={{ overflowX: "auto" }}
                 columns={columns}
                 // bordered
-                dataSource={data}
+                dataSource={allAppraisals}
                 rowKey={(record) => record.id}
                 onChange={console.log("change")}
               />

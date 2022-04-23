@@ -77,7 +77,7 @@ export const percentages = [
 ];
 
 export const timeDuration = [
-  { value: "", duration: "Select Option" },
+  // { value: "", duration: "Select Option" },
   { value: "hourly", duration: "Hourly" },
   { value: "daily", duration: "Daily" },
   { value: "weekly", duration: "Weekly" },
@@ -124,63 +124,56 @@ export const getUniqueValues = (data, type) => {
   return [...new Set(unique)];
 };
 
-export const customStyles = {
-  control: (base, state) => ({
-    ...base,
-    color: "black",
-    // match with the menu
-    borderRadius: state.isFocused ? "3px 3px 0 0" : 3,
-    // Overwrittes the different states of border
-    borderColor: "#bbb",
-    // Removes weird border around container
-    boxShadow: state.isFocused ? null : null,
-    backgroundColor: state.isHover ? "red" : null,
-  }),
-  menu: (base) => ({
-    ...base,
-    // override border radius to match the box
-    borderRadius: 0,
-    // kill the gap
-    marginTop: 0,
-    background: "#bbb",
-    "&:hover": {
-      // Overwrittes the different states of border
-      background: "#bbb",
-    },
-  }),
-  menuList: (base) => ({
-    ...base,
-    // kill the white space on first and last option
-    padding: 0,
-    background: "#bbb",
-    "&:hover": {
-      // Overwrittes the different states of border
-      background: "none",
-    },
-  }),
-};
+export const allStatus = [
+  {
+    value: "SUBMITTED",
+    text: "SUBMITTED - awaiting Supervisor Score",
+  },
+  {
+    value: "PRE-PROCESSING",
+    text: "PRE-PROCESSING - awaiting Appraisee Comment",
+  },
+  {
+    value: "PROCESSING",
+    text: "PROCESSING - awaiting Supervisor Recommendation",
+  },
+  {
+    value: "INPROGRESS",
+    text: "IN-PROGRESS - awaiting 2nd level Supervisor Comment",
+  },
+  {
+    value: "COMPLETE",
+    text: "COMPLETE - end",
+  },
+];
 
-export const customStyles2 = {
-  option: (styles, state) => ({
-    ...styles,
-    color: "black",
-    borderColor: state.isFocused ? null : null,
-    background: "#eee",
-  }),
-  menu: (base) => ({
-    ...base,
-    // override border radius to match the box
-    borderRadius: 0,
-    // kill the gap
-    marginTop: 0,
-  }),
-  menuList: (base) => ({
-    ...base,
-    // kill the white space on first and last option
-    padding: 0,
-    "&:hover": {
-      // Overwrittes the different states of border
-      background: "#bbb",
-    },
-  }),
+export const switchNumberToMonth = (num) => {
+  switch (num) {
+    case "01":
+      return "Jan";
+    case "02":
+      return "Feb";
+    case "03":
+      return "Mar";
+    case "04":
+      return "Apr";
+    case "05":
+      return "May";
+    case "06":
+      return "Jun";
+    case "07":
+      return "Jul";
+    case "08":
+      return "Aug";
+    case "09":
+      return "Sep";
+    case "10":
+      return "Oct";
+    case "11":
+      return "Nov";
+    case "12":
+      return "Dec";
+    default:
+      return "";
+  }
 };

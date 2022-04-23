@@ -3,6 +3,7 @@ import { classNames } from "./../../../../utils/classNames";
 
 export default function InputField({
   required,
+  message,
   name,
   type,
   label,
@@ -15,6 +16,7 @@ export default function InputField({
   pattern,
   minLength,
   maxLength,
+  defaultValue,
 }) {
   return (
     <div className={className}>
@@ -23,6 +25,8 @@ export default function InputField({
           {label}
           {required && <span className="text-danger">*</span>}
         </label>
+        <p className="text-danger font-12">{message}</p>
+
         <input
           placeholder={placeholder}
           disabled={disabled}
@@ -38,7 +42,7 @@ export default function InputField({
             "form-control"
           )}
           name={name}
-          defaultValue={value}
+          defaultValue={defaultValue}
           type={type}
         />
       </div>

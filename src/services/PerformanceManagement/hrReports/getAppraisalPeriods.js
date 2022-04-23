@@ -2,7 +2,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import axios from "axios";
 import Swal from "sweetalert2";
-import { performanceManagementUrl } from "../../../utils/helper";
+import {
+  performanceManagementAppraisalUrl,
+  performanceManagementUrl,
+} from "../../../utils/helper";
 
 const initialState = {
   error: "",
@@ -12,20 +15,18 @@ const initialState = {
   isSuccessful: false,
 };
 
-export const getAllDepartments = createAsyncThunk(
-  "getDepartments",
+export const getAllAppraisalPeriods = createAsyncThunk(
+  "getAllAppraisalPeriods",
   async () => {
     try {
       const response = await axios.get(
-        `${performanceManagementUrl}/getDepartments`
+        `${performanceManagementAppraisalUrl}/getAppraisalPeriods`
       );
-
-      console.log(">>>>>repsone", response);
 
       if (response.status === 200) {
         return response.data;
       }
-      setAllKPIs(response.data);
+
       return response.data;
     } catch (e) {
       return rejectWithValue(e.response.data);
@@ -33,25 +34,25 @@ export const getAllDepartments = createAsyncThunk(
   }
 );
 
-const getDepartmentsSlice = createSlice({
-  name: "getDepartments",
+const getAllAppraisalPeriodsSlice = createSlice({
+  name: "getAllAppraisalPeriods",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getAllDepartments.rejected, (state, action) => {
+    builder.addCase(getAllAppraisalPeriods.rejected, (state, action) => {
       state.error = action.payload;
       state.error2 = action.error.name;
       state.loading = false;
       state.isSuccessful = false;
     });
-    builder.addCase(getAllDepartments.fulfilled, (state, action) => {
+    builder.addCase(getAllAppraisalPeriods.fulfilled, (state, action) => {
       state.loading = true;
       state.data = action.payload;
       state.loading = false;
       state.isSuccessful = true;
       state.error = "";
     });
-    builder.addCase(getAllDepartments.pending, (state, action) => {
+    builder.addCase(getAllAppraisalPeriods.pending, (state, action) => {
       state.loading = true;
       state.error = action.payload;
     });
@@ -59,4 +60,4 @@ const getDepartmentsSlice = createSlice({
 });
 
 // export const { useRegisterMutation } = AuthHandler;
-export default getDepartmentsSlice.reducer;
+export default getAllAppraisalPeriodsSlice.reducer;

@@ -54,6 +54,8 @@ import getRecommendationsReducer from "./../PerformanceManagement/Configurations
 import addRecommendationReducer from "./../PerformanceManagement/Configurations/recommendation/addRecommendation";
 import loginReducer from "./../Authentication/login";
 import getAllDepartmentsReducer from "./../PerformanceManagement/hrReports/getAllDepartments";
+import getAllAppraisalPeriodsReducer from "./../PerformanceManagement/hrReports/getAppraisalPeriods";
+import getAllAppraisalsReducer  from "./../PerformanceManagement/hrReports/getAllAppraisals";
 
 import {
   getCodeConfigQuery,
@@ -84,7 +86,9 @@ const performanceManagement = combineReducers({
   addBehavioralMetricReducer,
   getRecommendationsReducer,
   addRecommendationReducer,
-  getAllDepartmentsReducer
+  getAllDepartmentsReducer,
+  getAllAppraisalPeriodsReducer,
+  getAllAppraisalsReducer
 });
 
 const authenticationManager = combineReducers({

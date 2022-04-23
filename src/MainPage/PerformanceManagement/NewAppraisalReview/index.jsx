@@ -79,6 +79,13 @@ const StaffAppraisalReview = () => {
       firstName,
       lastName,
       secondLevelSupervisorStaffId,
+      departmentCode,
+      dateOfBirth,
+      jobDescription,
+      grade,
+      branchName,
+      departmentName,
+      gradeName,
     } = staffData;
 
     // console.log(">>>>staffID", staffId, superVisorFistName)
@@ -92,7 +99,13 @@ const StaffAppraisalReview = () => {
       exceptionalAchievement: allData.data.exceptionalAchievement,
       secondSupervisorName: "",
       appraiseeComment: "",
+      departmentCode,
       totalAppraiseeResult: kpiResult,
+      gradeName,
+      jobDescription,
+      branchName,
+      departmentName,
+      dateOfBirth: dateOfBirth ? dateOfBirth : "0001-01-01",
       kpis: appraise,
     };
 

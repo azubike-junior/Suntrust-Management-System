@@ -18,15 +18,17 @@ const initialState = {
 export const setupAppraisal = createAsyncThunk(
   "setupAppraisal",
   async (newData, { rejectWithValue }) => {
-    console.log("++++++", newData);
     const { reset, ...rest } = newData;
+    // console.log("++++++", rest);
+
     try {
       const response = await axios.post(
         `${performanceManagementConfigUrl}/SetUpAppraisal`,
-        { rest }
+        rest
       );
-      console.log(">>>>>response", response);
-      if (response.status === 200) {
+      // console.log(">>>>>response", response);
+      // if(response.data.reponse)
+      if (response.data.responseCode === "00") {
         Swal.fire(
           `Appraisal has been ${newData.status}`,
           "Successful!",
@@ -36,6 +38,29 @@ export const setupAppraisal = createAsyncThunk(
         });
         return response.data;
       }
+
+      if (response.data.responseCode === "97") {
+        Swal.fire(
+          `${response.data.responseMessage}`,
+          "UNSUCCESSFUL",
+          "error"
+        ).then(() => {
+          reset();
+        });
+        return response.data;
+      }
+
+      if (response.data.responseCode === "96") {
+        Swal.fire(
+          `Sorry, an Error ocurred`,
+          "Error!",
+          "error"
+        ).then(() => {
+          reset();
+        });
+        return response.data;
+      }
+
       return response.data;
     } catch (e) {
       return rejectWithValue(e.response.data);

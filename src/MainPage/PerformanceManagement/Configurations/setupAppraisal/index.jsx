@@ -36,31 +36,39 @@ const SetupAppraisal = () => {
     }
   });
 
+  let today = new Date().toISOString().slice(0, 10);
+
   const {
     register,
     handleSubmit,
     reset,
     resetField,
     getValues,
+    watch,
     formState: { errors },
   } = useForm({
     mode: "onTouched",
-    defaultValues: {},
+    // defaultValues: {appraisalPeriod:"Monthly"},
   });
+
+  const watchStartDate = watch("startDate");
+  const watchEndDate = watch("endDate")
+
+  console.log("watchDate", watch("endDate"))
 
   const setupAppraisalHandler = (data) => {
     const { status, startDate, endDate, startTime, endTime } = data;
     const newData = {
       status,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
+      startDate: startDate ? startDate : "",
+      endDate: endDate ? endDate : "",
+      startTime: startTime ? startTime : "00:00:00.0000000",
+      endTime: endTime ? endTime : "00:00:00.0000000",
       reset,
     };
     console.log(newData);
 
-    dispatch(setupAppraisal(newData));
+    // dispatch(setupAppraisal(newData));
   };
 
   const checkPeriod = (e) => {
@@ -105,7 +113,7 @@ const SetupAppraisal = () => {
                   >
                     <option value="">Select Option</option>
                     <option value="open">Open</option>
-                    <option value="closed">Closed</option>
+                    <option value="closed">Close</option>
                   </select>
                 </div>
               </div>
@@ -114,6 +122,7 @@ const SetupAppraisal = () => {
                 <div className="m-b-10">Appraisal Period</div>
                 <div className="form-group">
                   <select
+                    // defaultValue="Monthly"
                     {...register("appraisalPeriod", { required: true })}
                     className={classNames(
                       errors?.appraisalPeriod ? "error-class" : "",
@@ -123,7 +132,7 @@ const SetupAppraisal = () => {
                   >
                     {timeDuration.map((duration, index) => {
                       return (
-                        <option value={duration.value} key={index}>
+                        <option  value={duration.value} key={index}>
                           {" "}
                           {duration.duration}
                         </option>
@@ -150,6 +159,7 @@ const SetupAppraisal = () => {
                     label="End Time"
                     className="col-lg-4 m-b-30"
                     required
+                    // defaultValue={}
                     type="time"
                     errors={errors?.endTime}
                   />
@@ -162,10 +172,12 @@ const SetupAppraisal = () => {
                     register={register}
                     name="startDate"
                     label="Start Date"
+                    defaultValue={today}
                     className="col-lg-4 m-b-30"
                     required
                     type="date"
-                    errors={errors?.startDate}
+                    errors={errors.startDate}
+                    message={watchStartDate < today ? "Start date shouldn't be lesser than current date" : ''}
                   />
 
                   <InputField
@@ -173,9 +185,11 @@ const SetupAppraisal = () => {
                     name="endDate"
                     label="End Date"
                     className="col-lg-4 m-b-30"
+                    defaultValue={today}
                     required
                     type="date"
-                    errors={errors?.endDate}
+                    errors={errors.endDate }
+                    message={watchStartDate > watchEndDate ? "Start date shouldn't be greater than end date" : ''}
                   />
                 </div>
               )}
@@ -183,6 +197,7 @@ const SetupAppraisal = () => {
               <div className="col-lg-3 m-b-10">
                 <div className="form-group">
                   <button
+                    disabled={watchStartDate > watchEndDate || watchStartDate < today}
                     type="submit"
                     href=""
                     className="btn btn-block btn-suntrust font-weight-700"
