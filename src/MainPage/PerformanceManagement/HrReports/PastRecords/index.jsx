@@ -3,30 +3,65 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { Table } from "antd";
 import "antd/dist/antd.css";
-import { itemRender, onShowSizeChange } from "../../paginationfunction";
-import "../../antdstyle.css";
+import { itemRender, onShowSizeChange } from "../../../paginationfunction";
+import "../../../antdstyle.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllDepartments } from "../../../services/PerformanceManagement/hrReports/getAllDepartments";
-import { allStatus } from "../../../utils/helper";
-import { getAllAppraisalPeriods } from "./../../../services/PerformanceManagement/hrReports/getAppraisalPeriods";
-import { getAllAppraisals } from "./../../../services/PerformanceManagement/hrReports/getAllAppraisals";
-import Loader from "../../UIinterface/Loader";
-import { switchNumberToMonth } from "./../../../utils/helper";
-import { classNames } from "./../../../utils/classNames";
+import { getAllDepartments } from "../../../../services/PerformanceManagement/hrReports/getAllDepartments";
+import { allStatus, performanceManagementAppraisalUrl } from "../../../../utils/helper";
+import { getAllAppraisalPeriods } from "../../../../services/PerformanceManagement/hrReports/getAppraisalPeriods";
+import { getAllAppraisals } from "../../../../services/PerformanceManagement/hrReports/getAllAppraisals";
+import Loader from "../../../UIinterface/Loader";
+import { switchNumberToMonth } from "../../../../utils/helper";
+import { classNames } from "../../../../utils/classNames";
+import { getGrades } from "../../../../services/PerformanceManagement/hrReports/getGrades";
+import InputField from "../../../UIinterface/Forms/InputField/Index";
+import { useForm } from "react-hook-form";
+import { getAppraisalsByDate } from "../../../../services/PerformanceManagement/hrReports/getAppraisalByDate";
 
-const HrReport = () => {
+const PastRecords = () => {
   const [selectedFiltered, setSelectedFiltered] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
+  const [appraisalReference, setAppraisalReference] = useState("");
+  const [startDate, setStartDate] = useState("");
 
   const { data: appraisals } = useSelector(
     (state) => state.performanceManagement.getAllAppraisalsReducer
   );
+
+  const { data: appraisalsByDate } = useSelector(
+    (state) => state.performanceManagement.getAppraisalsByDateReducer
+  );
   const [allAppraisals, setAllAppraisals] = useState([]);
   const dispatch = useDispatch();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    resetField,
+    getValues,
+    watch,
+    formState: { errors },
+  } = useForm({
+    mode: "onTouched",
+  });
+
+  let today = new Date().toISOString().slice(0, 10);
+
+  const watchStartDate = watch("startDate");
+  const watchEndDate = watch("endDate");
+
+  console.log("==============date Appraisals===================");
+  console.log(appraisalsByDate);
+  console.log("====================================");
 
   const handleSelectChange = (e) => {
     if (e.target.value === "Department") {
       dispatch(getAllDepartments());
+      return setSelectedFiltered(e.target.value);
+    }
+    if (e.target.value === "Level") {
+      dispatch(getGrades());
       return setSelectedFiltered(e.target.value);
     }
     setSelectedFiltered(e.target.value);
@@ -34,23 +69,18 @@ const HrReport = () => {
 
   const handleSelectedOption = (e, option) => {
     // console.log("status", e.target.value);
-    let tempAppraisals = [...appraisals];
+    let tempAppraisals = [...appraisalsByDate];
 
     if (option === "period") {
       setSelectedOption(e.target.value);
-      const beginningDate = e.target.value.split(" - ")[0];
-      const endDate = e.target.value.split(" - ")[1];
-      tempAppraisals = tempAppraisals?.filter((appraisal) => {
-        const day = appraisal.dateSubmitted.split(" ")[0].split("/")[1];
-        const year = appraisal.dateSubmitted.split(" ")[0].split("/")[2];
+      const data = { startDate, endDate: e.target.value, setAllAppraisals };
+      dispatch(getAppraisalsByDate(data));
+      const allReferences = tempAppraisals?.map(
+        (appraisal) => appraisal.appraisalReference
+      );
+      const allRef = allReferences.toString();
 
-        const appraisalDate = `${switchNumberToMonth(day)},${year}`;
-
-        return appraisalDate === beginningDate || appraisalDate === endDate;
-      });
-      if (e.target.value === "all") {
-        tempAppraisals = appraisals;
-      }
+      setAppraisalReference(allRef);
     }
 
     if (option === "department") {
@@ -59,25 +89,65 @@ const HrReport = () => {
         (appraisal) =>
           Number(appraisal.departmentCode) === Number(e.target.value)
       );
+      const allReferences = tempAppraisals?.map(
+        (appraisal) => appraisal.appraisalReference
+      );
+      const allRef = allReferences.toString();
+
+      setAppraisalReference(allRef);
     }
     if (option === "status") {
       setSelectedOption(e.target.value);
       tempAppraisals = tempAppraisals?.filter(
         (appraisal) => appraisal.status === e.target.value
       );
+      const allReferences = tempAppraisals?.map(
+        (appraisal) => appraisal.appraisalReference
+      );
+      const allRef = allReferences.toString();
+
+      setAppraisalReference(allRef);
     }
+    if (option === "level") {
+      setSelectedOption(e.target.value);
+      tempAppraisals = tempAppraisals?.filter(
+        (appraisal) => appraisal.gradeName === e.target.value
+      );
+      const allReferences = tempAppraisals?.map(
+        (appraisal) => appraisal.appraisalReference
+      );
+      const allRef = allReferences.toString();
+
+      setAppraisalReference(allRef);
+      // console.log(">>>>>>>>temp.", tempAppraisals, e.target.value);
+    }
+
+    console.log(">>>>tempApp", tempAppraisals);
+
     return setAllAppraisals(tempAppraisals);
   };
+
+  // const getAllAppraisalReference = () => {
+  //   const allReferences = allAppraisals.map(
+  //     (appraisal) => appraisal.appraisalReference
+  //   );
+  //   const allRef = allReferences.toString();
+
+  // };
+
+  console.log(">>>>>allRef", appraisalReference);
 
   const { data: departments } = useSelector(
     (state) => state.performanceManagement.getAllDepartmentsReducer
   );
 
+  const { data: levels } = useSelector(
+    (state) => state.performanceManagement.getGradesReducer
+  );
+
   const { data: appraisalPeriods, loading: appraisalsLoading } = useSelector(
     (state) => state.performanceManagement.getAllAppraisalPeriodsReducer
   );
-
-  // console.log(">>>>>>appraisals", allAppraisals, appraisals);
 
   useEffect(() => {
     if ($(".select").length > 0) {
@@ -133,6 +203,19 @@ const HrReport = () => {
       dataIndex: "totalSupervisorResult",
       sorter: (a, b) => a.employee_id.length - b.employee_id.length,
     },
+    // {
+    //   title: "",
+    //   render: (text, record) => (
+    //     <Link
+    //       onClick={() => console.log("text", text)}
+    //       to={`/app/performanceManagement/preProcessAppraisal/${text.appraisalReference}`}
+    //       className="btn btn-sm btn-outline-primary m-r-10"
+    //     >
+    //       <i className="fa fa-eye m-r-5" />
+    //       VIEW
+    //     </Link>
+    //   ),
+    // },
   ];
 
   useEffect(() => {
@@ -169,22 +252,28 @@ const HrReport = () => {
           <div className="float-left d-flex col-lg-9">
             <div className="dropdown m-r-20">
               <div className="form-group">
-                <select
-                  onChange={(e) => handleSelectedOption(e, "period")}
-                  className="form-control"
-                >
-                  <option value="all">All</option>
-                  {appraisalPeriods.map((period) => {
-                    return (
-                      <option value={period.perioId}>{period.date}</option>
-                    );
-                  })}
-                </select>
+                <label className="col-form-label">Start Date</label>
+                <input
+                  onChange={(e) => setStartDate(e.target.value)}
+                  value={startDate}
+                  className="col-lg-12 m-b-30 form-control"
+                  type="date"
+                />
               </div>
             </div>
-
+            <div className="dropdown">
+              <div className="form-group">
+                <label className="col-form-label">End Date</label>
+                <input
+                  onChange={(e) => handleSelectedOption(e, "period")}
+                  className="col-lg-12 m-b-30 form-control"
+                  type="date"
+                />
+              </div>
+            </div>
             <div className="dropdown m-r-20 col-lg-3">
               <div className="form-group">
+                <label className="col-form-label">Filter</label>
                 <select
                   className="form-control"
                   value={selectedFiltered}
@@ -200,13 +289,14 @@ const HrReport = () => {
                     Departments
                   </option>
                   <option value="Status">Status</option>
+                  <option value="Level">Level</option>
                 </select>
               </div>
             </div>
-
-            {selectedFiltered === "Department" ? (
+            {selectedFiltered === "Department" && (
               <div className="dropdown col-lg-3">
                 <div className="form-group">
+                  <label className="col-form-label">Category</label>
                   <select
                     value={selectedOption}
                     onChange={(e) => handleSelectedOption(e, "department")}
@@ -223,9 +313,12 @@ const HrReport = () => {
                   </select>
                 </div>
               </div>
-            ) : (
+            )}
+            {selectedFiltered === "Status" && (
               <div className="dropdown col-lg-4">
                 <div className="form-group">
+                  <label className="col-form-label">Category</label>
+
                   <select
                     value={selectedOption}
                     onChange={(e) => handleSelectedOption(e, "status")}
@@ -243,6 +336,29 @@ const HrReport = () => {
                 </div>
               </div>
             )}
+
+            {selectedFiltered === "Level" && (
+              <div className="dropdown col-lg-4">
+                <div className="form-group">
+                  <label className="col-form-label">Category</label>
+
+                  <select
+                    value={selectedOption}
+                    onChange={(e) => handleSelectedOption(e, "level")}
+                    className="form-control"
+                  >
+                    <option value="">Select {selectedFiltered}</option>
+                    {levels?.map((level) => {
+                      return (
+                        <option key={level.id} value={level.gradeName}>
+                          {level.gradeName}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="float-right d-flex col-lg-3">
@@ -250,15 +366,23 @@ const HrReport = () => {
               <div className="form-group"></div>
             </div>
 
-            <div className="dropdown m-l-125">
-              <button
+            <div className="dropdown m-l-125 m-t-40">
+              <a
                 className="btn btn-primary"
                 type="button"
                 aria-haspopup="true"
                 aria-expanded="false"
+                onClick={() => {
+                  window.open(
+                    `${performanceManagementAppraisalUrl}/DownloadReportByAppraisalReference?appraisalReference=${
+                      appraisalReference ? appraisalReference : ""
+                    }`,
+                    "_blank"
+                  );
+                }}
               >
                 Download
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -302,7 +426,7 @@ const HrReport = () => {
                 style={{ overflowX: "auto" }}
                 columns={columns}
                 // bordered
-                dataSource={allAppraisals}
+                dataSource={allAppraisals ? allAppraisals : appraisals}
                 rowKey={(record) => record.id}
                 onChange={console.log("change")}
               />
@@ -316,4 +440,4 @@ const HrReport = () => {
   );
 };
 
-export default HrReport;
+export default PastRecords;

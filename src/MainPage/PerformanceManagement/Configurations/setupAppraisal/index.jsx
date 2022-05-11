@@ -48,13 +48,12 @@ const SetupAppraisal = () => {
     formState: { errors },
   } = useForm({
     mode: "onTouched",
-    // defaultValues: {appraisalPeriod:"Monthly"},
   });
 
   const watchStartDate = watch("startDate");
-  const watchEndDate = watch("endDate")
+  const watchEndDate = watch("endDate");
 
-  console.log("watchDate", watch("endDate"))
+  console.log("watchDate", watch("endDate"));
 
   const setupAppraisalHandler = (data) => {
     const { status, startDate, endDate, startTime, endTime } = data;
@@ -68,7 +67,7 @@ const SetupAppraisal = () => {
     };
     console.log(newData);
 
-    // dispatch(setupAppraisal(newData));
+    dispatch(setupAppraisal(newData));
   };
 
   const checkPeriod = (e) => {
@@ -113,7 +112,7 @@ const SetupAppraisal = () => {
                   >
                     <option value="">Select Option</option>
                     <option value="open">Open</option>
-                    <option value="closed">Close</option>
+                    <option value="close">Close</option>
                   </select>
                 </div>
               </div>
@@ -132,7 +131,7 @@ const SetupAppraisal = () => {
                   >
                     {timeDuration.map((duration, index) => {
                       return (
-                        <option  value={duration.value} key={index}>
+                        <option value={duration.value} key={index}>
                           {" "}
                           {duration.duration}
                         </option>
@@ -177,7 +176,11 @@ const SetupAppraisal = () => {
                     required
                     type="date"
                     errors={errors.startDate}
-                    message={watchStartDate < today ? "Start date shouldn't be lesser than current date" : ''}
+                    message={
+                      watchStartDate < today
+                        ? "Start date shouldn't be lesser than current date"
+                        : ""
+                    }
                   />
 
                   <InputField
@@ -188,8 +191,12 @@ const SetupAppraisal = () => {
                     defaultValue={today}
                     required
                     type="date"
-                    errors={errors.endDate }
-                    message={watchStartDate > watchEndDate ? "Start date shouldn't be greater than end date" : ''}
+                    errors={errors.endDate}
+                    message={
+                      watchStartDate > watchEndDate
+                        ? "Start date shouldn't be greater than end date"
+                        : ""
+                    }
                   />
                 </div>
               )}
@@ -197,7 +204,9 @@ const SetupAppraisal = () => {
               <div className="col-lg-3 m-b-10">
                 <div className="form-group">
                   <button
-                    disabled={watchStartDate > watchEndDate || watchStartDate < today}
+                    disabled={
+                      watchStartDate > watchEndDate || watchStartDate < today
+                    }
                     type="submit"
                     href=""
                     className="btn btn-block btn-suntrust font-weight-700"

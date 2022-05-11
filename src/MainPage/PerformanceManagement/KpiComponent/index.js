@@ -1,4 +1,6 @@
 import React from "react";
+import { useStateMachine } from "little-state-machine";
+import { updateName } from "../../../utils/helper";
 
 function KpiComponent({ kpi }) {
   return (
@@ -196,8 +198,12 @@ export const NewKpiInputComponent = ({
   appraiseeResults,
   updateValues,
   errors,
+  defaultValue,
+  defaultRate,
+  ref
 }) => {
-  console.log(">>>>error", errors);
+  const { state, actions } = useStateMachine({ updateName });
+
   return (
     <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
       <div className="col-lg-2" style={{ fontWeight: "bolder" }}>
@@ -207,18 +213,26 @@ export const NewKpiInputComponent = ({
       <div className="col-lg-1 text-center">{kpi.measurableTarget}</div>
       <div className="col-lg-2 text-center">{kpi.weightedScore}</div>
       <div className="col-lg-2 text-center">
-        {/* <input type="text" className="form-control" /> */}
         <input
           type="number"
           value={values?.id}
           min={1}
+          ref={ref}
+          defaultValue={defaultValue}
           max={kpi.measurableTarget}
           className={errors[kpi.id] ? "error-input" : "rate-input"}
           onChange={(e) => updateValues(e, kpi.id, kpi)}
         />
       </div>
+
       <div className="col-lg-2 text-center">
-        {errors[kpi.id] ? <p className="error-color">value can not exceed target</p> : appraiseeResults[kpi.id]?.toFixed()}
+        {errors[kpi.id] ? (
+          <p className="error-color">target Exceeded</p>
+        ) : appraiseeResults[kpi.id]?.toFixed() ? (
+          appraiseeResults[kpi.id]?.toFixed()
+        ) : (
+          defaultRate
+        )}
       </div>
     </div>
   );
@@ -247,7 +261,7 @@ export const NewSupervisorKpiInputComponent = ({
   values,
   appraiseeResults,
   updateValues,
-  errors
+  errors,
 }) => {
   return (
     <div className="col-lg-12 d-flex border-bottom pt-2 pb-2">
@@ -267,12 +281,12 @@ export const NewSupervisorKpiInputComponent = ({
           value={values?.id}
           onChange={(e) => updateValues(e, kpi.kpiId, kpi)}
           type="number"
-          className="form-control"
+          className={errors[kpi.kpiId] ? "error-input2" : "form-control"}
         />
       </div>
       <div className="col-lg-1 text-center">
         {errors[kpi.kpiId] ? (
-          <p className="error-color">value can not exceed target</p>
+          <p className="error-color">Target Exceeded</p>
         ) : (
           appraiseeResults[kpi.kpiId]?.toFixed()
         )}

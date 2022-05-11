@@ -56,6 +56,10 @@ import loginReducer from "./../Authentication/login";
 import getAllDepartmentsReducer from "./../PerformanceManagement/hrReports/getAllDepartments";
 import getAllAppraisalPeriodsReducer from "./../PerformanceManagement/hrReports/getAppraisalPeriods";
 import getAllAppraisalsReducer  from "./../PerformanceManagement/hrReports/getAllAppraisals";
+import submitStaffAppraisalReducer from "./../PerformanceManagement/StaffAppraisal/submitStaffAppraisal";
+import getGradesReducer from "./../PerformanceManagement/hrReports/getGrades";
+import getAppraisalsByDateReducer from "./../PerformanceManagement/hrReports/getAppraisalByDate";
+import rejectAppraisalReducer from "./../PerformanceManagement/StaffAppraisal/rejectAppraisal";
 
 import {
   getCodeConfigQuery,
@@ -88,7 +92,11 @@ const performanceManagement = combineReducers({
   addRecommendationReducer,
   getAllDepartmentsReducer,
   getAllAppraisalPeriodsReducer,
-  getAllAppraisalsReducer
+  getAllAppraisalsReducer,
+  submitStaffAppraisalReducer,
+  getGradesReducer,
+  getAppraisalsByDateReducer,
+  rejectAppraisalReducer,
 });
 
 const authenticationManager = combineReducers({

@@ -15,23 +15,40 @@ const initialState = {
 export const updateCommentSection = createAsyncThunk(
   "updateCommentSection",
   async (data, { rejectWithValue }) => {
-    const {payload, history, name } = data;
-  
+    const { payload, history, name } = data;
+
     try {
       const response = await axios.post(
         `${performanceManagementAppraisalUrl}/updateCommentSection`,
         payload
       );
       console.log(">>>>individu", response);
-      if (response.status === 200) {
+      if (response.data.responseCode === "00") {
+        Swal.fire(`${name} has been Updated`, "Successful!", "success").then(
+          () => {
+            name === "comment" &&
+              history.push("/app/performanceManagement/Appraisals");
+            name === "Recommendation" &&
+              history.push("/app/performanceManagement/allStaffAppraisals");
+            name === "Group Head Comment" &&
+              history.push("/app/performanceManagement/allStaffAppraisals");
+            clearKPIs();
+          }
+        );
+        return response.data;
+      }
+      if (response.data.responseCode === "97") {
         Swal.fire(
-          `${name} has been Updated`,
-          "Successful!",
-          "success"
-        ).then(() => {
-          history.push("/app/performanceManagement/Appraisals");
-          clearKPIs();
-        });
+          `${response.data.responseMessage}`,
+          "Unsuccessful!",
+          "error"
+        ).then(() => {});
+        if (response.data.responseCode === "96") {
+          Swal.fire(`Sorry, an Error ocurred`, "Error!", "error").then(() => {
+            // reset();
+          });
+          return response.data;
+        }
         return response.data;
       }
       return response.data;

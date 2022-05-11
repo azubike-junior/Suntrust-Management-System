@@ -51,7 +51,36 @@ const Appraisals = () => {
     {
       title: "Status",
       dataIndex: "status",
-      render: (text, record) => <h2 className="table-avatar">{text}</h2>,
+      render: (text, record) => (
+        <div className="table-avatar">
+          {text === "SUBMITTED" && (
+            <>
+              <span class="badge badge-primary text-white px-3 py-2 font-16">
+                Supervisor Input Required
+              </span>
+              {/* <i className="las la-info-circle m-l-10" />{" "} */}
+            </>
+          )}
+          {text === "PROCESSING" && (
+            <>
+              <span class="badge badge-success text-white px-3 py-2 font-16">
+                Appraisee Input Required
+              </span>
+              {/* <i className="las la-info-circle m-l-10" />{" "} */}
+            </>
+          )}
+          {text === "INPROGRESS" && (
+            <>
+              <span class="badge badge-success text-white px-3 py-2 font-16">
+                Second Supervisor Input Required
+              </span>
+              {/* <i className="las la-info-circle m-l-10" />{" "} */}
+            </>
+          )}
+          {text === "COMPLETE" && <h2 className="table-avatar">COMPLETE</h2>}
+          {text === "REJECTED" && <h2 className="table-avatar">REJECTED</h2>}
+        </div>
+      ),
     },
     {
       title: "Submitted Date",

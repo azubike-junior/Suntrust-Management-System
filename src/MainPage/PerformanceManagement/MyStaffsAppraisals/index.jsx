@@ -8,9 +8,17 @@ import "../../antdstyle.css";
 import { useDispatch, useSelector } from "react-redux";
 import { getAppraisalsBySupervisorId } from "../../../services/PerformanceManagement/StaffAppraisal/getAppraisalsBySupervisorId";
 import Loader from "../../UIinterface/Loader/index";
+import { rejectAppraisal } from "./../../../services/PerformanceManagement/StaffAppraisal/rejectAppraisal";
+import Modal from "react-bootstrap/Modal";
 
 const StaffsAppraisals = () => {
   const dispatch = useDispatch();
+  const [openModal, setOpenModal] = useState(false);
+  const [appraisalRef, setAppraisalRef] = useState("");
+
+  const toggleModal = () => {
+    setOpenModal(!openModal);
+  };
 
   const { data: supervisorAppraisals, loading: appraisalsLoading } =
     useSelector(
@@ -18,6 +26,7 @@ const StaffsAppraisals = () => {
     );
 
   // console.log(">>>>>data", supervisorAppraisals);
+
   const staffData = JSON.parse(localStorage.getItem("cachedData"));
 
   const { supervisorStaffId } = staffData;
@@ -40,18 +49,44 @@ const StaffsAppraisals = () => {
     {
       title: "Staff ID",
       dataIndex: "staffId",
-      sorter: (a, b) => a.mobile.length - b.mobile.length,
     },
     {
       title: "Staff Name",
       dataIndex: "appraiseeName",
       render: (text, record) => <h2 className="table-avatar">{text}</h2>,
-      sorter: (a, b) => a.name.length - b.name.length,
     },
     {
       title: "Status",
       dataIndex: "status",
-      render: (text, record) => <h2 className="table-avatar">{text}</h2>,
+      render: (text, record) => (
+        <div className="table-avatar">
+          {text === "SUBMITTED" && (
+            <>
+              <span class="badge badge-primary text-white px-3 py-2 font-16">
+                Supervisor Input Required
+              </span>
+              {/* <i className="las la-info-circle m-l-10" />{" "} */}
+            </>
+          )}
+          {text === "PROCESSING" && (
+            <>
+              <span class="badge badge-success text-white px-3 py-2 font-16">
+                Appraisee Input Required
+              </span>
+              {/* <i className="las la-info-circle m-l-10" />{" "} */}
+            </>
+          )}
+          {text === "INPROGRESS" && (
+            <>
+              <span class="badge badge-success text-white px-3 py-2 font-16">
+                Second Supervisor Input Required
+              </span>
+              {/* <i className="las la-info-circle m-l-10" />{" "} */}
+            </>
+          )}
+          {text === "COMPLETE" && <h2 className="table-avatar">COMPLETE</h2>}
+        </div>
+      ),
     },
 
     {
@@ -76,6 +111,24 @@ const StaffsAppraisals = () => {
         </Link>
       ),
     },
+    // {
+    //   title: "",
+    //   render: (text, record) =>
+    //     text.status === "COMPLETE" || text.status === "INPROGRESS" ? (
+    //       ""
+    //     ) : (
+    //       <Link
+    //         onClick={() => {
+    //           setAppraisalRef(text.appraisalReference);
+    //           toggleModal();
+    //         }}
+    //         className="btn btn-sm btn-outline-danger m-r-10"
+    //       >
+    //         <i className="fa fa-refresh pr-2" aria-hidden="true"></i>
+    //         REJECT
+    //       </Link>
+    //     ),
+    // },
   ];
 
   return (
@@ -137,7 +190,6 @@ const StaffsAppraisals = () => {
                 // bordered
                 dataSource={supervisorAppraisals}
                 rowKey={(record) => record.id}
-                // onChange={console.log("change")}
               />
             </div>
           </div>
@@ -145,6 +197,42 @@ const StaffsAppraisals = () => {
       </div>
 
       {/* /Page Content */}
+      <Modal show={openModal} centered backdrop="static" keyboard={false}>
+        <div className="modal-90w  modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-body">
+              <div className="form-header">
+                <h3>Appraisal Rejection</h3>
+                <p>Are you sure you want to reject this appraisal</p>
+              </div>
+              <div className="modal-btn delete-action">
+                <div className="row">
+                  <div className="col-6">
+                    <a
+                      className="btn btn-primary continue-btn"
+                      onClick={() => {
+                        const data = { appraisalRef, dispatch, toggleModal };
+                        dispatch(rejectAppraisal(data));
+                        toggleModal();
+                      }}
+                    >
+                      Yes
+                    </a>
+                  </div>
+                  <div className="col-6">
+                    <a
+                      onClick={() => toggleModal()}
+                      className="btn btn-primary cancel-btn"
+                    >
+                      Cancel
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

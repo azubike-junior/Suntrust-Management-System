@@ -4,9 +4,19 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { updateName } from "../../utils/helper";
+import { emptyStateData } from "./../../utils/helper";
+import { useStateMachine } from 'little-state-machine';
 
 const Sidebar = (props) => {
+  const { state, actions } = useStateMachine({ updateName });
+
   let pathname = props.location.pathname;
+
+  const emptyState = () => {
+    actions.updateName(emptyStateData);
+  };
+
   return (
     <div className="sidebar" id="sidebar">
       <div className="sidebar-inner slimscroll">
@@ -125,9 +135,9 @@ const Sidebar = (props) => {
               </ul>
             </li>
 
-            <li className="menu-title"> 
-                <span>HR MANAGEMENT</span>
-              </li>
+            <li className="menu-title">
+              <span>HR MANAGEMENT</span>
+            </li>
 
             <li className="submenu">
               <a href="#">
@@ -194,25 +204,50 @@ const Sidebar = (props) => {
               </ul>
             </li>
 
-            <li className={pathname.includes("clients") ? "active" : ""}>
+            <li className="submenu">
+              <a href="#">
+                <i className="la la-file-invoice" /> <span> Reports</span>{" "}
+                <span className="menu-arrow" />
+              </a>
+              <ul style={{ display: "none" }}>
+                <li onClick={() => emptyState()}>
+                  <Link to="/app/performanceManagement/HrReports/currentReports">
+                    Current Reports
+                  </Link>
+                </li>
+                <li
+                  onClick={() => emptyState()}
+                  className={pathname.includes("clients") ? "active" : ""}
+                >
+                  <Link to="/app/performanceManagement/HrReports/pastRecords">
+                    <span>Past Records</span>
+                  </Link>
+                </li>
+              </ul>
+            </li>
+
+            <li
+              // onClick={() => emptyState()}
+              className={pathname.includes("clients") ? "active" : ""}
+            >
               <Link to="/app/performanceManagement/staffAppraisal">
                 <i className="la la-comment" /> <span>New Appraisal</span>
               </Link>
             </li>
 
-            <li className={pathname.includes("clients") ? "active" : ""}>
+            <li
+              onClick={() => emptyState()}
+              className={pathname.includes("clients") ? "active" : ""}
+            >
               <Link to="/app/performanceManagement/Appraisals">
                 <i className="la la-comment" /> <span>Appraisals</span>
               </Link>
             </li>
 
-            <li className={pathname.includes("clients") ? "active" : ""}>
-              <Link to="/app/performanceManagement/HrReports">
-                <i className="la la-file-invoice" /> <span>HR Reports</span>
-              </Link>
-            </li>
-
-            <li className={pathname.includes("clients") ? "active" : ""}>
+            <li
+              onClick={() => emptyState()}
+              className={pathname.includes("clients") ? "active" : ""}
+            >
               <Link to="/app/performanceManagement/allStaffAppraisals">
                 <i className="la la-comment" /> <span>My Staff Appraisals</span>
               </Link>

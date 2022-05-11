@@ -26,6 +26,8 @@ import { updateName } from "./../../../utils/helper";
 import { getTechnicalTraining } from "./../../../services/PerformanceManagement/StaffAppraisal/getTechnicalTraining";
 import { getBehaviouralTraining } from "./../../../services/PerformanceManagement/StaffAppraisal/getBehaviouralTraining";
 import { getIndividualKpis } from "./../../../services/PerformanceManagement/Configurations/individualKpi/getIndividualKpi";
+import RejectionModal from "../Components/RejectModal";
+import Modal from "react-bootstrap/Modal";
 
 const StaffAppraisalDetail = () => {
   const dispatch = useDispatch();
@@ -45,12 +47,15 @@ const StaffAppraisalDetail = () => {
   const { state, actions } = useStateMachine({ updateName });
   const [errors, setErrors] = useState({});
   const history = useHistory();
+  const [openModal, setOpenModal] = useState(false);
+  const [recommend, setRecommendation] = useState("");
   const [selectedBehavioralTrainings, setSelectedBehavioralTraining] = useState(
     []
   );
   const [selectedTechnicalTrainings, setSelectedTechnicalTraining] = useState(
     []
   );
+  const [kpiResult, setKpiResult] = useState(0);
 
   const staffData = JSON.parse(localStorage.getItem("cachedData"));
 
@@ -60,12 +65,40 @@ const StaffAppraisalDetail = () => {
   const errorValues = Object.values(errors);
   const allValues = Object.values(values).filter((el) => el !== "");
 
+  const toggleModal = () => {
+    setOpenModal(!openModal);
+  };
+
   const handleBehaviorChange = (e) => {
+    if (selectedBehavioralTrainings.includes(e.target.value)) {
+      return;
+    }
+    if (selectedBehavioralTrainings.length === 3) {
+      return;
+    }
     setSelectedBehavioralTraining((prev) => [...prev, e.target.value]);
   };
 
   const handleTechnicalChange = (e) => {
+    if (selectedTechnicalTrainings.includes(e.target.value)) {
+      return;
+    }
+    if (selectedTechnicalTrainings.length === 3) {
+      return;
+    }
     setSelectedTechnicalTraining((prev) => [...prev, e.target.value]);
+  };
+
+  const deleteBehaviorTraining = (training) => {
+    setSelectedBehavioralTraining(
+      selectedBehavioralTrainings.filter((behavior) => behavior !== training)
+    );
+  };
+
+  const deleteTechnicalTraining = (training) => {
+    setSelectedTechnicalTraining(
+      selectedTechnicalTrainings.filter((technical) => technical !== training)
+    );
   };
 
   const { appraisalReference } = useParams();
@@ -100,15 +133,25 @@ const StaffAppraisalDetail = () => {
     staffId,
     lastPromotionDate,
     totalAppraiseeResult,
+    appraiseeTimeManagementScore,
+    appraiseePunctualityScore,
+    appraiseeProfessionalConductScore,
+    appraiseeCommunicationScore,
+    appraiseeAnalyticalThinkingScore,
+    appraiseeBehaviouralTrainings,
+    appraiseeFunctionalTrainings,
     kpis,
   } = details;
 
+  const appraiseeStrengthScore =
+    Number(appraiseeTimeManagementScore) +
+    Number(appraiseeProfessionalConductScore) +
+    Number(appraiseeAnalyticalThinkingScore) +
+    Number(appraiseePunctualityScore) +
+    Number(appraiseeCommunicationScore);
+
   const updateValues = (e, id, kpi) => {
     let { value, min, max } = e.target;
-    // if ((value > Number(max)) | (value < Number(min))) {
-    //   value = 0;
-    // }
-
     if (value > Number(kpi.measurableTarget) && kpi.kpiId === id) {
       value = "";
       setErrors({ ...errors, [id]: true });
@@ -128,17 +171,34 @@ const StaffAppraisalDetail = () => {
     setAppraiseeResults({ ...appraiseeResults, [id]: result });
   };
 
+  const resultValues = Object.values(allSupervisorResults);
+
+  const result = resultValues
+    ?.reduce((acc, num) => {
+      return Number(acc) + Number(num);
+    }, 0)
+    .toFixed();
+
+  useEffect(() => {
+    setKpiResult(result);
+  });
+
   //add kpi data to the stateMachine
   const addKPIsToState = () => {
     state.data = {
-      behaviouralTrainings:
-        selectedBehavioralTrainings[0] +
-        selectedBehavioralTrainings[1] +
-        selectedBehavioralTrainings[2],
-      functionalTrainings:
-        selectedTechnicalTrainings[0] +
-        selectedTechnicalTrainings[1] +
-        selectedTechnicalTrainings[2],
+      supervisorBehaviouralTrainings: `${
+        selectedBehavioralTrainings[0] ? selectedBehavioralTrainings[0] : ""
+      }, ${
+        selectedBehavioralTrainings[1] ? selectedBehavioralTrainings[1] : ""
+      }, ${
+        selectedBehavioralTrainings[2] ? selectedBehavioralTrainings[2] : ""
+      }`,
+
+      supervisorFunctionalTrainings: `${
+        selectedTechnicalTrainings[0] ? selectedTechnicalTrainings[0] : ""
+      },  ${
+        selectedTechnicalTrainings[1] ? selectedTechnicalTrainings[1] : ""
+      }, ${selectedTechnicalTrainings[2] ? selectedTechnicalTrainings[2] : ""}`,
       behaviouralTrainingsArray: selectedBehavioralTrainings,
       functionalTrainingsArray: selectedTechnicalTrainings,
       supervisorComment,
@@ -146,8 +206,16 @@ const StaffAppraisalDetail = () => {
       strengthScore: Number(strengthResult),
       supervisorRates: values,
       supervisorResults: allSupervisorResults,
+      supervisorTimeManagementScore: timeManagementScore,
+      supervisorPunctualityScore: punctualityScore,
+      supervisorProfessionalConductScore: professionalScore,
+      supervisorCommunicationScore: communicationScore,
+      supervisorAnalyticalThinkingScore: analyticScore,
+      recommendation: recommend,
+      appraiseeStrengthScore,
     };
 
+    console.log(">>>>>state.data", state.data);
     actions.updateName(state.data);
   };
 
@@ -196,8 +264,6 @@ const StaffAppraisalDetail = () => {
       });
     }
   });
-
-  // console.log("rec", recommendation);
 
   useEffect(() => {
     dispatch(getBehaviouralTraining());
@@ -451,8 +517,8 @@ const StaffAppraisalDetail = () => {
                               </div>
                               {/* Table Header Ends Here */}
 
-                              {/* Process Review Starts Here */}
-                              {allProcess?.map((kpi) => {
+                              {/* Financial Review Starts Here */}
+                              {allFinancial?.map((kpi) => {
                                 return (
                                   <NewSupervisorKpiInputComponent
                                     errors={errors}
@@ -464,9 +530,6 @@ const StaffAppraisalDetail = () => {
                                 );
                               })}
 
-                              {/* Process Review Ends Here */}
-
-                              {/* Customer Review Starts Here */}
                               {allCustomer?.map((kpi) => {
                                 return (
                                   <NewSupervisorKpiInputComponent
@@ -479,10 +542,8 @@ const StaffAppraisalDetail = () => {
                                 );
                               })}
 
-                              {/* Customer Review Ends Here */}
-
-                              {/* Financial Review Starts Here */}
-                              {allFinancial?.map((kpi) => {
+                              {/* Process Review Starts Here */}
+                              {allProcess?.map((kpi) => {
                                 return (
                                   <NewSupervisorKpiInputComponent
                                     errors={errors}
@@ -507,6 +568,34 @@ const StaffAppraisalDetail = () => {
                               })}
 
                               {/* Financial Review Ends Here */}
+                            </div>
+                            <div
+                              className="col-lg-12 d-flex border-bottom pt-3 pb-3"
+                              style={{
+                                fontWeight: "bolder",
+                                backgroundColor: "#efefef",
+                              }}
+                            >
+                              <div className="col-lg-2">TOTAL</div>
+                              <div className="col-lg-3"></div>
+                              <div className="col-lg-1 text-center"></div>
+                              <div className="col-lg-1 text-center"></div>
+                              <div className="col-lg-1 text-center"></div>
+                              <div className="col-lg-2 text-center">
+                                {totalAppraiseeResult?.toFixed()}/100
+                              </div>
+                              <div className="col-lg-1 text-center"></div>
+                              <div
+                                className="col-lg-1 text-center"
+                                style={{
+                                  color: "btn-suntrust",
+                                  fontSize: "16px",
+                                  fontWeight: "bolder",
+                                }}
+                              >
+                                {" "}
+                                {kpiResult}/100
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -534,7 +623,8 @@ const StaffAppraisalDetail = () => {
                           <div className="d-flex mb-2 border-bottom">
                             <div className="col-lg-12 d-flex">
                               <h4 className="col-lg-4">Skills</h4>
-                              <h4 className="col-lg-8">Ratings</h4>
+                              <h4 className="col-lg-4">Rating</h4>
+                              <h4 className="col-lg-4">Appraisee Rating</h4>
                             </div>
                           </div>
 
@@ -542,7 +632,7 @@ const StaffAppraisalDetail = () => {
                             <div className="col-lg-12 d-flex">
                               <div className="col-lg-4">Time Management</div>
 
-                              <div className="col-lg-8">
+                              <div className="col-lg-4">
                                 <div id="ratings_group">
                                   <RadioInput
                                     label="1"
@@ -576,6 +666,9 @@ const StaffAppraisalDetail = () => {
                                   />
                                 </div>
                               </div>
+                              <div className="col-lg-4">
+                                {appraiseeTimeManagementScore}/5
+                              </div>
                             </div>
                           </div>
 
@@ -583,7 +676,7 @@ const StaffAppraisalDetail = () => {
                             <div className="col-lg-12 d-flex">
                               <div className="col-lg-4">Punctuality</div>
 
-                              <div className="col-lg-8">
+                              <div className="col-lg-4">
                                 <div id="ratings_group">
                                   <RadioInput
                                     label="1"
@@ -616,6 +709,9 @@ const StaffAppraisalDetail = () => {
                                     setter={setPunctualityScore}
                                   />
                                 </div>
+                              </div>
+                              <div className="col-lg-4">
+                                {appraiseePunctualityScore}/5
                               </div>
                             </div>
                           </div>
@@ -626,7 +722,7 @@ const StaffAppraisalDetail = () => {
                                 Professional Conduct
                               </div>
 
-                              <div className="col-lg-8">
+                              <div className="col-lg-4">
                                 <div id="ratings_group">
                                   <RadioInput
                                     label="1"
@@ -660,13 +756,16 @@ const StaffAppraisalDetail = () => {
                                   />
                                 </div>
                               </div>
+                              <div className="col-lg-4">
+                                {appraiseeProfessionalConductScore}/5
+                              </div>
                             </div>
                           </div>
                           <div className="d-flex border-bottom">
                             <div className="col-lg-12 d-flex">
                               <div className="col-lg-4">Communication</div>
 
-                              <div className="col-lg-8">
+                              <div className="col-lg-4">
                                 <div id="ratings_group">
                                   <RadioInput
                                     label="1"
@@ -699,6 +798,9 @@ const StaffAppraisalDetail = () => {
                                     setter={setCommunicationScore}
                                   />
                                 </div>
+                              </div>
+                              <div className="col-lg-4">
+                                {appraiseeCommunicationScore}/5
                               </div>
                             </div>
                           </div>
@@ -708,7 +810,7 @@ const StaffAppraisalDetail = () => {
                                 Analytical Thinking
                               </div>
 
-                              <div className="col-lg-8">
+                              <div className="col-lg-4">
                                 <div id="ratings_group">
                                   <RadioInput
                                     label="1"
@@ -741,6 +843,9 @@ const StaffAppraisalDetail = () => {
                                     setter={setAnalyticScore}
                                   />
                                 </div>
+                              </div>
+                              <div className="col-lg-4">
+                                {appraiseeAnalyticalThinkingScore}/5
                               </div>
                             </div>
                           </div>
@@ -756,7 +861,13 @@ const StaffAppraisalDetail = () => {
                           >
                             <div className="col-lg-4">TOTAL</div>
 
-                            <div className="col-lg-8">{strengthResult}/25</div>
+                            <div className="col-lg-4">{strengthResult}/25</div>
+                            <div className="col-lg-4">
+                              {appraiseeStrengthScore
+                                ? appraiseeStrengthScore
+                                : 0}
+                              /25
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -842,13 +953,26 @@ const StaffAppraisalDetail = () => {
                                     {selectedBehavioralTrainings?.map(
                                       (training) => {
                                         return (
-                                          <ul>
-                                            <li className="">{training}</li>
+                                          <ul className="d-flex">
+                                            <li className=" pr-20">
+                                              {training}
+                                            </li>
+                                            <i
+                                              onClick={() =>
+                                                deleteBehaviorTraining(training)
+                                              }
+                                              className="fa fa-window-close pt-1 cursor"
+                                              aria-hidden="true"
+                                            ></i>
                                           </ul>
                                         );
                                       }
                                     )}
                                   </div>
+                                  <label className="mt-3">
+                                    Suggested Behavioural Training By Appraisee:
+                                  </label>
+                                  {appraiseeBehaviouralTrainings}
                                 </div>
                               </div>
                             </div>
@@ -884,13 +1008,28 @@ const StaffAppraisalDetail = () => {
                                     {selectedTechnicalTrainings?.map(
                                       (training) => {
                                         return (
-                                          <ul>
-                                            <li className="">{training},</li>
+                                          <ul className="d-flex">
+                                            <li className=" pr-20">
+                                              {training}
+                                            </li>
+                                            <i
+                                              onClick={() =>
+                                                deleteTechnicalTraining(
+                                                  training
+                                                )
+                                              }
+                                              className="fa fa-window-close pt-1 cursor"
+                                              aria-hidden="true"
+                                            ></i>
                                           </ul>
                                         );
                                       }
                                     )}
                                   </div>
+                                  <label className="mt-3">
+                                    Suggested Functional Training By Appraisee:
+                                  </label>
+                                  {appraiseeFunctionalTrainings}
                                 </div>
                               </div>
                             </div>
@@ -920,6 +1059,19 @@ const StaffAppraisalDetail = () => {
                               textDecoration: "underline",
                             }}
                           >
+                            APPRAISEE'S ACHIEVEMENTS
+                          </div>
+                          {exceptionalAchievement}
+                        </div>
+
+                        <div className="form-group mb-5">
+                          <div
+                            className="mb-3 font-weight-bold"
+                            style={{
+                              marginBottom: "30px",
+                              textDecoration: "underline",
+                            }}
+                          >
                             SUPERVISOR'S COMMENT
                           </div>
                           <textarea
@@ -929,6 +1081,37 @@ const StaffAppraisalDetail = () => {
                               setSupervisorComment(e.target.value)
                             }
                           />
+                        </div>
+                      </div>
+
+                      <div className="col-lg-4" style={{ marginTop: "50px" }}>
+                        <div
+                          className="font-weight-bolder"
+                          style={{
+                            marginBottom: "20px",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          RECOMMENDATION
+                        </div>
+
+                        <div className="form-group ">
+                          <select
+                            className="form-control"
+                            value={recommend}
+                            onChange={(e) => setRecommendation(e.target.value)}
+                          >
+                            <option value="">-Select-</option>
+                            <option value="Maintain Status">
+                              Maintain Status
+                            </option>
+                            <option value="Promote">Promote</option>
+                            <option value="Watch Performance">
+                              Watch Performance
+                            </option>
+                            <option value="Re-assign">Reassign </option>
+                            <option value="Exit">Exit </option>
+                          </select>
                         </div>
                       </div>
 
@@ -947,6 +1130,14 @@ const StaffAppraisalDetail = () => {
                   style={{ marginTop: "50px" }}
                 >
                   <div className="d-flex align-items-center justify-content-center">
+                    <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
+                      <button
+                        className="btn btn-block btn-outline-danger font-weight-700"
+                        onClick={() => toggleModal()}
+                      >
+                        REJECT
+                      </button>
+                    </div>
                     <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
                       <button
                         className="btn btn-block btn-suntrust font-weight-700"
@@ -971,6 +1162,13 @@ const StaffAppraisalDetail = () => {
               {/* /Page Content */}
             </div>
           </div>
+          <Modal show={openModal} centered backdrop="static" keyboard={false}>
+            <RejectionModal
+              toggleModal={toggleModal}
+              supervisorName={supervisorName}
+              appraisalReference={appraisalReference}
+            />
+          </Modal>
         </div>
       </div>
     </div>

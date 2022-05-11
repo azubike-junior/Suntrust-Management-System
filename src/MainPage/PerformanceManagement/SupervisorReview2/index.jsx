@@ -56,12 +56,20 @@ const SupervisorAppraisalReview2 = () => {
 
   const {
     recommendation,
-    behaviouralTrainings,
-    functionalTrainings,
+    supervisorBehaviouralTrainings,
+    supervisorFunctionalTrainings,
+    behaviouralTrainingsArray,
+    functionalTrainingsArray,
     supervisorComment,
     secondSupervisorComment,
     strengthScore,
     secondLevelSupervisorComment,
+    supervisorTimeManagementScore,
+    supervisorPunctualityScore,
+    supervisorProfessionalConductScore,
+    supervisorCommunicationScore,
+    supervisorAnalyticalThinkingScore,
+    appraiseeStrengthScore,
   } = allData?.data;
 
   const { appraisalReference } = useParams();
@@ -98,14 +106,18 @@ const SupervisorAppraisalReview2 = () => {
 
     const appraisals = {
       appraisalReference,
-      recommendation: "",
-      behaviouralTrainings,
-      functionalTrainings,
+      recommendation,
+      supervisorBehaviouralTrainings,
+      supervisorFunctionalTrainings,
       supervisorComment,
-      secondSupervisorComment: "",
-      strengthScore,
       secondLevelSupervisorComment: "",
       totalSupervisorResult: kpiResult,
+      secondLevelSupervisorComment,
+      supervisorTimeManagementScore,
+      supervisorPunctualityScore,
+      supervisorProfessionalConductScore,
+      supervisorCommunicationScore,
+      supervisorAnalyticalThinkingScore,
       kpis: appraise,
     };
 
@@ -114,7 +126,7 @@ const SupervisorAppraisalReview2 = () => {
       history,
       clearKPIs,
     };
-    // console.log(">>>>>>appraisals", appraisals);
+    console.log(">>>>>>appraisals", appraisals);
     dispatch(updateAppraisalByReference(data));
   };
 
@@ -143,6 +155,13 @@ const SupervisorAppraisalReview2 = () => {
     staffId,
     lastPromotionDate,
     totalAppraiseeResult,
+    appraiseeTimeManagementScore,
+    appraiseePunctualityScore,
+    appraiseeProfessionalConductScore,
+    appraiseeCommunicationScore,
+    appraiseeAnalyticalThinkingScore,
+    appraiseeBehaviouralTrainings,
+    appraiseeFunctionalTrainings,
     kpis,
   } = details;
 
@@ -237,7 +256,9 @@ const SupervisorAppraisalReview2 = () => {
               <h3 className="page-title">Appraisal Review</h3>
               <ul className="breadcrumb">
                 <li className="breadcrumb-item">
-                  <Link to="/app/employees/my_staff_Appraisal">
+                  <Link
+                    to={`/app/performanceManagement/staffAppraisalDetail/${appraisalReference}`}
+                  >
                     Back to Appraisal Page
                   </Link>
                 </li>
@@ -429,6 +450,20 @@ const SupervisorAppraisalReview2 = () => {
                               </div>
                               {/* Table Header Ends Here */}
 
+                              {/* Financial Review Starts Here */}
+                              {allFinancial?.map((kpi) => {
+                                return (
+                                  <NewSupervisorKpiReviewComponent kpi={kpi} />
+                                );
+                              })}
+
+                              {/* Customer Review Starts Here */}
+                              {allCustomer?.map((kpi) => {
+                                return (
+                                  <NewSupervisorKpiReviewComponent kpi={kpi} />
+                                );
+                              })}
+
                               {/* Process Review Starts Here */}
                               {allProcess?.map((kpi) => {
                                 return (
@@ -438,21 +473,7 @@ const SupervisorAppraisalReview2 = () => {
 
                               {/* Process Review Ends Here */}
 
-                              {/* Customer Review Starts Here */}
-                              {allCustomer?.map((kpi) => {
-                                return (
-                                  <NewSupervisorKpiReviewComponent kpi={kpi} />
-                                );
-                              })}
-
                               {/* Customer Review Ends Here */}
-
-                              {/* Financial Review Starts Here */}
-                              {allFinancial?.map((kpi) => {
-                                return (
-                                  <NewSupervisorKpiReviewComponent kpi={kpi} />
-                                );
-                              })}
 
                               {allCapacityDevelopment?.map((kpi) => {
                                 return (
@@ -485,7 +506,7 @@ const SupervisorAppraisalReview2 = () => {
                             fontWeight: "bolder",
                           }}
                         >
-                          {totalAppraiseeResult}
+                          {totalAppraiseeResult?.toFixed()}
                         </div>
                         <div className="col-lg-1 text-center"></div>
                         <div
@@ -496,7 +517,7 @@ const SupervisorAppraisalReview2 = () => {
                             fontWeight: "bolder",
                           }}
                         >
-                          {kpiResult}
+                          {Number(kpiResult)?.toFixed()}
                         </div>
                       </div>
                     </div>
@@ -522,11 +543,88 @@ const SupervisorAppraisalReview2 = () => {
                           <div className="d-flex mb-2 border-bottom">
                             <div className="col-lg-12 d-flex">
                               <h4 className="col-lg-4">Skills</h4>
-                              <h4 className="col-lg-8">Ratings</h4>
+                              <h4 className="col-lg-4">Rating</h4>
+                              <h4 className="col-lg-4">Appraisee Rating</h4>
                             </div>
                           </div>
                         </div>
                         {/* </div> */}
+
+                        <div className="d-flex mt-3 mb-3 border-bottom">
+                          <div className="col-lg-12 d-flex">
+                            <div className="col-lg-4">Time Management</div>
+
+                            <div className="col-lg-4">
+                              <div id="ratings_group">
+                                {supervisorTimeManagementScore}/5
+                              </div>
+                            </div>
+                            <div className="col-lg-4">
+                              {appraiseeTimeManagementScore}/5
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="d-flex mt-3 mb-3 border-bottom">
+                          <div className="col-lg-12 d-flex">
+                            <div className="col-lg-4">Punctuality</div>
+
+                            <div className="col-lg-4">
+                              <div id="ratings_group">
+                                {supervisorPunctualityScore}/5
+                              </div>
+                            </div>
+                            <div className="col-lg-4">
+                              {appraiseePunctualityScore}/5
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="d-flex mt-3 mb-3 border-bottom">
+                          <div className="col-lg-12 d-flex">
+                            <div className="col-lg-4">Professional Conduct</div>
+
+                            <div className="col-lg-4">
+                              <div id="ratings_group">
+                                {supervisorProfessionalConductScore}/5
+                              </div>
+                            </div>
+                            <div className="col-lg-4">
+                              {appraiseeProfessionalConductScore}/5
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="d-flex mt-3 mb-3 border-bottom">
+                          <div className="col-lg-12 d-flex">
+                            <div className="col-lg-4">Communication</div>
+
+                            <div className="col-lg-4">
+                              <div id="ratings_group">
+                                {supervisorCommunicationScore}/5
+                              </div>
+                            </div>
+                            <div className="col-lg-4">
+                              {appraiseeCommunicationScore}/5
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="d-flex mt-3 mb-3 border-bottom">
+                          <div className="col-lg-12 d-flex">
+                            <div className="col-lg-4">Analytic Thinking</div>
+
+                            <div className="col-lg-4">
+                              <div id="ratings_group">
+                                {supervisorAnalyticalThinkingScore}/5
+                              </div>
+                            </div>
+                            <div className="col-lg-4">
+                              {appraiseeAnalyticalThinkingScore}/5
+                            </div>
+                          </div>
+                        </div>
+
                         <div className="d-flex border-bottom">
                           <div
                             className="col-lg-12 pt-3 pb-3 d-flex"
@@ -536,14 +634,16 @@ const SupervisorAppraisalReview2 = () => {
                             }}
                           >
                             <div className="col-lg-4">TOTAL</div>
-
-                            <div className="col-lg-8">{strengthScore}/25</div>
+                            <div className="col-lg-4">{strengthScore}/25</div>
+                            <div className="col-lg-4">
+                              {appraiseeStrengthScore}/25
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* <div className="card col-lg-4">
+                    <div className="card col-lg-4">
                       <div className="card-body">
                         <div className="profile-view">
                           <div className="d-flex mb-5">
@@ -577,7 +677,7 @@ const SupervisorAppraisalReview2 = () => {
                           </div>
                         </div>
                       </div>
-                    </div> */}
+                    </div>
                   </div>
 
                   <div
@@ -599,11 +699,35 @@ const SupervisorAppraisalReview2 = () => {
                             <div className="panel-heading text-center font-weight-bold">
                               BEHAVIOURAL TRAINING
                             </div>
-                            <div className="panel-body">
+                            {behaviouralTrainingsArray.length === 0 ? (
+                              <p>No behavioral training was selected</p>
+                            ) : (
+                              <div className="panel-body">
+                                <div className="m-3">
+                                  <div className="form-group">
+                                    <label>
+                                      Suggest a Behavioural Training:
+                                    </label>
+                                    {behaviouralTrainingsArray?.map(
+                                      (training) => {
+                                        return (
+                                          <ul>
+                                            <li>{training}</li>
+                                          </ul>
+                                        );
+                                      }
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                            <div className="mt-3">
                               <div className="m-3">
                                 <div className="form-group">
-                                  <label>Suggest a Behavioural Training:</label>
-                                  {behaviouralTrainings}
+                                  <label>
+                                    Suggested Behavioural Training By Appraisee:
+                                  </label>
+                                  {appraiseeBehaviouralTrainings}
                                 </div>
                               </div>
                             </div>
@@ -615,11 +739,35 @@ const SupervisorAppraisalReview2 = () => {
                             <div className="panel-heading text-center font-weight-bold">
                               FUNCTIONAL TRAINING
                             </div>
-                            <div className="panel-body">
+                            {functionalTrainingsArray.length === 0 ? (
+                              <p>No functional training selected</p>
+                            ) : (
+                              <div className="panel-body">
+                                <div className="m-3">
+                                  <div className="form-group">
+                                    <label>
+                                      Suggest a Functional Training:
+                                    </label>
+                                    {functionalTrainingsArray?.map(
+                                      (training) => {
+                                        return (
+                                          <ul>
+                                            <li>{training}</li>
+                                          </ul>
+                                        );
+                                      }
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                            <div className="mt-3">
                               <div className="m-3">
                                 <div className="form-group">
-                                  <label>Suggest a Functional Training:</label>
-                                  {functionalTrainings}
+                                  <label>
+                                    Suggested Functional Training By Appraisee:
+                                  </label>
+                                  {appraiseeFunctionalTrainings}
                                 </div>
                               </div>
                             </div>
@@ -678,7 +826,7 @@ const SupervisorAppraisalReview2 = () => {
                         </div> */}
                       </div>
 
-                      {/* <div className="col-lg-4" style={{ marginTop: "50px" }}>
+                      <div className="col-lg-4" style={{ marginTop: "50px" }}>
                         <div
                           className="font-weight-bolder"
                           style={{
@@ -689,10 +837,8 @@ const SupervisorAppraisalReview2 = () => {
                           RECOMMENDATION
                         </div>
 
-                        <div className="form-group ">
-                         {recommendation}
-                        </div>
-                      </div> */}
+                        <div className="form-group ">{recommendation}</div>
+                      </div>
                     </div>
                   </div>
                   {/* Supervisor's Comments Ends Here */}
@@ -710,7 +856,7 @@ const SupervisorAppraisalReview2 = () => {
                         className="btn btn-block btn-suntrust font-weight-700"
                         onClick={() => toggleModal()}
                       >
-                        Confirm
+                        {updateAppraiseLoading ? <Loader /> : "Confirm"}
                       </a>
                     </div>
                   </div>
@@ -721,8 +867,9 @@ const SupervisorAppraisalReview2 = () => {
           </div>
         </div>
       </div>
+
       <Modal show={openModal} centered backdrop="static" keyboard={false}>
-        <div className="modal-90w  modal-dialog-centered">
+        <div className="modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-body">
               <div className="form-header">
@@ -730,10 +877,10 @@ const SupervisorAppraisalReview2 = () => {
                 <p>Are you sure you want to proceed</p>
               </div>
               <div className="modal-btn delete-action">
-                <div className="row">
+                <div className="row d-flex align-items-center justify-content-center">
                   <div className="col-6">
                     <a
-                      className="btn btn-primary continue-btn"
+                      className="btn btn-block btn-primary"
                       onClick={() => {
                         submitAppraisal();
                         toggleModal();
@@ -745,7 +892,7 @@ const SupervisorAppraisalReview2 = () => {
                   <div className="col-6">
                     <a
                       onClick={() => toggleModal()}
-                      className="btn btn-primary cancel-btn"
+                      className="btn btn-block btn-outline-danger"
                     >
                       Cancel
                     </a>

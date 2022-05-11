@@ -21,7 +21,8 @@ import AppraiseeUpdatedReview from './AppraiseeUpdatedReview/index';
 import PreProcessAppraisal from './PreProcessAppraisal/index';
 import Trainings from "./Configurations/Trainings";
 import StaffAppraisalDetail from './StaffAppraisalDetails/index';
-import HrReport from './HrReport/index';
+import PastRecords from './HrReports/PastRecords/index';
+import CurrentReports from "./HrReports/CurrentReports";
 
 const PerformanceManagementRoute = ({ match }) => (
   <Switch>
@@ -52,7 +53,8 @@ const PerformanceManagementRoute = ({ match }) => (
     />
     <Route path={`${match.url}/config/unitKpi`} component={UnitKPI} />
     <Route path={`${match.url}/Appraisals`} component={Appraisals} />
-    <Route path={`${match.url}/HrReports`} component={HrReport} />
+    <Route path={`${match.url}/HrReports/pastRecords`} component={PastRecords} />
+    <Route path={`${match.url}/HrReports/currentReports`} component={CurrentReports} />
     <Route path={`${match.url}/staffAppraisalReview`} component={StaffAppraisalReview}/>
     <Route path={`${match.url}/supervisorAppraisalReview2/:appraisalReference`} component={SupervisorAppraisalReview2} />
     <Route path={`${match.url}/preprocessAppraisal/:appraisalReference`} component={PreProcessAppraisal} />

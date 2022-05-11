@@ -10,6 +10,34 @@ import {
   GlobalState,
 } from "little-state-machine";
 
+createStore(
+  {
+    data: {
+      exceptionalAchievement: "",
+      selectedBehavioralTrainings: [],
+      selectedTechnicalTrainings: [],
+      appraisalRates: {},
+      appraisalResults: {},
+      appraiseeTimeManagementScore: "",
+      appraiseePunctualityScore: "",
+      appraiseeCommunicationScore: "",
+      appraiseeProfessionalConductScore: "",
+      appraiseeAnalyticalThinkingScore: "",
+      appraiseeBehaviourArray: [],
+      appraiseeFunctionalArray: [],
+      appraiseeBehaviouralTrainings: "",
+      appraiseeFunctionalTrainings: "",
+      totalAppraisalResult: "",
+      appraiseeResults: {},
+      appraiseeRates: {},
+      values: {},
+      rateResult: "",
+      strengthResult: "",
+    },
+  },
+  {}
+);
+
 ReactDOM.render(
   <Provider store={store}>
     <StateMachineProvider>

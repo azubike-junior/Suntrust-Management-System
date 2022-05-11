@@ -15,23 +15,40 @@ const initialState = {
 export const submitStaffAppraisal = createAsyncThunk(
   "submitStaffAppraisal",
   async (data, { rejectWithValue }) => {
-  
-    const { appraisals, history, toggleModal } = data;
-    console.log("appppp", appraisals)
+    const { appraisals, history, toggleModal, emptyState } = data;
     try {
       const response = await axios.post(
         `${performanceManagementAppraisalUrl}/SubmitAppraisal`,
         appraisals
       );
-      console.log(">>>>individu", response);
-      if (response.status === 200) {
+      // console.log(">>>>individu", response);
+      if (response.data.responseCode === "00") {
+        emptyState();
         Swal.fire(
           `Appraisal has been submitted`,
           "Successful!",
           "success"
         ).then(() => {
           history.push("/app/performanceManagement/Appraisals");
-          toggleModal()
+          toggleModal();
+        });
+        return response.data;
+      }
+      if (response.data.responseCode === "97") {
+        Swal.fire(
+          `${response.data.responseMessage}`,
+          "Unsuccessful!",
+          "error"
+        ).then(() => {
+          history.push("/app/performanceManagement/Appraisals");
+          emptyState();
+          toggleModal();
+        });
+        return response.data;
+      }
+      if (response.data.responseCode === "96") {
+        Swal.fire(`Sorry, an Error ocurred`, "Error!", "error").then(() => {
+          // reset();
         });
         return response.data;
       }

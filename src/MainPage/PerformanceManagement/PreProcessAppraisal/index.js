@@ -24,6 +24,7 @@ import { updateAppraisalByReference } from "./../../../services/PerformanceManag
 import Loader from "./../../UIinterface/Loader/index";
 import { updateCommentSection } from "./../../../services/PerformanceManagement/StaffAppraisal/updateCommentSection";
 import Modal from "react-bootstrap/Modal";
+import RejectionModal from "./../Components/RejectModal/index";
 
 const PreProcessAppraisal = () => {
   const dispatch = useDispatch();
@@ -33,15 +34,25 @@ const PreProcessAppraisal = () => {
   const [groupHeadComment, setGroupHeadComment] = useState("");
   const { appraisalReference } = useParams();
   const [openModal, setOpenModal] = useState(false);
+  const [openRecommendationModal, setRecommendationOpenModal] = useState(false);
 
   const toggleModal = () => {
     setOpenModal(!openModal);
   };
 
+  const toggleRecommendationModal = () => {
+    setRecommendationOpenModal(!openRecommendationModal);
+  };
+
   const staffData = JSON.parse(localStorage.getItem("cachedData"));
 
-  const { departmentName, gradeName, secondLevelSupervisorStaffId, unitName } =
-    staffData;
+  const {
+    departmentName,
+    gradeName,
+    secondLevelSupervisorStaffId,
+    secondLevelSupervisorName,
+    unitName,
+  } = staffData;
 
   const { data: details } = useSelector(
     (state) => state.performanceManagement.getAppraisalByReferenceReducer
@@ -59,15 +70,41 @@ const PreProcessAppraisal = () => {
     lastPromotionDate,
     totalAppraiseeResult,
     totalSupervisorResult,
-    functionalTrainings,
-    behaviouralTrainings,
-    strengthScore,
     supervisorComment,
     appraiseeComment,
     recommendation,
     status,
+    supervisorTimeManagementScore,
+    supervisorPunctualityScore,
+    supervisorProfessionalConductScore,
+    supervisorCommunicationScore,
+    supervisorAnalyticalThinkingScore,
+    appraiseeTimeManagementScore,
+    appraiseePunctualityScore,
+    appraiseeProfessionalConductScore,
+    appraiseeCommunicationScore,
+    appraiseeAnalyticalThinkingScore,
+    appraiseeBehaviouralTrainings,
+    appraiseeFunctionalTrainings,
+    supervisorFunctionalTrainings,
+    supervisorBehaviouralTrainings,
+    secondLevelSupervisorComment,
     kpis,
   } = details;
+
+  const supervisorStrengthScore =
+    Number(supervisorTimeManagementScore) +
+    Number(supervisorProfessionalConductScore) +
+    Number(supervisorAnalyticalThinkingScore) +
+    Number(supervisorPunctualityScore) +
+    Number(supervisorCommunicationScore);
+
+  const appraiseeStrengthScore =
+    Number(appraiseeTimeManagementScore) +
+    Number(appraiseeProfessionalConductScore) +
+    Number(appraiseeAnalyticalThinkingScore) +
+    Number(appraiseePunctualityScore) +
+    Number(appraiseeCommunicationScore);
 
   const allProcess = details?.kpis
     ?.filter((kpi) => kpi.categoryDescription === "Process")
@@ -414,7 +451,6 @@ const PreProcessAppraisal = () => {
                         <div
                           className="col-lg-2 text-center"
                           style={{
-                            color: "#DAA520",
                             fontSize: "18px",
                             fontWeight: "bolder",
                           }}
@@ -426,7 +462,6 @@ const PreProcessAppraisal = () => {
                         <div
                           className="col-lg-1 text-center"
                           style={{
-                            color: "#DAA520",
                             fontSize: "18px",
                             fontWeight: "bolder",
                           }}
@@ -454,14 +489,91 @@ const PreProcessAppraisal = () => {
                         {/* <div className="row"> */}
                         <div className="profile-view">
                           {/* Staff Details Starts Here */}
-                          {/* <div className="d-flex mb-2 border-bottom">
+                          <div className="d-flex mb-2 border-bottom">
                             <div className="col-lg-12 d-flex">
                               <h4 className="col-lg-4">Skills</h4>
-                              <h4 className="col-lg-8">Ratings</h4>
+                              <h4 className="col-lg-4">Appraisee Rating</h4>
+                              <h4 className="col-lg-4">Supervisor Rating</h4>
                             </div>
-                          </div> */}
+                          </div>
                         </div>
                         {/* </div> */}
+
+                        <div className="d-flex mt-3 mb-3 border-bottom">
+                          <div className="col-lg-12 d-flex">
+                            <div className="col-lg-4">Time Management</div>
+
+                            <div className="col-lg-4">
+                              <div id="ratings_group">
+                                {appraiseeTimeManagementScore}/5
+                              </div>
+                            </div>
+                            <div className="col-lg-4">
+                              {supervisorTimeManagementScore}/5
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="d-flex mt-3 mb-3 border-bottom">
+                          <div className="col-lg-12 d-flex">
+                            <div className="col-lg-4">Punctuality</div>
+
+                            <div className="col-lg-4">
+                              <div id="ratings_group">
+                                {appraiseePunctualityScore}/5
+                              </div>
+                            </div>
+                            <div className="col-lg-4">
+                              {supervisorPunctualityScore}/5
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="d-flex mt-3 mb-3 border-bottom">
+                          <div className="col-lg-12 d-flex">
+                            <div className="col-lg-4">Professional Conduct</div>
+
+                            <div className="col-lg-4">
+                              <div id="ratings_group">
+                                {appraiseeProfessionalConductScore}/5
+                              </div>
+                            </div>
+                            <div className="col-lg-4">
+                              {supervisorProfessionalConductScore}/5
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="d-flex mt-3 mb-3 border-bottom">
+                          <div className="col-lg-12 d-flex">
+                            <div className="col-lg-4">Time Communication</div>
+
+                            <div className="col-lg-4">
+                              <div id="ratings_group">
+                                {appraiseeCommunicationScore}/5
+                              </div>
+                            </div>
+                            <div className="col-lg-4">
+                              {supervisorCommunicationScore}/5
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="d-flex mt-3 mb-3 border-bottom">
+                          <div className="col-lg-12 d-flex">
+                            <div className="col-lg-4">Analytic Thinking</div>
+
+                            <div className="col-lg-4">
+                              <div id="ratings_group">
+                                {appraiseeAnalyticalThinkingScore}/5
+                              </div>
+                            </div>
+                            <div className="col-lg-4">
+                              {supervisorAnalyticalThinkingScore}/5
+                            </div>
+                          </div>
+                        </div>
+
                         <div className="d-flex border-bottom">
                           <div
                             className="col-lg-12 pt-3 pb-3 d-flex"
@@ -472,7 +584,54 @@ const PreProcessAppraisal = () => {
                           >
                             <div className="col-lg-4">TOTAL</div>
 
-                            <div className="col-lg-8">{strengthScore}/25</div>
+                            <div className="col-lg-4">
+                              {appraiseeStrengthScore
+                                ? appraiseeStrengthScore
+                                : 0}
+                              /25
+                            </div>
+                            <div className="col-lg-4">
+                              {supervisorStrengthScore
+                                ? supervisorStrengthScore
+                                : 0}
+                              /25
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="card col-lg-4">
+                      <div className="card-body">
+                        <div className="profile-view">
+                          <div className="d-flex mb-5">
+                            <div className="col-lg-12">
+                              <h4 className="card-title">Ratings Key</h4>
+                              <div>
+                                <p>
+                                  <i className="fa fa-dot-circle-o text-purple mr-2" />
+                                  Excellent
+                                  <span className="float-right">5</span>
+                                </p>
+                                <p>
+                                  <i className="fa fa-dot-circle-o text-success mr-2" />
+                                  Very Good{" "}
+                                  <span className="float-right">4</span>
+                                </p>
+                                <p>
+                                  <i className="fa fa-dot-circle-o text-info mr-2" />
+                                  Average<span className="float-right">3</span>
+                                </p>
+                                <p>
+                                  <i className="fa fa-dot-circle-o text-warning mr-2" />
+                                  Fair<span className="float-right">2</span>
+                                </p>
+                                <p>
+                                  <i className="fa fa-dot-circle-o text-danger mr-2" />
+                                  Poor<span className="float-right">1</span>
+                                </p>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -501,8 +660,18 @@ const PreProcessAppraisal = () => {
                             <div className="panel-body">
                               <div className="m-3">
                                 <div className="form-group">
-                                  <label>Suggest a Behavioural Training:</label>
-                                  {behaviouralTrainings}
+                                  <label>
+                                    Suggested Behavioural Trainings By
+                                    Appraisee:
+                                  </label>
+                                  {appraiseeBehaviouralTrainings}
+                                </div>
+                                <div className="form-group mt-4">
+                                  <label>
+                                    Suggested Behavioural Trainings By
+                                    Supervisor:
+                                  </label>
+                                  {supervisorBehaviouralTrainings}
                                 </div>
                               </div>
                             </div>
@@ -517,8 +686,17 @@ const PreProcessAppraisal = () => {
                             <div className="panel-body">
                               <div className="m-3">
                                 <div className="form-group">
-                                  <label>Suggest a Functional Training:</label>
-                                  {functionalTrainings}
+                                  <label>
+                                    Suggested Functional Trainings By Appraisee:
+                                  </label>
+                                  {appraiseeFunctionalTrainings}
+                                </div>
+                                <div className="form-group mt-4">
+                                  <label>
+                                    Suggested Functional Trainings By
+                                    Supervisor:
+                                  </label>
+                                  {supervisorFunctionalTrainings}
                                 </div>
                               </div>
                             </div>
@@ -588,7 +766,7 @@ const PreProcessAppraisal = () => {
                         </div>
                       </div>
 
-                      {status === "PROCESSING" && (
+                      {/* {status === "PROCESSING" && (
                         <div className="col-lg-4" style={{ marginTop: "50px" }}>
                           <div
                             className="font-weight-bolder"
@@ -621,6 +799,37 @@ const PreProcessAppraisal = () => {
                             </select>
                           </div>
                         </div>
+                      )} */}
+
+                      {status === "PROCESSING" && (
+                        <div className="col-lg-4" style={{ marginTop: "50px" }}>
+                          <div
+                            className="font-weight-bolder"
+                            style={{
+                              marginBottom: "20px",
+                              textDecoration: "underline",
+                            }}
+                          >
+                            RECOMMENDATION
+                          </div>
+
+                          <div className="form-group ">{recommendation}</div>
+                        </div>
+                      )}
+
+                      {status === "INPROGRESS" && (
+                        <div className="col-lg-4" style={{ marginTop: "50px" }}>
+                          <div
+                            className="font-weight-bolder"
+                            style={{
+                              marginBottom: "20px",
+                              textDecoration: "underline",
+                            }}
+                          >
+                            RECOMMENDATION
+                          </div>
+                          <div className="form-group">{recommendation}</div>
+                        </div>
                       )}
 
                       {status === "COMPLETE" && (
@@ -634,29 +843,12 @@ const PreProcessAppraisal = () => {
                           >
                             RECOMMENDATION
                           </div>
-
-                          <div className="form-group ">{recommendation}</div>
+                          <div className="form-group">{recommendation}</div>
                         </div>
                       )}
 
                       {status === "INPROGRESS" && (
-                        <div className="col-lg-4" style={{ marginTop: "50px" }}>
-                          <div
-                            className="font-weight-bolder"
-                            style={{
-                              marginBottom: "20px",
-                              textDecoration: "underline",
-                            }}
-                          >
-                            RECOMMENDATION
-                          </div>
-
-                          <div className="form-group ">{recommendation}</div>
-                        </div>
-                      )}
-
-                      {status === "INPROGRESS" && (
-                        <div className="form-group">
+                        <div className="form-group px-3 pt-4">
                           <div
                             className="mb-3 font-weight-bold"
                             style={{
@@ -678,6 +870,26 @@ const PreProcessAppraisal = () => {
                           </div>
                         </div>
                       )}
+
+                      {status === "COMPLETE" && (
+                        <div
+                          className="col-lg-12"
+                          style={{ marginTop: "50px" }}
+                        >
+                          <div
+                            className="font-weight-bolder"
+                            style={{
+                              marginBottom: "20px",
+                              textDecoration: "underline",
+                            }}
+                          >
+                            SECOND LEVEL SUPERVISOR COMMENT
+                          </div>
+                          <div className="form-group">
+                            {secondLevelSupervisorComment}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -690,6 +902,36 @@ const PreProcessAppraisal = () => {
                   style={{ marginTop: "50px" }}
                 >
                   <div className="d-flex align-items-center justify-content-center">
+                    {status === "PROCESSING" && (
+                      <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
+                        <button
+                          className="btn btn-block btn-outline-danger font-weight-700"
+                          onClick={() => toggleModal()}
+                        >
+                          REJECT
+                        </button>
+                      </div>
+                    )}
+                    {status === "COMPLETE" && (
+                      <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
+                        <button
+                          className="btn btn-block btn-outline-danger font-weight-700"
+                          onClick={() => toggleModal()}
+                        >
+                          REJECT
+                        </button>
+                      </div>
+                    )}
+                    {status === "INPROGRESS" && (
+                      <div className="col-lg-3 col-md-6 col-sm-12 m-b-10">
+                        <button
+                          className="btn btn-block btn-outline-danger font-weight-700"
+                          onClick={() => toggleModal()}
+                        >
+                          REJECT
+                        </button>
+                      </div>
+                    )}
                     <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
                       <button
                         href="#"
@@ -699,7 +941,7 @@ const PreProcessAppraisal = () => {
                         }
                         className="btn btn-block btn-suntrust font-weight-700"
                         onClick={() => {
-                          toggleModal();
+                          toggleRecommendationModal();
                         }}
                       >
                         {updateAppraiseLoading ? <Loader /> : "Submit"}
@@ -714,7 +956,12 @@ const PreProcessAppraisal = () => {
         </div>
       </div>
 
-      <Modal show={openModal} centered backdrop="static" keyboard={false}>
+      <Modal
+        show={openRecommendationModal}
+        centered
+        backdrop="static"
+        keyboard={false}
+      >
         <div className="modal-90w  modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-body">
@@ -726,12 +973,12 @@ const PreProcessAppraisal = () => {
                 <div className="row">
                   <div className="col-6">
                     <a
-                      className="btn btn-primary continue-btn"
+                      className="btn btn-block btn-primary"
                       onClick={() => {
                         recommend
                           ? submitRecommendation()
                           : submitSecondLevelComment();
-                        toggleModal();
+                        toggleRecommendationModal();
                       }}
                     >
                       Yes
@@ -739,8 +986,8 @@ const PreProcessAppraisal = () => {
                   </div>
                   <div className="col-6">
                     <a
-                      onClick={() => toggleModal()}
-                      className="btn btn-primary cancel-btn"
+                      onClick={() => toggleRecommendationModal()}
+                      className="btn btn-block btn-outline-danger"
                     >
                       Cancel
                     </a>
@@ -750,6 +997,14 @@ const PreProcessAppraisal = () => {
             </div>
           </div>
         </div>
+      </Modal>
+
+      <Modal show={openModal} centered backdrop="static" keyboard={false}>
+        <RejectionModal
+          toggleModal={toggleModal}
+          appraisalReference={appraisalReference}
+          supervisorName={secondLevelSupervisorName}
+        />
       </Modal>
     </div>
   );

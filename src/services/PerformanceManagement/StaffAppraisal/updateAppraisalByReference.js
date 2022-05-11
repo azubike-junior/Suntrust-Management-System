@@ -16,14 +16,14 @@ export const updateAppraisalByReference = createAsyncThunk(
   "updateAppraisalByReference",
   async (data, { rejectWithValue }) => {
     const { appraisals, history, clearKPIs } = data;
-    console.log("appppp", appraisals);
+    // console.log("appppp", appraisals);
     try {
       const response = await axios.post(
         `${performanceManagementAppraisalUrl}/UpdateAppraisalByReference`,
         appraisals
       );
       console.log(">>>>individu", response);
-      if (response.status === 200) {
+      if (response.data.responseCode === "00") {
         Swal.fire(
           `Appraisal has been submitted`,
           "Successful!",
@@ -31,6 +31,20 @@ export const updateAppraisalByReference = createAsyncThunk(
         ).then(() => {
           history.push("/app/performanceManagement/allStaffAppraisals");
           clearKPIs();
+        });
+        return response.data;
+      }
+      if (response.data.responseCode === "97") {
+        Swal.fire(
+          `${response.data.responseMessage}`,
+          "Unsuccessful!",
+          "error"
+        ).then(() => {});
+        return response.data;
+      }
+      if (response.data.responseCode === "96") {
+        Swal.fire(`Sorry, an Error ocurred`, "Error!", "error").then(() => {
+          // reset();
         });
         return response.data;
       }

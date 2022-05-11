@@ -116,6 +116,32 @@ export const updateName = (state, payload) => ({
   },
 });
 
+export const emptyStateData = {
+  exceptionalAchievement: "",
+  selectedBehavioralTrainings: [],
+  selectedTechnicalTrainings: [],
+  appraisalRates: {},
+  appraisalResults: {},
+  appraiseeResults: {},
+  appraiseeRates: {},
+  appraiseeTimeManagementScore: "",
+  appraiseePunctualityScore: "",
+  appraiseeCommunicationScore: "",
+  appraiseeProfessionalConductScore: "",
+  appraiseeAnalyticalThinkingScore: "",
+  appraiseeBehaviourArray: [],
+  appraiseeFunctionalArray: [],
+  appraiseeBehaviouralTrainings: "",
+  appraiseeFunctionalTrainings: "",
+  values:{}
+};
+
+export const emptyValue = {
+  appraisalRates: {},
+  appraisalResults: {},
+  appraiseeResults: {}
+};
+
 export const getUniqueValues = (data, type) => {
   let unique = data?.map((item) => item[type]);
   if (type === "colors") {
@@ -128,10 +154,6 @@ export const allStatus = [
   {
     value: "SUBMITTED",
     text: "SUBMITTED - awaiting Supervisor Score",
-  },
-  {
-    value: "PRE-PROCESSING",
-    text: "PRE-PROCESSING - awaiting Appraisee Comment",
   },
   {
     value: "PROCESSING",

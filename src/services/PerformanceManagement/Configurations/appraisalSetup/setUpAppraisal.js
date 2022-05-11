@@ -26,7 +26,7 @@ export const setupAppraisal = createAsyncThunk(
         `${performanceManagementConfigUrl}/SetUpAppraisal`,
         rest
       );
-      // console.log(">>>>>response", response);
+      console.log(">>>>>response", response);
       // if(response.data.reponse)
       if (response.data.responseCode === "00") {
         Swal.fire(

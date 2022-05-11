@@ -5,10 +5,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useStateMachine } from "little-state-machine";
 import { submitStaffAppraisal } from "./../../../services/PerformanceManagement/StaffAppraisal/submitStaffAppraisal";
 import { NewKpiReviewComponent } from "./../KpiComponent/index";
-import { updateName } from "./../../../utils/helper";
+import { emptyStateData, updateName } from "./../../../utils/helper";
 import { getIndividualKpis } from "./../../../services/PerformanceManagement/Configurations/individualKpi/getIndividualKpi";
 import { getCategoryTypes } from "./../../../services/PerformanceManagement/Configurations/categoryType/getCategoryTypes";
 import Modal from "react-bootstrap/Modal";
+import Loader from "./../../UIinterface/Loader/index";
 
 const StaffAppraisalReview = () => {
   const { state: allData, actions } = useStateMachine({ updateName });
@@ -34,6 +35,10 @@ const StaffAppraisalReview = () => {
     (state) => state.performanceManagement.getCategoryTypesReducer
   );
 
+  const { loading: submitLoading } = useSelector(
+    (state) => state.performanceManagement.submitStaffAppraisalReducer
+  );
+
   let results = [];
 
   for (let category = 0; category < categories.length; category++) {
@@ -56,7 +61,24 @@ const StaffAppraisalReview = () => {
 
   const staffData = JSON.parse(localStorage.getItem("cachedData"));
 
-  console.log(">>>>>>staffData", staffData);
+  // console.log(">>>>>>staffData", staffData);
+
+  const {
+    appraiseeTimeManagementScore,
+    appraiseePunctualityScore,
+    appraiseeCommunicationScore,
+    appraiseeProfessionalConductScore,
+    appraiseeAnalyticalThinkingScore,
+    appraiseeBehaviouralTrainings,
+    appraiseeFunctionalTrainings,
+    appraiseeBehaviourArray,
+    appraiseeFunctionalArray,
+    strengthResult
+  } = allData.data;
+
+  const emptyState = () => {
+    actions.updateName(emptyStateData);
+  };
 
   const submitAppraisal = () => {
     const appraise = KPIs?.map((kpi) => {
@@ -66,8 +88,8 @@ const StaffAppraisalReview = () => {
         supervisorResult: "",
         kpiId: Number(kpi.id),
         categoryId: Number(kpi.categoryId),
-        appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
-        appraiseeRate: allData.data.appraisalRates[kpi.id],
+        appraiseeResult: allData?.data?.appraiseeResults[kpi.id]?.toFixed(),
+        appraiseeRate: allData.data.values[kpi.id],
       };
     });
 
@@ -106,6 +128,13 @@ const StaffAppraisalReview = () => {
       branchName,
       departmentName,
       dateOfBirth: dateOfBirth ? dateOfBirth : "0001-01-01",
+      appraiseeTimeManagementScore,
+      appraiseePunctualityScore,
+      appraiseeCommunicationScore,
+      appraiseeProfessionalConductScore,
+      appraiseeAnalyticalThinkingScore,
+      appraiseeBehaviouralTrainings,
+      appraiseeFunctionalTrainings,
       kpis: appraise,
     };
 
@@ -113,18 +142,19 @@ const StaffAppraisalReview = () => {
       appraisals,
       history,
       toggleModal,
+      emptyState
     };
-    console.log(">>>>>>appraisals", appraisals);
+    // console.log(">>>>>>appraisals", appraisals);
     dispatch(submitStaffAppraisal(data));
   };
 
-  const resultValues = Object.values(allData.data.appraisalResults);
+  const resultValues = Object.values(allData.data.appraiseeResults);
 
   const result = resultValues
     ?.reduce((acc, num) => {
       return Number(acc) + Number(num);
     }, 0)
-    .toFixed(1);
+    .toFixed();
 
   useEffect(() => {
     setKpiResult(result);
@@ -135,15 +165,15 @@ const StaffAppraisalReview = () => {
       return {
         ...kpi,
         category: kpi.category,
-        appraiseeRate: allData.data.appraisalRates[kpi.id],
-        appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+        appraiseeRate: allData.data.appraiseeRates[kpi.id],
+        appraiseeResult: allData?.data?.appraiseeResults[kpi.id]?.toFixed(),
       };
     }
     return {
       ...kpi,
       category: "",
-      appraiseeRate: allData.data.appraisalRates[kpi.id],
-      appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+      appraiseeRate: allData.data.appraiseeRates[kpi.id],
+      appraiseeResult: allData?.data?.appraiseeResults[kpi.id]?.toFixed(),
     };
   });
 
@@ -152,15 +182,15 @@ const StaffAppraisalReview = () => {
       return {
         ...kpi,
         category: kpi.category,
-        appraiseeRate: allData.data.appraisalRates[kpi.id],
-        appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+        appraiseeRate: allData.data.appraiseeRates[kpi.id],
+        appraiseeResult: allData?.data?.appraiseeResults[kpi.id]?.toFixed(),
       };
     }
     return {
       ...kpi,
       category: "",
-      appraiseeRate: allData.data.appraisalRates[kpi.id],
-      appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+      appraiseeRate: allData.data.appraiseeRates[kpi.id],
+      appraiseeResult: allData?.data?.appraiseeResults[kpi.id]?.toFixed(),
     };
   });
 
@@ -169,15 +199,15 @@ const StaffAppraisalReview = () => {
       return {
         ...kpi,
         category: kpi.category,
-        appraiseeRate: allData.data.appraisalRates[kpi.id],
-        appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+        appraiseeRate: allData.data.appraiseeRates[kpi.id],
+        appraiseeResult: allData?.data?.appraiseeResults[kpi.id]?.toFixed(),
       };
     }
     return {
       ...kpi,
       category: "",
-      appraiseeRate: allData.data.appraisalRates[kpi.id],
-      appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+      appraiseeRate: allData.data.appraiseeRates[kpi.id],
+      appraiseeResult: allData?.data?.appraiseeResults[kpi.id]?.toFixed(),
     };
   });
 
@@ -186,17 +216,19 @@ const StaffAppraisalReview = () => {
       return {
         ...kpi,
         category: kpi.category,
-        appraiseeRate: allData.data.appraisalRates[kpi.id],
-        appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+        appraiseeRate: allData.data.appraiseeRates[kpi.id],
+        appraiseeResult: allData?.data?.appraiseeResults[kpi.id]?.toFixed(),
       };
     }
     return {
       ...kpi,
       category: "",
-      appraiseeRate: allData.data.appraisalRates[kpi.id],
-      appraiseeResult: allData.data.appraisalResults[kpi.id].toFixed(),
+      appraiseeRate: allData.data.appraiseeRates[kpi.id],
+      appraiseeResult: allData?.data?.appraiseeResults[kpi.id]?.toFixed(),
     };
   });
+
+  console.log(">>>>>>>>.state.data from review", allData)
 
   return (
     <div>
@@ -231,7 +263,7 @@ const StaffAppraisalReview = () => {
                     </div>
                   </div>
 
-                  <div className="row">
+                  <div className="row mb-5">
                     {/* Table Header  Starts Here */}
                     <div
                       className="col-lg-12 d-flex border-bottom pt-2 pb-2 font-weight-bolder"
@@ -246,7 +278,7 @@ const StaffAppraisalReview = () => {
                     </div>
                     {/* Table Header Ends Here */}
 
-                    {processPerspective?.map((kpi) => {
+                    {financialPerspective?.map((kpi) => {
                       return <NewKpiReviewComponent kpi={kpi} />;
                     })}
 
@@ -254,7 +286,7 @@ const StaffAppraisalReview = () => {
                       return <NewKpiReviewComponent kpi={kpi} />;
                     })}
 
-                    {financialPerspective?.map((kpi) => {
+                    {processPerspective?.map((kpi) => {
                       return <NewKpiReviewComponent kpi={kpi} />;
                     })}
 
@@ -285,6 +317,211 @@ const StaffAppraisalReview = () => {
                       >
                         {" "}
                         {Number(kpiResult)?.toFixed()}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    className="col-lg-12 border-bottom mt-3pt-5 pb-2 font-weight-bolder"
+                    style={{
+                      fontWeight: "bolder",
+                      marginBottom: "10px",
+                      backgroundColor: "#cccccc",
+                    }}
+                  >
+                    <div className="col-lg-12 pt-2 user-name">STRENGTHS</div>
+                  </div>
+
+                  <div className="d-flex m-b-50 ">
+                    <div className="card col-lg-8">
+                      <div className="card-body">
+                        {/* <div className="row"> */}
+                        <div className="profile-view">
+                          {/* Staff Details Starts Here */}
+                          <div className="d-flex mb-2 border-bottom">
+                            <div className="col-lg-12 d-flex">
+                              <h4 className="col-lg-4">Skills</h4>
+                              <h4 className="col-lg-8">Rating</h4>
+                            </div>
+                          </div>
+
+                          <div className="d-flex mt-3 mb-3 border-bottom">
+                            <div className="col-lg-12 d-flex">
+                              <div className="col-lg-4">Time Management</div>
+                              <div className="col-lg-8">
+                                {appraiseeTimeManagementScore}/5
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="d-flex mt-3 mb-3 border-bottom">
+                            <div className="col-lg-12 d-flex">
+                              <div className="col-lg-4">Punctuality</div>
+                              <div className="col-lg-4">
+                                {appraiseePunctualityScore}/5
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="d-flex mt-3 border-bottom">
+                            <div className="col-lg-12 d-flex">
+                              <div className="col-lg-4">
+                                Professional Conduct
+                              </div>
+
+                              <div className="col-lg-8">
+                                {appraiseeProfessionalConductScore}/5
+                              </div>
+                            </div>
+                          </div>
+                          <div className="d-flex mt-3 border-bottom">
+                            <div className="col-lg-12 d-flex">
+                              <div className="col-lg-4">Communication</div>
+
+                              <div className="col-lg-8">
+                                {appraiseeCommunicationScore}/5
+                              </div>
+                            </div>
+                          </div>
+                          <div className="d-flex mt-3 border-bottom">
+                            <div className="col-lg-12 d-flex">
+                              <div className="col-lg-4">
+                                Analytical Thinking
+                              </div>
+
+                              <div className="col-lg-8">
+                                {appraiseeAnalyticalThinkingScore}/5
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {/* </div> */}
+                        <div className="d-flex border-bottom">
+                          <div
+                            className="col-lg-12 pt-3 pb-3 d-flex"
+                            style={{
+                              fontWeight: "bolder",
+                              backgroundColor: "#efefef",
+                            }}
+                          >
+                            <div className="col-lg-4">TOTAL</div>
+
+                            <div className="col-lg-8">{strengthResult}/25</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="card col-lg-4">
+                      <div className="card-body">
+                        <div className="profile-view">
+                          <div className="d-flex mb-5">
+                            <div className="col-lg-12">
+                              <h4 className="card-title">Ratings Key</h4>
+                              <div>
+                                <p>
+                                  <i className="fa fa-dot-circle-o text-purple mr-2" />
+                                  Excellent
+                                  <span className="float-right">5</span>
+                                </p>
+                                <p>
+                                  <i className="fa fa-dot-circle-o text-success mr-2" />
+                                  Very Good{" "}
+                                  <span className="float-right">4</span>
+                                </p>
+                                <p>
+                                  <i className="fa fa-dot-circle-o text-info mr-2" />
+                                  Average<span className="float-right">3</span>
+                                </p>
+                                <p>
+                                  <i className="fa fa-dot-circle-o text-warning mr-2" />
+                                  Fair<span className="float-right">2</span>
+                                </p>
+                                <p>
+                                  <i className="fa fa-dot-circle-o text-danger mr-2" />
+                                  Poor<span className="float-right">1</span>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    className="col-lg-12 border-bottom pt-2 pb-2 font-weight-bolder"
+                    style={{
+                      fontWeight: "bolder",
+                      marginBottom: "10px",
+                      backgroundColor: "#cccccc",
+                    }}
+                  >
+                    <div className="col-lg-12  user-name">TRAINING</div>
+                  </div>
+
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="profile-view d-flex">
+                        <div className="col-lg-6">
+                          <div className="panel panel-default">
+                            <div className="panel-heading text-center font-weight-bold">
+                              BEHAVIOURAL TRAINING
+                            </div>
+                            {appraiseeBehaviourArray.length === 0 ? (
+                              <p>No behavioral training was selected</p>
+                            ) : (
+                              <div className="panel-body">
+                                <div className="m-3">
+                                  <div className="form-group">
+                                    <label>
+                                      Suggest a Behavioural Training:
+                                    </label>
+                                    {appraiseeBehaviourArray?.map(
+                                      (training) => {
+                                        return (
+                                          <ul>
+                                            <li>{training}</li>
+                                          </ul>
+                                        );
+                                      }
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="col-lg-6">
+                          <div className="panel panel-default">
+                            <div className="panel-heading text-center font-weight-bold">
+                              FUNCTIONAL TRAINING
+                            </div>
+                            {appraiseeFunctionalArray.length === 0 ? (
+                              <p>No functional training selected</p>
+                            ) : (
+                              <div className="panel-body">
+                                <div className="m-3">
+                                  <div className="form-group">
+                                    <label>
+                                      Suggest a Functional Training:
+                                    </label>
+                                    {appraiseeFunctionalArray?.map(
+                                      (training) => {
+                                        return (
+                                          <ul>
+                                            <li>{training}</li>
+                                          </ul>
+                                        );
+                                      }
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -334,12 +571,20 @@ const StaffAppraisalReview = () => {
             >
               <div className="d-flex align-items-center justify-content-center">
                 <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
+                  <Link
+                    to="/app/performanceManagement/staffAppraisal"
+                    className="btn btn-block btn-suntrust font-weight-700"
+                  >
+                    Back
+                  </Link>
+                </div>
+                <div className="col-lg-4 col-md-6 col-sm-12 m-b-10">
                   <a
                     href="#"
                     className="btn btn-block btn-suntrust font-weight-700"
                     onClick={() => toggleModal()}
                   >
-                    Confirm
+                    {submitLoading ? <Loader /> : "Confirm"}
                   </a>
                 </div>
               </div>
@@ -361,7 +606,7 @@ const StaffAppraisalReview = () => {
                 <div className="row">
                   <div className="col-6">
                     <a
-                      className="btn btn-primary continue-btn"
+                      className="btn btn-block btn-primary"
                       onClick={() => {
                         submitAppraisal();
                         toggleModal();
@@ -373,7 +618,7 @@ const StaffAppraisalReview = () => {
                   <div className="col-6">
                     <a
                       onClick={() => toggleModal()}
-                      className="btn btn-primary cancel-btn"
+                      className="btn btn-block btn-outline-danger"
                     >
                       Cancel
                     </a>
